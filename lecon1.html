@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leçon 1 – Les concepts importants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-50:  #eff6ff;
+    --blue-100: #dbeafe;
+    --blue-200: #bfdbfe;
+    --blue-300: #93c5fd;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --blue-600: #2563eb;
+    --blue-700: #1d4ed8;
+    --blue-800: #1e40af;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --green-100: #dcfce7;
+    --green-500: #22c55e;
+    --red-100:  #fee2e2;
+    --red-500:  #ef4444;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--blue-50); color: var(--gray-800); }
+
+  /* ══ BOTTOM BAR ══ */
+  .bottom-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 12vh;
+    background: #fff;
+    border-top: 1.5px solid var(--gray-200);
+    display: flex; align-items: center;
+    padding: 0 5vw; gap: 3vw;
+    z-index: 100;
+  }
+  @media (orientation: landscape) { .bottom-bar { height: 10vh; } }
+
+  .progress-bar-wrap {
+    position: fixed; bottom: 12vh; left: 0; right: 0;
+    height: 0.6vh; background: var(--gray-200); z-index: 100;
+  }
+  @media (orientation: landscape) { .progress-bar-wrap { bottom: 10vh; } }
+  .progress-bar-fill { height: 100%; background: var(--blue-500); transition: width 0.4s ease; }
+
+  .nav-btn {
+    border: none; cursor: pointer; border-radius: 1.2vh;
+    font-family: inherit; font-weight: 600;
+    font-size: clamp(1rem, 2.8vh, 1.4rem);
+    padding: 2.2vh 5vw;
+    transition: background 0.2s, opacity 0.2s;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .btn-prev { background: var(--gray-100); color: var(--gray-600); border: 1.5px solid var(--gray-200); }
+  .btn-prev:not(:disabled):hover { background: var(--gray-200); }
+  .btn-next { background: var(--blue-600); color: #fff; }
+  .btn-next:not(:disabled):hover { background: var(--blue-700); }
+  .page-indicator {
+    flex: 1; text-align: center;
+    font-size: clamp(1rem, 2.8vh, 1.4rem);
+    color: var(--gray-500); font-weight: 600;
+  }
+
+  /* ══ CONTENT AREA ══ */
+  .content-area {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: calc(100vh - 12vh - 0.6vh);
+    overflow: hidden;
+  }
+  @media (orientation: landscape) { .content-area { height: calc(100vh - 10vh - 0.6vh); } }
+
+  /* ══ PAGE ══ */
+  .page {
+    display: none;
+    width: 100%; height: 100%;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 4vh 7vw; gap: 2.5vh;
+  }
+  .page.active { display: flex; animation: fadeIn 0.28s ease forwards; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(0.8vh); } to { opacity:1; transform:translateY(0); } }
+
+  /* ══ PAGE 1: INTRO ══ */
+  #page-1 {
+    position: fixed; top:0; left:0; right:0; bottom:0;
+    height: 100vh; background: var(--blue-50); z-index: 50;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 6vh 10vw; gap: 2.2vh;
+  }
+  #page-1.gone { display: none; }
+
+  .intro-badge {
+    background: var(--blue-100); color: var(--blue-700);
+    border-radius: 2vh; padding: 0.8vh 4vw;
+    font-size: clamp(0.85rem, 2vh, 1.1rem);
+    font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase;
+  }
+  .intro-divider { width: 8vw; height: 0.35vh; background: var(--blue-300); border-radius: 1vh; }
+  .lesson-title {
+    font-size: clamp(1.8rem, 5.5vh, 3.5rem);
+    font-weight: 700; color: var(--blue-800);
+    text-align: center; line-height: 1.2;
+  }
+  .lesson-sub {
+    font-size: clamp(1rem, 2.4vh, 1.4rem);
+    color: var(--gray-500); text-align: center;
+  }
+  .chapter-label {
+    font-size: clamp(0.85rem, 2vh, 1.1rem);
+    font-weight: 600; color: var(--blue-500);
+    letter-spacing: 0.06em; text-transform: uppercase; text-align: center;
+  }
+  .start-btn {
+    background: var(--blue-600); color: #fff;
+    border: none; border-radius: 1.2vh;
+    padding: 2.2vh 10vw;
+    font-family: inherit; font-weight: 700;
+    font-size: clamp(1rem, 2.6vh, 1.5rem);
+    cursor: pointer; letter-spacing: 0.04em;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 3px 14px rgba(37,99,235,0.3);
+    margin-top: 2vh;
+  }
+  .start-btn:hover { background: var(--blue-700); transform: translateY(-1px); }
+
+  /* ══ CARD WITH TEXT ══
+     card-body  = main text (largest, bold)
+     card-sub2  = Subtitle 2 (second largest, bold, no colour)
+     card-sub1  = Subtitle 1 (smallest, regular weight, colour allowed)
+  ══ */
+  .card {
+    background: #fff;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 1.4vh;
+    padding: 2.8vh 6vw;
+    width: 100%;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center; gap: 1vh;
+  }
+  /* main label */
+  .card-body {
+    font-size: clamp(1.3rem, 3.6vh, 2.2rem);
+    font-weight: 700; color: var(--gray-800); line-height: 1.2;
+  }
+  /* Subtitle 2 – large, bold, no colour */
+  .card-sub2 {
+    font-size: clamp(1.1rem, 3vh, 1.8rem);
+    font-weight: 700; color: var(--gray-800); line-height: 1.3;
+  }
+  /* Subtitle 1 – small, regular, colour allowed */
+  .card-sub1 {
+    font-size: clamp(0.85rem, 2.1vh, 1.2rem);
+    color: var(--gray-500); font-weight: 400; line-height: 1.5;
+  }
+
+  /* ══ TEXT BLOCK ══ */
+  .text-block {
+    background: #fff;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 1.4vh;
+    padding: 2.8vh 6vw;
+    width: 100%;
+    font-size: clamp(1rem, 2.6vh, 1.5rem);
+    color: var(--gray-700); line-height: 1.75;
+    text-align: justify;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  }
+
+  /* ══ CONSIGNE ══ */
+  .consigne {
+    font-size: clamp(1rem, 2.6vh, 1.5rem);
+    font-weight: 600; color: var(--blue-700);
+    text-align: center; width: 100%;
+  }
+
+  /* ══ PAGE 6: EQUATION CARD ══ */
+  .eq-card {
+    background: #fff;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 1.4vh;
+    padding: 3.5vh 6vw;
+    width: 100%;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .eq-row { display: flex; align-items: flex-end; gap: 2vw; justify-content: center; }
+  .eq-token { display: flex; flex-direction: column; align-items: center; gap: 0.6vh; }
+  /* eq-main = card-body size */
+  .eq-main {
+    font-size: clamp(1.3rem, 3.6vh, 2.2rem);
+    font-weight: 700; color: var(--gray-800); line-height: 1;
+  }
+  /* eq-sub = card-sub1 size */
+  .eq-sub {
+    font-size: clamp(0.85rem, 2.1vh, 1.2rem);
+    color: var(--gray-500); font-weight: 400; line-height: 1;
+  }
+  .eq-op {
+    font-size: clamp(1.2rem, 3.2vh, 2rem);
+    font-weight: 400; color: var(--gray-400);
+    padding-bottom: 2.2vh;
+  }
+
+  /* ══ MCQ ══ */
+  .mcq-options {
+    display: flex; flex-wrap: wrap;
+    gap: 1.8vh 3vw; justify-content: center; width: 100%;
+  }
+  .mcq-option {
+    background: #fff; border: 2px solid var(--gray-200);
+    border-radius: 1vh;
+    padding: 1.6vh 6vw;
+    font-family: inherit; font-size: clamp(1rem, 2.6vh, 1.5rem);
+    font-weight: 500; color: var(--gray-700);
+    cursor: pointer; transition: all 0.15s; user-select: none;
+  }
+  .mcq-option:hover:not(.disabled):not(.correct):not(.wrong):not(.revealed) {
+    border-color: var(--blue-400); color: var(--blue-700); background: var(--blue-50);
+  }
+  .mcq-option.selected  { border-color: var(--blue-500); background: var(--blue-50); color: var(--blue-700); }
+  .mcq-option.correct   { border-color: var(--green-500); background: var(--green-100); color: #15803d; cursor: default; }
+  .mcq-option.wrong     { border-color: var(--red-500); background: var(--red-100); color: #b91c1c; }
+  .mcq-option.revealed  { border-color: var(--green-500); background: var(--green-100); color: #15803d; cursor: default; }
+  .mcq-option.disabled  { cursor: default; }
+
+  .confirm-btn {
+    background: var(--blue-600); color: #fff;
+    border: none; border-radius: 1vh;
+    padding: 1.6vh 8vw;
+    font-family: inherit; font-weight: 600;
+    font-size: clamp(1rem, 2.6vh, 1.5rem);
+    cursor: pointer; transition: background 0.2s;
+  }
+  .confirm-btn:hover:not(:disabled) { background: var(--blue-700); }
+  .confirm-btn:disabled { opacity: 0.35; cursor: default; }
+
+  .feedback-msg {
+    font-size: clamp(1rem, 2.6vh, 1.5rem);
+    font-weight: 600; text-align: center;
+    min-height: 3vh; width: 100%;
+  }
+  .feedback-msg.ok  { color: #15803d; }
+  .feedback-msg.err { color: #b91c1c; }
+
+  /* ══ PAGE 12 ══ */
+  .q-block { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 1.2vh; }
+  .q-row   { display: flex; align-items: center; justify-content: center; gap: 2vw; width: 100%; }
+  .q-label { font-size: clamp(1rem, 2.6vh, 1.5rem); color: var(--blue-500); font-weight: 700; flex-shrink: 0; }
+  .q-text  { font-size: clamp(1rem, 2.6vh, 1.5rem); color: var(--gray-700); font-weight: 500; }
+  .q-locked .mcq-option { pointer-events: none; opacity: 0.38; }
+  .q-locked .q-label    { color: var(--gray-300); }
+  .q-locked .q-text     { color: var(--gray-300); }
+
+  /* ══ PAGE 13: OUTRO (full screen, no bottom bar) ══ */
+  #page-13-full {
+    position: fixed; top:0; left:0; right:0; bottom:0;
+    height: 100vh; background: var(--blue-50); z-index: 50;
+    display: none;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 6vh 10vw;
+  }
+  #page-13-full.active { display: flex; animation: fadeIn 0.28s ease forwards; }
+</style>
+</head>
+<body>
+
+<!-- ══ PAGE 1: INTRO ══ -->
+<div id="page-1">
+  <span class="intro-badge">Chapitre 1</span>
+  <div class="chapter-label">La conjugaison formelle</div>
+  <div class="intro-divider"></div>
+  <div class="lesson-title">Les concepts importants</div>
+  <div class="lesson-sub">Leçon 1</div>
+  <button class="start-btn" onclick="startLesson()">Commencer</button>
+</div>
+
+<!-- ══ LESSON SHELL (pages 2-12) ══ -->
+<div id="lesson-shell" style="display:none;">
+
+  <div class="content-area">
+
+    <!-- PAGE 2 -->
+    <div class="page" id="page-2">
+      <p class="text-block">Bonjour ! Bienvenue dans le programme « La conjugaison au présent ». Ce programme vous apprend à utiliser et conjuguer les prédicats coréens dans une phrase selon le registre. Aujourd'hui, on va surtout voir quelques notions de grammaire et de vocabulaire. Comme certaines expressions ne sont pas souvent utilisées dans la grammaire française, il sera très utile de les connaître avant d'apprendre les règles en détail.</p>
+      <audio id="audio2" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873919/1-1_nwuskm.wav"></audio>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page" id="page-3">
+      <div class="card">
+        <div class="card-body">Prédicat</div>
+        <div class="card-sub1">서술어</div>
+        <div class="card-sub2">Verbe + Adjectif</div>
+      </div>
+      <p class="text-block">En français, quand on parle de conjugaison, cela signifie généralement « conjugaison des verbes ». Mais en coréen, les verbes et les adjectifs s'utilisent de manière très similaire, donc on les regroupe sous le terme de « Prédicat (서술어) ». Il existe bien une distinction grammaticale entre les verbes et les adjectifs, mais leurs formes étant presque identiques, même les natifs ont souvent de la difficulté à les distinguer clairement.</p>
+      <audio id="audio3" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873923/1-2_wwe4g8.mp3"></audio>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="page" id="page-4">
+      <div class="consigne">Choisissez toutes les classes grammaticales qui correspondent à des prédicats.</div>
+      <div class="mcq-options" id="p4-options">
+        <button class="mcq-option" onclick="toggleP4(this,'Adjectif')">Adjectif</button>
+        <button class="mcq-option" onclick="toggleP4(this,'Déterminant')">Déterminant</button>
+        <button class="mcq-option" onclick="toggleP4(this,'Adverbe')">Adverbe</button>
+        <button class="mcq-option" onclick="toggleP4(this,'Nom')">Nom</button>
+        <button class="mcq-option" onclick="toggleP4(this,'Verbe')">Verbe</button>
+        <button class="mcq-option" onclick="toggleP4(this,'Pronom')">Pronom</button>
+      </div>
+      <div class="feedback-msg" id="p4-fb"></div>
+      <button class="confirm-btn" id="p4-confirm" onclick="checkP4()" disabled>Confirmer</button>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div class="page" id="page-5">
+      <div class="card">
+        <div class="card-body">Infinitif du prédicat = Radical + 다</div>
+      </div>
+      <p class="text-block">Comme les verbes français se terminent par -er, -ir ou -re, tous les prédicats coréens se terminent par « -다 ». Et la partie qui reste quand on enlève « -다 », c'est-à-dire la partie réellement utilisée dans la conjugaison, s'appelle le « radical » ou la « racine ».</p>
+      <audio id="audio5" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873922/1-3_lnmgr1.mp3"></audio>
+    </div>
+
+    <!-- PAGE 6 -->
+    <div class="page" id="page-6">
+      <div class="eq-card">
+        <div class="eq-row">
+          <div class="eq-token">
+            <span class="eq-main">Faire</span>
+            <span class="eq-sub">Infinitif</span>
+          </div>
+          <span class="eq-op">=</span>
+          <div class="eq-token">
+            <span class="eq-main">Fai</span>
+            <span class="eq-sub">radical</span>
+          </div>
+          <span class="eq-op">+</span>
+          <div class="eq-token">
+            <span class="eq-main">re</span>
+            <span class="eq-sub">terminaison</span>
+          </div>
+        </div>
+      </div>
+      <div class="eq-card">
+        <div class="eq-row">
+          <div class="eq-token">
+            <span class="eq-main">하다</span>
+            <span class="eq-sub">Infinitif</span>
+          </div>
+          <span class="eq-op">=</span>
+          <div class="eq-token">
+            <span class="eq-main">하</span>
+            <span class="eq-sub">radical</span>
+          </div>
+          <span class="eq-op">+</span>
+          <div class="eq-token">
+            <span class="eq-main">다</span>
+            <span class="eq-sub">terminaison</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 7 -->
+    <div class="page" id="page-7">
+      <div class="consigne">Choisissez le radical du mot suivant.</div>
+      <div class="card">
+        <div class="card-body">이다</div>
+        <div class="card-sub2">être</div>
+      </div>
+      <div class="mcq-options" id="p7-options">
+        <button class="mcq-option" onclick="checkP7(this,'이다')">이다</button>
+        <button class="mcq-option" onclick="checkP7(this,'이')">이</button>
+        <button class="mcq-option" onclick="checkP7(this,'다')">다</button>
+      </div>
+      <div class="feedback-msg" id="p7-fb"></div>
+    </div>
+
+    <!-- PAGE 8 -->
+    <div class="page" id="page-8">
+      <div class="card">
+        <div class="card-body">Style formel VS style poli &amp; informel</div>
+      </div>
+      <p class="text-block">Enfin, la notion la plus importante à connaître en coréen est le registre selon le niveau de politesse. En grammaire, on divise généralement les styles en six catégories selon le niveau de politesse, mais dans la langue parlée, seulement trois sont vraiment utilisés au quotidien. En coréen, le niveau de politesse dépend de la situation et de l'interlocuteur avec qui vous parlez.</p>
+      <audio id="audio8" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873927/1-4_q89hn3.mp3"></audio>
+    </div>
+
+    <!-- PAGE 9 -->
+    <div class="page" id="page-9">
+      <div class="card">
+        <div class="card-body">Style formel : -다. / -까?</div>
+      </div>
+      <p class="text-block">Le style formel est surtout utilisé dans les situations officielles, les discours formels ou à l'écrit. Les phrases déclaratives se terminent par « -다 » et les phrases interrogatives par « -까 ».</p>
+      <audio id="audio9" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873928/1-5_usfwi3.mp3"></audio>
+    </div>
+
+    <!-- PAGE 10 -->
+    <div class="page" id="page-10">
+      <div class="card">
+        <div class="card-body">Style Informel : forme polie + forme informelle</div>
+      </div>
+      <div class="card">
+        <div class="card-body">Forme polie (honorifique non formelle) : -요.</div>
+      </div>
+      <div class="card">
+        <div class="card-body">Forme informelle (non honorifique non formelle) : -⌀.</div>
+      </div>
+      <p class="text-block">Ce qu'on appelle le « style formel » dans la grammaire coréenne peut être divisé en deux grandes catégories. Les utilisations sont différentes mais la manière de conjuguer est la même.</p>
+      <audio id="audio10" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873932/1-6_ljyhee.mp3"></audio>
+    </div>
+
+    <!-- PAGE 11 -->
+    <div class="page" id="page-11">
+      <div class="card">
+        <div class="card-body">Style Informel : forme polie + forme informelle</div>
+      </div>
+      <div class="card">
+        <div class="card-body">Forme polie (honorifique non formelle) : -요.</div>
+      </div>
+      <div class="card">
+        <div class="card-body">Forme informelle (non honorifique non formelle) : -⌀.</div>
+      </div>
+      <p class="text-block">La première s'appelle la « forme polie ». Elle est principalement utilisée dans les conversations du quotidien, peu importe la situation ou la relation avec l'interlocuteur. Toutes les phrases se terminent toujours par « 요 ».<br><br>La deuxième s'appelle la « forme informelle ». Elle s'utilise seulement avec des personnes plus jeunes, des personnes socialement inférieures ou des personnes très proches. La conjugaison est la même que dans la forme polie, mais on retire simplement la terminaison « -요 ».</p>
+      <audio id="audio11" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873933/1-7_eaag67.wav"></audio>
+    </div>
+
+    <!-- PAGE 12 -->
+    <div class="page" id="page-12">
+      <div class="consigne">Choisissez le registre adapté à chaque situation.</div>
+
+      <div class="q-block" id="p12-q1-block">
+        <div class="q-row">
+          <span class="q-label">Q1</span>
+          <span class="q-text">Parler à un ami très proche.</span>
+        </div>
+        <div class="mcq-options" id="p12-q1-opts">
+          <button class="mcq-option" onclick="checkP12(1,this,'Formel')">Formel</button>
+          <button class="mcq-option" onclick="checkP12(1,this,'Poli')">Poli</button>
+          <button class="mcq-option" onclick="checkP12(1,this,'Informel')">Informel</button>
+        </div>
+        <div class="feedback-msg" id="p12-fb1"></div>
+      </div>
+
+      <div class="q-block q-locked" id="p12-q2-block">
+        <div class="q-row">
+          <span class="q-label">Q2</span>
+          <span class="q-text">Présenter un projet devant tous les employés de l'entreprise.</span>
+        </div>
+        <div class="mcq-options" id="p12-q2-opts">
+          <button class="mcq-option" onclick="checkP12(2,this,'Formel')">Formel</button>
+          <button class="mcq-option" onclick="checkP12(2,this,'Poli')">Poli</button>
+          <button class="mcq-option" onclick="checkP12(2,this,'Informel')">Informel</button>
+        </div>
+        <div class="feedback-msg" id="p12-fb2"></div>
+      </div>
+
+      <div class="q-block q-locked" id="p12-q3-block">
+        <div class="q-row">
+          <span class="q-label">Q3</span>
+          <span class="q-text">Se présenter à quelqu'un qu'on ne connaît pas bien pendant un repas.</span>
+        </div>
+        <div class="mcq-options" id="p12-q3-opts">
+          <button class="mcq-option" onclick="checkP12(3,this,'Formel')">Formel</button>
+          <button class="mcq-option" onclick="checkP12(3,this,'Poli')">Poli</button>
+          <button class="mcq-option" onclick="checkP12(3,this,'Informel')">Informel</button>
+        </div>
+        <div class="feedback-msg" id="p12-fb3"></div>
+      </div>
+    </div>
+
+  </div><!-- /content-area -->
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="nav-btn btn-prev" id="btn-prev" onclick="prevPage()">◀ Précédent</button>
+    <span class="page-indicator" id="page-indicator"></span>
+    <button class="nav-btn btn-next" id="btn-next" onclick="nextPage()">Suivant ▶</button>
+  </div>
+
+</div><!-- /lesson-shell -->
+
+<!-- ══ PAGE 13: OUTRO (full screen, no bottom bar) ══ -->
+<div id="page-13-full">
+  <p class="text-block">Bon travail ! Même si ce qu'on a vu aujourd'hui n'est pas du vocabulaire coréen, cela vous aidera beaucoup à comprendre comment fonctionne la conjugaison en coréen. Passez maintenant à la Leçon 2 pour apprendre la première règle de la conjugaison formelle ! À très bientôt !</p>
+  <audio id="audio13" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873932/1-8_wtspeh.wav"></audio>
+</div>
+
+<!-- SFX -->
+<audio id="sfx-page"     preload="auto"></audio>
+<audio id="sfx-correct"  preload="auto"></audio>
+<audio id="sfx-wrong"    preload="auto"></audio>
+<audio id="sfx-complete" preload="auto"></audio>
+
+<script>
+/* ══════════════════════════════════════
+   INLINE WAV SOUND EFFECTS
+══════════════════════════════════════ */
+(function () {
+  var sr = 44100;
+
+  function makeWav(renderFn, dur) {
+    var len = Math.round(sr * dur);
+    var buf = new ArrayBuffer(44 + len * 2);
+    var v = new DataView(buf);
+    function s4(o, s) { for (var i = 0; i < 4; i++) v.setUint8(o + i, s.charCodeAt(i)); }
+    s4(0,'RIFF'); v.setUint32(4, 36+len*2, true); s4(8,'WAVE');
+    s4(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+    v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true);
+    s4(36,'data'); v.setUint32(40, len*2, true);
+    for (var n = 0; n < len; n++) {
+      var t = n / sr;
+      var s = Math.max(-1, Math.min(1, renderFn(t, dur)));
+      v.setInt16(44 + n*2, s * 32767, true);
+    }
+    var bytes = new Uint8Array(buf), b64 = '';
+    for (var i = 0; i < bytes.length; i++) b64 += String.fromCharCode(bytes[i]);
+    return 'data:audio/wav;base64,' + btoa(b64);
+  }
+
+  function env(t, dur, att, rel) {
+    if (t < att) return t / att;
+    if (t > dur - rel) return Math.max(0, (dur - t) / rel);
+    return 1;
+  }
+
+  /* page turn – soft 700 Hz sine */
+  document.getElementById('sfx-page').src = makeWav(function(t, d) {
+    return Math.sin(2*Math.PI*700*t) * env(t,d,0.005,0.04) * 0.35;
+  }, 0.09);
+
+  /* correct – 880 → 1108 Hz two-note */
+  document.getElementById('sfx-correct').src = makeWav(function(t, d) {
+    var f = t < 0.14 ? 880 : 1108;
+    return Math.sin(2*Math.PI*f*t) * env(t,d,0.008,0.07) * 0.5;
+  }, 0.32);
+
+  /* wrong – low 180 Hz square buzz */
+  document.getElementById('sfx-wrong').src = makeWav(function(t, d) {
+    return (Math.sin(2*Math.PI*180*t) > 0 ? 1 : -1) * env(t,d,0.01,0.06) * 0.4;
+  }, 0.28);
+
+  /* complete – warm 3-note chord 523+659+784 Hz with longer sustain */
+  document.getElementById('sfx-complete').src = makeWav(function(t, d) {
+    var e = env(t, d, 0.02, 0.3);
+    return (Math.sin(2*Math.PI*523*t) + Math.sin(2*Math.PI*659*t) + Math.sin(2*Math.PI*784*t)) / 3 * e * 0.55;
+  }, 1.2);
+})();
+
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+var TOTAL_PAGES = 13;
+var currentPage = 1;
+var nextUnlocked = true;
+
+var p4Selected = new Set();
+var p4Tries = 0;
+var P4_MAX = 3;
+var P4_ANSWERS = new Set(['Adjectif','Verbe']);
+var p4Resolved = false;
+
+var p7Done = false;
+
+var P12_ANSWERS = {1:'Informel', 2:'Formel', 3:'Poli'};
+var p12Done = [false, false, false];
+
+/* ══════════════════════════════════════
+   AUDIO
+══════════════════════════════════════ */
+var CONTENT_AUDIOS = ['audio2','audio3','audio5','audio8','audio9','audio10','audio11','audio13'];
+var AUTO_PLAY_MAP  = {2:'audio2',3:'audio3',5:'audio5',8:'audio8',9:'audio9',10:'audio10',11:'audio11',13:'audio13'};
+
+function sfx(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.currentTime = 0;
+  el.play().catch(function(){});
+}
+
+function stopAllContent() {
+  CONTENT_AUDIOS.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.pause(); el.currentTime = 0; }
+  });
+}
+
+function autoPlay(pg) {
+  if (AUTO_PLAY_MAP[pg]) {
+    var id = AUTO_PLAY_MAP[pg];
+    setTimeout(function() {
+      var el = document.getElementById(id);
+      if (el) el.play().catch(function(){});
+    }, 500);
+  }
+}
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+function startLesson() {
+  document.getElementById('page-1').classList.add('gone');
+  document.getElementById('lesson-shell').style.display = '';
+  currentPage = 2;
+  nextUnlocked = true;
+  updateUI();
+  autoPlay(2);
+}
+
+function showOutro() {
+  /* hide lesson shell entirely */
+  document.getElementById('lesson-shell').style.display = 'none';
+  /* show full-screen outro */
+  var outro = document.getElementById('page-13-full');
+  outro.classList.add('active');
+  sfx('sfx-complete');
+  autoPlay(13);
+  triggerLessonComplete();
+}
+
+function updateUI() {
+  for (var i = 2; i <= 12; i++) {
+    var el = document.getElementById('page-' + i);
+    if (el) el.classList.remove('active');
+  }
+  var cur = document.getElementById('page-' + currentPage);
+  if (cur) cur.classList.add('active');
+
+  /* progress: page 2 = 0%, page 12 = 100% (13 handled separately) */
+  var pct = ((currentPage - 2) / (TOTAL_PAGES - 2)) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  document.getElementById('page-indicator').textContent = currentPage + ' / ' + TOTAL_PAGES;
+
+  document.getElementById('btn-prev').disabled = (currentPage <= 2);
+
+  var nextBtn = document.getElementById('btn-next');
+  nextBtn.disabled = !nextUnlocked;
+}
+
+function goToPage(pg) {
+  stopAllContent();
+  sfx('sfx-page');
+
+  if (pg === TOTAL_PAGES) {
+    showOutro();
+    return;
+  }
+
+  currentPage = pg;
+
+  if (pg === 4) nextUnlocked = p4Resolved;
+  else if (pg === 7) nextUnlocked = p7Done;
+  else if (pg === 12) nextUnlocked = (p12Done[0] && p12Done[1] && p12Done[2]);
+  else nextUnlocked = true;
+
+  updateUI();
+  autoPlay(pg);
+}
+
+function nextPage() { if (nextUnlocked) goToPage(currentPage + 1); }
+function prevPage() { if (currentPage > 2) goToPage(currentPage - 1); }
+
+/* ══════════════════════════════════════
+   PAGE 4
+══════════════════════════════════════ */
+var p4WrongTimer = null;
+function toggleP4(btn, val) {
+  if (btn.classList.contains('disabled')) return;
+  if (btn.classList.contains('selected')) { btn.classList.remove('selected'); p4Selected.delete(val); }
+  else { btn.classList.add('selected'); p4Selected.add(val); }
+  document.getElementById('p4-confirm').disabled = (p4Selected.size === 0);
+}
+
+function checkP4() {
+  p4Tries++;
+  var correct = setsEqual(p4Selected, P4_ANSWERS);
+  var fb = document.getElementById('p4-fb');
+  var opts = document.querySelectorAll('#p4-options .mcq-option');
+
+  if (correct) {
+    if (p4WrongTimer) { clearTimeout(p4WrongTimer); p4WrongTimer = null; }
+    sfx('sfx-correct');
+    fb.textContent = 'Correcte :)'; fb.className = 'feedback-msg ok';
+    opts.forEach(function(o) {
+      o.classList.add('disabled');
+      if (P4_ANSWERS.has(o.textContent.trim())) o.classList.add('correct');
+      else o.classList.remove('selected');
+    });
+    document.getElementById('p4-confirm').disabled = true;
+    p4Resolved = true; nextUnlocked = true; updateUI();
+  } else {
+    sfx('sfx-wrong');
+    if (p4Tries >= P4_MAX) {
+      if (p4WrongTimer) { clearTimeout(p4WrongTimer); p4WrongTimer = null; }
+      opts.forEach(function(o) {
+        o.classList.add('disabled');
+        if (P4_ANSWERS.has(o.textContent.trim())) { o.classList.remove('selected'); o.classList.add('revealed'); }
+        else o.classList.remove('selected');
+      });
+      document.getElementById('p4-confirm').disabled = true;
+      fb.textContent = 'Voici les bonnes réponses'; fb.className = 'feedback-msg ok';
+      p4Resolved = true; nextUnlocked = true; updateUI();
+    } else {
+      fb.textContent = 'Veuillez réessayer :('; fb.className = 'feedback-msg err';
+      opts.forEach(function(o) { o.classList.remove('selected'); });
+      p4Selected.clear();
+      document.getElementById('p4-confirm').disabled = true;
+      p4WrongTimer = setTimeout(function() {
+        fb.textContent = ''; fb.className = 'feedback-msg';
+        p4WrongTimer = null;
+      }, 2000);
+    }
+  }
+}
+
+/* ══════════════════════════════════════
+   PAGE 7
+══════════════════════════════════════ */
+var p7WrongTimer = null;
+function checkP7(btn, val) {
+  if (p7Done) return;
+  var opts = document.querySelectorAll('#p7-options .mcq-option');
+  var fb = document.getElementById('p7-fb');
+  opts.forEach(function(o) { o.classList.remove('selected','correct','wrong'); });
+
+  if (val === '이') {
+    if (p7WrongTimer) { clearTimeout(p7WrongTimer); p7WrongTimer = null; }
+    sfx('sfx-correct');
+    btn.classList.add('correct');
+    fb.textContent = 'Correcte :)'; fb.className = 'feedback-msg ok';
+    opts.forEach(function(o) { o.classList.add('disabled'); });
+    p7Done = true; nextUnlocked = true; updateUI();
+  } else {
+    sfx('sfx-wrong');
+    btn.classList.add('wrong');
+    fb.textContent = 'Veuillez réessayer :('; fb.className = 'feedback-msg err';
+    p7WrongTimer = setTimeout(function() {
+      btn.classList.remove('wrong');
+      fb.textContent = ''; fb.className = 'feedback-msg';
+      p7WrongTimer = null;
+    }, 2000);
+  }
+}
+
+/* ══════════════════════════════════════
+   PAGE 12
+══════════════════════════════════════ */
+var p12WrongTimers = {1: null, 2: null, 3: null};
+function checkP12(q, btn, val) {
+  if (p12Done[q-1]) return;
+  var opts = document.querySelectorAll('#p12-q'+q+'-opts .mcq-option');
+  var fb = document.getElementById('p12-fb'+q);
+  opts.forEach(function(o) { o.classList.remove('selected','correct','wrong'); });
+
+  if (val === P12_ANSWERS[q]) {
+    if (p12WrongTimers[q]) { clearTimeout(p12WrongTimers[q]); p12WrongTimers[q] = null; }
+    sfx('sfx-correct');
+    btn.classList.add('correct');
+    fb.textContent = 'Correcte :)'; fb.className = 'feedback-msg ok';
+    opts.forEach(function(o) { o.classList.add('disabled'); });
+    p12Done[q-1] = true;
+    if (q < 3) document.getElementById('p12-q'+(q+1)+'-block').classList.remove('q-locked');
+    if (p12Done[0] && p12Done[1] && p12Done[2]) { nextUnlocked = true; updateUI(); }
+  } else {
+    sfx('sfx-wrong');
+    btn.classList.add('wrong');
+    fb.textContent = 'Veuillez réessayer :('; fb.className = 'feedback-msg err';
+    p12WrongTimers[q] = setTimeout(function() {
+      btn.classList.remove('wrong');
+      fb.textContent = ''; fb.className = 'feedback-msg';
+      p12WrongTimers[q] = null;
+    }, 2000);
+  }
+}
+
+/* ══════════════════════════════════════
+   UTILS
+══════════════════════════════════════ */
+function setsEqual(a, b) {
+  if (a.size !== b.size) return false;
+  for (var x of a) if (!b.has(x)) return false;
+  return true;
+}
+
+function triggerLessonComplete() {
+  window.parent.postMessage({ type: 'lesson_complete' }, '*');
+}
+
+window.addEventListener('beforeunload', stopAllContent);
+document.addEventListener('visibilitychange', function() { if (document.hidden) stopAllContent(); });
+</script>
+</body>
+</html>
