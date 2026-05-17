@@ -154,29 +154,30 @@
      card-body  = main text (largest, bold)
      card-sub2  = Subtitle 2 (second largest, bold, no colour)
      card-sub1  = Subtitle 1 (smallest, regular weight, colour allowed)
+     Font sizes set via --fs-* custom properties, written by JS per page.
   ══ */
   .card {
     background: #fff;
     border: 1.5px solid var(--gray-200);
     border-radius: 1.4vmin;
-    padding: 2vmin 5vw;
+    padding: var(--card-pad, 2vmin) 5vw;
     width: 100%;
     box-shadow: 0 1px 6px rgba(0,0,0,0.06);
     display: flex; flex-direction: column;
-    align-items: center; text-align: center; gap: 0.8vmin;
+    align-items: center; text-align: center; gap: var(--card-gap, 0.8vmin);
   }
-  .card-body  { font-size: 4vmin;   font-weight: 700; color: var(--gray-800); line-height: 1.25; }
-  .card-sub2  { font-size: 3.4vmin; font-weight: 700; color: var(--gray-800); line-height: 1.3; }
-  .card-sub1  { font-size: 2.5vmin; font-weight: 400; color: var(--gray-500); line-height: 1.5; }
+  .card-body  { font-size: var(--fs-body,  4vmin); font-weight: 700; color: var(--gray-800); line-height: 1.25; }
+  .card-sub2  { font-size: var(--fs-sub2, 3.4vmin); font-weight: 700; color: var(--gray-800); line-height: 1.3; }
+  .card-sub1  { font-size: var(--fs-sub1, 2.5vmin); font-weight: 400; color: var(--gray-500); line-height: 1.5; }
 
   /* ══ TEXT BLOCK ══ */
   .text-block {
     background: #fff;
     border: 1.5px solid var(--gray-200);
     border-radius: 1.4vmin;
-    padding: 2vmin 5vw;
+    padding: var(--text-pad, 2vmin) 5vw;
     width: 100%;
-    font-size: 2.8vmin;
+    font-size: var(--fs-text, 2.8vmin);
     color: var(--gray-700); line-height: 1.7;
     text-align: justify;
     box-shadow: 0 1px 6px rgba(0,0,0,0.06);
@@ -184,7 +185,7 @@
 
   /* ══ CONSIGNE ══ */
   .consigne {
-    font-size: 3.2vmin;
+    font-size: var(--fs-consigne, 3.2vmin);
     font-weight: 600; color: var(--blue-700);
     text-align: center; width: 100%;
   }
@@ -194,27 +195,27 @@
     background: #fff;
     border: 1.5px solid var(--gray-200);
     border-radius: 1.4vmin;
-    padding: 2.5vmin 5vw;
+    padding: var(--eq-pad, 3vmin) 5vw;
     width: 100%;
     box-shadow: 0 1px 6px rgba(0,0,0,0.06);
     display: flex; align-items: center; justify-content: center;
   }
   .eq-row   { display: flex; align-items: flex-end; gap: 2vw; justify-content: center; }
   .eq-token { display: flex; flex-direction: column; align-items: center; gap: 0.6vmin; }
-  .eq-main  { font-size: 4vmin;   font-weight: 700; color: var(--gray-800); line-height: 1; }
-  .eq-sub   { font-size: 2.5vmin; font-weight: 400; color: var(--gray-500); line-height: 1; }
-  .eq-op    { font-size: 3.8vmin; font-weight: 400; color: var(--gray-400); padding-bottom: 2.8vmin; }
+  .eq-main  { font-size: var(--fs-body, 4vmin);    font-weight: 700; color: var(--gray-800); line-height: 1; }
+  .eq-sub   { font-size: var(--fs-sub1, 2.5vmin);  font-weight: 400; color: var(--gray-500); line-height: 1; }
+  .eq-op    { font-size: var(--fs-body, 4vmin);     font-weight: 400; color: var(--gray-400); padding-bottom: calc(var(--fs-sub1, 2.5vmin) + 0.6vmin); }
 
   /* ══ MCQ ══ */
   .mcq-options {
     display: flex; flex-wrap: wrap;
-    gap: 1.5vmin 2.5vw; justify-content: center; width: 100%;
+    gap: var(--mcq-gap, 1.5vmin) 2.5vw; justify-content: center; width: 100%;
   }
   .mcq-option {
     background: #fff; border: 2px solid var(--gray-200);
     border-radius: 1vmin;
-    padding: 1.4vmin 5vw;
-    font-family: inherit; font-size: 3.2vmin;
+    padding: var(--mcq-pad, 1.4vmin) 5vw;
+    font-family: inherit; font-size: var(--fs-mcq, 3.2vmin);
     font-weight: 500; color: var(--gray-700);
     cursor: pointer; transition: all 0.15s; user-select: none;
   }
@@ -230,27 +231,27 @@
   .confirm-btn {
     background: var(--blue-600); color: #fff;
     border: none; border-radius: 1vmin;
-    padding: 1.5vmin 8vw;
+    padding: var(--mcq-pad, 1.4vmin) 8vw;
     font-family: inherit; font-weight: 600;
-    font-size: 3.2vmin;
+    font-size: var(--fs-mcq, 3.2vmin);
     cursor: pointer; transition: background 0.2s;
   }
   .confirm-btn:hover:not(:disabled) { background: var(--blue-700); }
   .confirm-btn:disabled { opacity: 0.35; cursor: default; }
 
   .feedback-msg {
-    font-size: 3.2vmin;
+    font-size: var(--fs-mcq, 3.2vmin);
     font-weight: 600; text-align: center;
-    min-height: 4vmin; width: 100%;
+    min-height: calc(var(--fs-mcq, 3.2vmin) * 1.4); width: 100%;
   }
   .feedback-msg.ok  { color: #15803d; }
   .feedback-msg.err { color: #b91c1c; }
 
   /* ══ PAGE 12 ══ */
-  .q-block { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 1.2vmin; }
+  .q-block { width: 100%; display: flex; flex-direction: column; align-items: center; gap: var(--q-gap, 1vmin); }
   .q-row   { display: flex; align-items: center; justify-content: center; gap: 2vw; width: 100%; }
-  .q-label { font-size: 3.2vmin; color: var(--blue-500); font-weight: 700; flex-shrink: 0; }
-  .q-text  { font-size: 3.2vmin; color: var(--gray-700); font-weight: 500; text-align: center; }
+  .q-label { font-size: var(--fs-mcq, 3.2vmin); color: var(--blue-500); font-weight: 700; flex-shrink: 0; }
+  .q-text  { font-size: var(--fs-mcq, 3.2vmin); color: var(--gray-700); font-weight: 500; text-align: center; }
   .q-locked .mcq-option { pointer-events: none; opacity: 0.38; }
   .q-locked .q-label    { color: var(--gray-300); }
   .q-locked .q-text     { color: var(--gray-300); }
@@ -554,6 +555,183 @@
 })();
 
 /* ══════════════════════════════════════
+   PER-PAGE FONT SCALING
+   Each page has a config: how many content rows, how tall they are relative
+   to each other. The function measures the actual available height, divides
+   it among elements, and writes --fs-* custom properties onto the page div
+   so every element scales to fill the space without overflow.
+══════════════════════════════════════ */
+
+/*
+  configs[pageNum] = {
+    rows: number of distinct vertical "slots" (card / text-block / consigne / mcq / etc.)
+    ratio: relative weight of each slot (larger = taller)
+    type: 'body-only' | 'card-text' | 'card-text-long' | 'mcq' | 'eq' | 'mcq-multi' | 'card-3-text'
+  }
+  The scaling target is: fit everything in content-area height with 3vmin top+bottom padding each.
+*/
+var PAGE_CONFIGS = {
+  2:  { type: 'text-only' },           // 1 long text block
+  3:  { type: 'card-text' },           // 1 card + 1 text block
+  4:  { type: 'mcq-confirm' },         // consigne + 6 options + feedback + confirm
+  5:  { type: 'card-text-short' },     // 1 card (short) + 1 text block (medium)
+  6:  { type: 'eq' },                  // 2 eq-cards only
+  7:  { type: 'mcq-card' },            // consigne + 1 card + 3 options + feedback
+  8:  { type: 'card-text' },           // 1 card + 1 text block
+  9:  { type: 'card-text-short' },     // 1 card + 1 short text block
+  10: { type: 'card3-text-short' },    // 3 cards + 1 short text block
+  11: { type: 'card3-text-long' },     // 3 cards + 1 long text block
+  12: { type: 'mcq-3q' },             // consigne + 3 question blocks
+  13: { type: 'text-only' }
+};
+
+function applyPageScale(pg) {
+  var el = document.getElementById('page-' + pg);
+  if (!el) return;
+
+  var availH = el.offsetHeight;   // height of .page (= content-area height)
+  var availW = el.offsetWidth;
+  if (availH === 0) return;
+
+  var cfg = PAGE_CONFIGS[pg];
+  if (!cfg) return;
+
+  // Helper: convert a vh fraction to px
+  function px(frac) { return availH * frac; }
+  // Set a CSS custom property on the page element (px value)
+  function set(name, val) { el.style.setProperty(name, val + 'px'); }
+
+  var t = cfg.type;
+
+  /* ── shared padding budget ── */
+  // page already has 3vmin top+bottom padding baked in CSS; additional gap between items
+  // We budget the available height into slots.
+
+  if (t === 'text-only') {
+    // Single text block: use ~72% of height as font container, target 1.7 line-height
+    // text font = availH * 0.038 (generous, portrait has lots of room)
+    var fs = availH * 0.038;
+    set('--fs-text', fs);
+    set('--text-pad', fs * 0.55);
+
+  } else if (t === 'card-text' || t === 'card-text-short') {
+    // card (≈28% height) + text (≈55% height), gap ≈5%
+    var cardH   = availH * 0.26;
+    var textH   = availH * (t === 'card-text-short' ? 0.48 : 0.52);
+    // card: body ≈40% of cardH, sub1 ≈22%, sub2 ≈30%
+    var fsBody  = cardH * 0.38;
+    var fsSub2  = cardH * 0.29;
+    var fsSub1  = cardH * 0.21;
+    var cardPad = cardH * 0.14;
+    // text: font fills ~1 line ≈ textH / (numLines * 1.7)
+    // approximate numLines for long (~7 lines) vs short (~4 lines)
+    var lines   = t === 'card-text-short' ? 4 : 7;
+    var fsText  = textH / (lines * 1.7);
+    var textPad = fsText * 0.6;
+    set('--fs-body',  fsBody);
+    set('--fs-sub2',  fsSub2);
+    set('--fs-sub1',  fsSub1);
+    set('--card-pad', cardPad);
+    set('--card-gap', cardPad * 0.4);
+    set('--fs-text',  fsText);
+    set('--text-pad', textPad);
+
+  } else if (t === 'eq') {
+    // 2 eq-cards only, each ≈38% height
+    var eqH    = availH * 0.36;
+    var fsBody = eqH * 0.36;
+    var fsSub1 = eqH * 0.22;
+    var eqPad  = eqH * 0.14;
+    set('--fs-body',  fsBody);
+    set('--fs-sub1',  fsSub1);
+    set('--eq-pad',   eqPad);
+
+  } else if (t === 'mcq-confirm') {
+    // consigne + 6-option grid (2 rows of 3) + feedback + confirm
+    // consigne ≈12%, options ≈48%, feedback ≈8%, confirm ≈10%
+    var fsConsigne = availH * 0.06;
+    var fsMcq      = availH * 0.052;
+    var mcqPad     = availH * 0.028;
+    var mcqGap     = availH * 0.022;
+    set('--fs-consigne', fsConsigne);
+    set('--fs-mcq',      fsMcq);
+    set('--mcq-pad',     mcqPad);
+    set('--mcq-gap',     mcqGap);
+
+  } else if (t === 'mcq-card') {
+    // consigne + card + 3 options (1 row) + feedback
+    var fsConsigne = availH * 0.06;
+    var cardH      = availH * 0.22;
+    var fsBody     = cardH * 0.40;
+    var fsSub2     = cardH * 0.30;
+    var cardPad    = cardH * 0.14;
+    var fsMcq      = availH * 0.06;
+    var mcqPad     = availH * 0.032;
+    set('--fs-consigne', fsConsigne);
+    set('--fs-body',     fsBody);
+    set('--fs-sub2',     fsSub2);
+    set('--card-pad',    cardPad);
+    set('--card-gap',    cardPad * 0.4);
+    set('--fs-mcq',      fsMcq);
+    set('--mcq-pad',     mcqPad);
+
+  } else if (t === 'card3-text-short') {
+    // 3 cards + 1 short text
+    var cardH   = availH * 0.16;
+    var textH   = availH * 0.30;
+    var fsBody  = cardH * 0.40;
+    var cardPad = cardH * 0.14;
+    var fsText  = textH / (3 * 1.7);
+    var textPad = fsText * 0.6;
+    set('--fs-body',  fsBody);
+    set('--fs-sub2',  fsBody * 0.82);
+    set('--fs-sub1',  fsBody * 0.60);
+    set('--card-pad', cardPad);
+    set('--card-gap', cardPad * 0.35);
+    set('--fs-text',  fsText);
+    set('--text-pad', textPad);
+
+  } else if (t === 'card3-text-long') {
+    // 3 cards + 1 long text (2 paragraphs ~10 lines)
+    var cardH   = availH * 0.13;
+    var textH   = availH * 0.44;
+    var fsBody  = cardH * 0.40;
+    var cardPad = cardH * 0.12;
+    var fsText  = textH / (10 * 1.7);
+    var textPad = fsText * 0.55;
+    set('--fs-body',  fsBody);
+    set('--fs-sub2',  fsBody * 0.82);
+    set('--fs-sub1',  fsBody * 0.60);
+    set('--card-pad', cardPad);
+    set('--card-gap', cardPad * 0.3);
+    set('--fs-text',  fsText);
+    set('--text-pad', textPad);
+
+  } else if (t === 'mcq-3q') {
+    // consigne + 3 question blocks (label+text+3options+feedback each)
+    var fsConsigne = availH * 0.048;
+    var fsMcq      = availH * 0.042;
+    var mcqPad     = availH * 0.022;
+    var mcqGap     = availH * 0.016;
+    var qGap       = availH * 0.012;
+    set('--fs-consigne', fsConsigne);
+    set('--fs-mcq',      fsMcq);
+    set('--mcq-pad',     mcqPad);
+    set('--mcq-gap',     mcqGap);
+    set('--q-gap',       qGap);
+  }
+}
+
+function applyAllScales() {
+  for (var i = 2; i <= 12; i++) applyPageScale(i);
+}
+
+window.addEventListener('resize', applyAllScales);
+window.addEventListener('orientationchange', function() {
+  setTimeout(applyAllScales, 200);
+});
+
+/* ══════════════════════════════════════
    STATE
 ══════════════════════════════════════ */
 var TOTAL_PAGES = 13;
@@ -609,8 +787,8 @@ function startLesson() {
   document.getElementById('lesson-shell').style.display = '';
   currentPage = 2;
   nextUnlocked = true;
-  updateUI();
-  autoPlay(2);
+  // Scales need the elements to be visible first
+  setTimeout(function() { applyAllScales(); updateUI(); autoPlay(2); }, 30);
 }
 
 function showOutro() {
