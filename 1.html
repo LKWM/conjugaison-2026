@@ -112,41 +112,46 @@
     height: 100vh; background: var(--blue-50); z-index: 50;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    padding: 6vmin 10vw; gap: 2vmin;
+    padding: calc(20px * var(--scale, 1)) 10vw;
+    gap: calc(14px * var(--scale, 1));
   }
   #page-1.gone { display: none; }
 
   .intro-badge {
     background: var(--blue-100); color: var(--blue-700);
-    border-radius: 2vmin; padding: 0.8vmin 3vw;
-    font-size: 2.2vmin;
+    border-radius: calc(8px * var(--scale, 1));
+    padding: calc(6px * var(--scale, 1)) 3vw;
+    font-size: calc(13px * var(--scale, 1));
     font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase;
   }
-  .intro-divider { width: 8vw; height: 0.3vmin; background: var(--blue-300); border-radius: 1vmin; }
+  .intro-divider {
+    width: 8vw; height: 2px;
+    background: var(--blue-300); border-radius: 2px;
+  }
   .lesson-title {
-    font-size: 5.5vmin;
+    font-size: calc(42px * var(--scale, 1));
     font-weight: 700; color: var(--blue-800);
     text-align: center; line-height: 1.2;
   }
   .lesson-sub {
-    font-size: 2.8vmin;
+    font-size: calc(18px * var(--scale, 1));
     color: var(--gray-500); text-align: center;
   }
   .chapter-label {
-    font-size: 2.2vmin;
+    font-size: calc(13px * var(--scale, 1));
     font-weight: 600; color: var(--blue-500);
     letter-spacing: 0.06em; text-transform: uppercase; text-align: center;
   }
   .start-btn {
     background: var(--blue-600); color: #fff;
-    border: none; border-radius: 1.2vmin;
-    padding: 2vmin 8vw;
+    border: none; border-radius: calc(8px * var(--scale, 1));
+    padding: calc(14px * var(--scale, 1)) 8vw;
     font-family: inherit; font-weight: 700;
-    font-size: 3vmin;
+    font-size: calc(20px * var(--scale, 1));
     cursor: pointer; letter-spacing: 0.04em;
     transition: background 0.2s, transform 0.1s;
     box-shadow: 0 3px 14px rgba(37,99,235,0.3);
-    margin-top: 2vmin;
+    margin-top: calc(10px * var(--scale, 1));
   }
   .start-btn:hover { background: var(--blue-700); transform: translateY(-1px); }
 
@@ -597,6 +602,15 @@ var BASE = {
   mcqGap:      8,   /* gap between mcq options  */
   eqPadV:     16,   /* eq-card top+bottom       */
   qGap:        8,   /* gap between q-blocks     */
+  /* intro-specific base sizes */
+  introTitle:  42,
+  introSub:    18,
+  introBadge:  13,
+  introBtn:    20,
+  introBtnPad: 14,
+  introGap:    14,
+  introPadV:   20,
+  introMargin: 10,  /* margin-top on button     */
 };
 
 function applyPageScale(pg) {
@@ -605,83 +619,90 @@ function applyPageScale(pg) {
   var availH = pageEl.offsetHeight;
   if (availH === 0) return;
 
-  /* ── Step 1: measure natural content height at scale=1 ──
-     We temporarily set --scale to 1 on the page, then read
-     the scrollHeight of the inner content wrapper.           */
   pageEl.style.setProperty('--scale', '1');
 
-  /* Count direct children that contribute to height */
   var children = pageEl.children;
-  var n = children.length;
   var naturalH = 0;
 
-  /* top + bottom page padding */
-  naturalH += BASE.pagePadV * 2;
-  /* gaps between items */
-  if (n > 1) naturalH += BASE.itemGap * (n - 1);
+  /* Count only visible (non-audio) children for gap calculation */
+  var visibleCount = 0;
+  for (var i = 0; i < children.length; i++) {
+    if (children[i].tagName !== 'AUDIO') visibleCount++;
+  }
 
-  for (var i = 0; i < n; i++) {
-    var child = children[i];
-    /* Skip audio elements */
-    if (child.tagName === 'AUDIO') { continue; }
+  if (pg === 1) {
+    /* Intro: badge + chapter-label + divider + title + sub + btn */
+    naturalH += BASE.introPadV * 2;
+    naturalH += BASE.introBadge * 1.3;   /* badge */
+    naturalH += BASE.introBadge * 1.3;   /* chapter-label */
+    naturalH += 2;                        /* divider height */
+    naturalH += BASE.introTitle * 1.2;   /* lesson title */
+    naturalH += BASE.introSub * 1.3;     /* lesson sub */
+    naturalH += (BASE.introBtnPad * 2) + BASE.introBtn; /* button */
+    naturalH += BASE.introMargin;         /* button margin-top */
+    /* gaps: 6 visible items → 5 gaps */
+    naturalH += BASE.introGap * 5;
+  } else {
+    /* Regular pages */
+    naturalH += BASE.pagePadV * 2;
+    if (visibleCount > 1) naturalH += BASE.itemGap * (visibleCount - 1);
 
-    var cls = child.className || '';
+    for (var i = 0; i < children.length; i++) {
+      var child = children[i];
+      if (child.tagName === 'AUDIO') continue;
 
-    if (cls.indexOf('card') !== -1) {
-      /* card: pad*2 + body + optional sub1 + optional sub2 + gaps */
-      naturalH += BASE.cardPadV * 2;
-      var rows = child.querySelectorAll('.card-body, .card-sub1, .card-sub2');
-      for (var r = 0; r < rows.length; r++) {
-        if (rows[r].classList.contains('card-body'))  naturalH += BASE.cardBody  * 1.25;
-        if (rows[r].classList.contains('card-sub2'))  naturalH += BASE.cardSub2  * 1.3;
-        if (rows[r].classList.contains('card-sub1'))  naturalH += BASE.cardSub1  * 1.5;
-        if (r > 0) naturalH += BASE.cardGap;
+      var cls = child.className || '';
+
+      if (cls.indexOf('eq-card') !== -1) {
+        naturalH += BASE.eqPadV * 2 + BASE.eqMain + BASE.cardGap + BASE.eqSub;
+
+      } else if (cls.indexOf('card') !== -1) {
+        naturalH += BASE.cardPadV * 2;
+        var rows = child.querySelectorAll('.card-body, .card-sub1, .card-sub2');
+        for (var r = 0; r < rows.length; r++) {
+          if (rows[r].classList.contains('card-body')) naturalH += BASE.cardBody * 1.25;
+          if (rows[r].classList.contains('card-sub2')) naturalH += BASE.cardSub2 * 1.3;
+          if (rows[r].classList.contains('card-sub1')) naturalH += BASE.cardSub1 * 1.5;
+          if (r > 0) naturalH += BASE.cardGap;
+        }
+
+      } else if (cls.indexOf('text-block') !== -1) {
+        naturalH += BASE.textPadV * 2;
+        /* Count <br> tags to detect paragraph breaks; each <br><br> = extra blank line */
+        var brs = child.querySelectorAll('br').length;
+        var rawText = (child.textContent || '').replace(/\s+/g, ' ').trim();
+        var charsPerLine = Math.floor((pageEl.offsetWidth * 0.88) / (BASE.text * 0.52));
+        charsPerLine = Math.max(charsPerLine, 1);
+        var lines = Math.ceil(rawText.length / charsPerLine) + brs;
+        naturalH += lines * BASE.text * 1.7;
+
+      } else if (cls.indexOf('consigne') !== -1) {
+        naturalH += BASE.consigne * 1.3;
+
+      } else if (cls.indexOf('mcq-options') !== -1) {
+        var opts = child.children.length;
+        var optW = BASE.mcq * 6 + 40;
+        var optsPerRow = Math.max(1, Math.floor(pageEl.offsetWidth * 0.88 / optW));
+        var optRows = Math.ceil(opts / optsPerRow);
+        naturalH += optRows * (BASE.mcq + BASE.mcqGap * 2) + (optRows - 1) * BASE.mcqGap;
+
+      } else if (cls.indexOf('confirm-btn') !== -1) {
+        naturalH += BASE.mcq + BASE.mcqGap * 2;
+
+      } else if (cls.indexOf('feedback-msg') !== -1) {
+        naturalH += BASE.feedback * 1.4;
+
+      } else if (cls.indexOf('q-block') !== -1) {
+        naturalH += BASE.mcq * 1.3 + BASE.qGap;
+        naturalH += BASE.mcq + BASE.mcqGap * 2;
+        naturalH += BASE.feedback * 1.4;
+        naturalH += BASE.qGap * 2;
       }
-
-    } else if (cls.indexOf('eq-card') !== -1) {
-      /* eq-card: pad*2 + main line height + sub line height */
-      naturalH += BASE.eqPadV * 2 + BASE.eqMain * 1.0 + BASE.cardGap + BASE.eqSub * 1.0;
-
-    } else if (cls.indexOf('text-block') !== -1) {
-      /* text-block: count approximate lines from char count & container width */
-      naturalH += BASE.textPadV * 2;
-      var charCount = (child.textContent || '').length;
-      var charsPerLine = Math.floor((pageEl.offsetWidth * 0.88) / (BASE.text * 0.52));
-      var lines = Math.ceil(charCount / Math.max(charsPerLine, 1));
-      naturalH += lines * BASE.text * 1.7;
-
-    } else if (cls.indexOf('consigne') !== -1) {
-      naturalH += BASE.consigne * 1.3;
-
-    } else if (cls.indexOf('mcq-options') !== -1) {
-      /* mcq-options: estimate rows (wrap) */
-      var opts = child.children.length;
-      var optW = BASE.mcq * 6 + 40; /* approx option width */
-      var optsPerRow = Math.max(1, Math.floor(pageEl.offsetWidth * 0.88 / optW));
-      var optRows = Math.ceil(opts / optsPerRow);
-      naturalH += optRows * (BASE.mcq * 1.0 + BASE.mcqGap * 2) + (optRows - 1) * BASE.mcqGap;
-
-    } else if (cls.indexOf('confirm-btn') !== -1) {
-      naturalH += BASE.mcq * 1.0 + BASE.mcqGap * 2;
-
-    } else if (cls.indexOf('feedback-msg') !== -1) {
-      naturalH += BASE.feedback * 1.4;
-
-    } else if (cls.indexOf('q-block') !== -1) {
-      /* q-block: label+text row + mcq options row + feedback */
-      naturalH += BASE.mcq * 1.3 + BASE.qGap;           /* label+text */
-      naturalH += BASE.mcq * 1.0 + BASE.mcqGap * 2;      /* 3 options (1 row) */
-      naturalH += BASE.feedback * 1.4;                    /* feedback */
-      naturalH += BASE.qGap * 2;                          /* internal gaps */
     }
   }
 
-  /* ── Step 2: compute scale ── */
-  var scale = (availH * 0.96) / naturalH;   /* 0.96 = 4% breathing room */
-  /* Cap scale so text never gets absurdly huge on sparse pages,
-     but let it grow freely on dense pages */
-  scale = Math.min(scale, 3.2);
-
+  var scale = (availH * 0.94) / naturalH;
+  scale = Math.min(scale, 3.5);
   pageEl.style.setProperty('--scale', scale);
 }
 
