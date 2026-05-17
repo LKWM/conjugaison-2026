@@ -101,7 +101,7 @@
     width: 100%; height: 100%;
     flex-direction: column;
     align-items: center; justify-content: center;
-    padding: 3vmin 6vw; gap: 2vmin;
+    padding: calc(18px * var(--scale, 1)) 6vw; gap: calc(12px * var(--scale, 1));
   }
   .page.active { display: flex; animation: fadeIn 0.28s ease forwards; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(0.5vmin); } to { opacity:1; transform:translateY(0); } }
@@ -154,30 +154,31 @@
      card-body  = main text (largest, bold)
      card-sub2  = Subtitle 2 (second largest, bold, no colour)
      card-sub1  = Subtitle 1 (smallest, regular weight, colour allowed)
-     Font sizes set via --fs-* custom properties, written by JS per page.
+     All sizes derive from --scale set by JS per page.
   ══ */
   .card {
     background: #fff;
     border: 1.5px solid var(--gray-200);
     border-radius: 1.4vmin;
-    padding: var(--card-pad, 2vmin) 5vw;
+    padding: calc(12px * var(--scale, 1)) 5vw;
     width: 100%;
     box-shadow: 0 1px 6px rgba(0,0,0,0.06);
     display: flex; flex-direction: column;
-    align-items: center; text-align: center; gap: var(--card-gap, 0.8vmin);
+    align-items: center; text-align: center;
+    gap: calc(6px * var(--scale, 1));
   }
-  .card-body  { font-size: var(--fs-body,  4vmin); font-weight: 700; color: var(--gray-800); line-height: 1.25; }
-  .card-sub2  { font-size: var(--fs-sub2, 3.4vmin); font-weight: 700; color: var(--gray-800); line-height: 1.3; }
-  .card-sub1  { font-size: var(--fs-sub1, 2.5vmin); font-weight: 400; color: var(--gray-500); line-height: 1.5; }
+  .card-body  { font-size: calc(22px * var(--scale, 1)); font-weight: 700; color: var(--gray-800); line-height: 1.25; }
+  .card-sub2  { font-size: calc(18px * var(--scale, 1)); font-weight: 700; color: var(--gray-800); line-height: 1.3;  }
+  .card-sub1  { font-size: calc(13px * var(--scale, 1)); font-weight: 400; color: var(--gray-500); line-height: 1.5;  }
 
   /* ══ TEXT BLOCK ══ */
   .text-block {
     background: #fff;
     border: 1.5px solid var(--gray-200);
     border-radius: 1.4vmin;
-    padding: var(--text-pad, 2vmin) 5vw;
+    padding: calc(12px * var(--scale, 1)) 5vw;
     width: 100%;
-    font-size: var(--fs-text, 2.8vmin);
+    font-size: calc(15px * var(--scale, 1));
     color: var(--gray-700); line-height: 1.7;
     text-align: justify;
     box-shadow: 0 1px 6px rgba(0,0,0,0.06);
@@ -185,7 +186,7 @@
 
   /* ══ CONSIGNE ══ */
   .consigne {
-    font-size: var(--fs-consigne, 3.2vmin);
+    font-size: calc(17px * var(--scale, 1));
     font-weight: 600; color: var(--blue-700);
     text-align: center; width: 100%;
   }
@@ -195,27 +196,28 @@
     background: #fff;
     border: 1.5px solid var(--gray-200);
     border-radius: 1.4vmin;
-    padding: var(--eq-pad, 3vmin) 5vw;
+    padding: calc(16px * var(--scale, 1)) 5vw;
     width: 100%;
     box-shadow: 0 1px 6px rgba(0,0,0,0.06);
     display: flex; align-items: center; justify-content: center;
   }
   .eq-row   { display: flex; align-items: flex-end; gap: 2vw; justify-content: center; }
-  .eq-token { display: flex; flex-direction: column; align-items: center; gap: 0.6vmin; }
-  .eq-main  { font-size: var(--fs-body, 4vmin);    font-weight: 700; color: var(--gray-800); line-height: 1; }
-  .eq-sub   { font-size: var(--fs-sub1, 2.5vmin);  font-weight: 400; color: var(--gray-500); line-height: 1; }
-  .eq-op    { font-size: var(--fs-body, 4vmin);     font-weight: 400; color: var(--gray-400); padding-bottom: calc(var(--fs-sub1, 2.5vmin) + 0.6vmin); }
+  .eq-token { display: flex; flex-direction: column; align-items: center; gap: calc(6px * var(--scale, 1)); }
+  .eq-main  { font-size: calc(22px * var(--scale, 1)); font-weight: 700; color: var(--gray-800); line-height: 1; }
+  .eq-sub   { font-size: calc(13px * var(--scale, 1)); font-weight: 400; color: var(--gray-500); line-height: 1; }
+  .eq-op    { font-size: calc(22px * var(--scale, 1)); font-weight: 400; color: var(--gray-400);
+              padding-bottom: calc((13px + 6px) * var(--scale, 1)); }
 
   /* ══ MCQ ══ */
   .mcq-options {
     display: flex; flex-wrap: wrap;
-    gap: var(--mcq-gap, 1.5vmin) 2.5vw; justify-content: center; width: 100%;
+    gap: calc(8px * var(--scale, 1)) 2.5vw; justify-content: center; width: 100%;
   }
   .mcq-option {
     background: #fff; border: 2px solid var(--gray-200);
     border-radius: 1vmin;
-    padding: var(--mcq-pad, 1.4vmin) 5vw;
-    font-family: inherit; font-size: var(--fs-mcq, 3.2vmin);
+    padding: calc(8px * var(--scale, 1)) 5vw;
+    font-family: inherit; font-size: calc(17px * var(--scale, 1));
     font-weight: 500; color: var(--gray-700);
     cursor: pointer; transition: all 0.15s; user-select: none;
   }
@@ -231,27 +233,27 @@
   .confirm-btn {
     background: var(--blue-600); color: #fff;
     border: none; border-radius: 1vmin;
-    padding: var(--mcq-pad, 1.4vmin) 8vw;
+    padding: calc(8px * var(--scale, 1)) 8vw;
     font-family: inherit; font-weight: 600;
-    font-size: var(--fs-mcq, 3.2vmin);
+    font-size: calc(17px * var(--scale, 1));
     cursor: pointer; transition: background 0.2s;
   }
   .confirm-btn:hover:not(:disabled) { background: var(--blue-700); }
   .confirm-btn:disabled { opacity: 0.35; cursor: default; }
 
   .feedback-msg {
-    font-size: var(--fs-mcq, 3.2vmin);
+    font-size: calc(17px * var(--scale, 1));
     font-weight: 600; text-align: center;
-    min-height: calc(var(--fs-mcq, 3.2vmin) * 1.4); width: 100%;
+    min-height: calc(17px * 1.4 * var(--scale, 1)); width: 100%;
   }
   .feedback-msg.ok  { color: #15803d; }
   .feedback-msg.err { color: #b91c1c; }
 
   /* ══ PAGE 12 ══ */
-  .q-block { width: 100%; display: flex; flex-direction: column; align-items: center; gap: var(--q-gap, 1vmin); }
+  .q-block { width: 100%; display: flex; flex-direction: column; align-items: center; gap: calc(8px * var(--scale, 1)); }
   .q-row   { display: flex; align-items: center; justify-content: center; gap: 2vw; width: 100%; }
-  .q-label { font-size: var(--fs-mcq, 3.2vmin); color: var(--blue-500); font-weight: 700; flex-shrink: 0; }
-  .q-text  { font-size: var(--fs-mcq, 3.2vmin); color: var(--gray-700); font-weight: 500; text-align: center; }
+  .q-label { font-size: calc(17px * var(--scale, 1)); color: var(--blue-500); font-weight: 700; flex-shrink: 0; }
+  .q-text  { font-size: calc(17px * var(--scale, 1)); color: var(--gray-700); font-weight: 500; text-align: center; }
   .q-locked .mcq-option { pointer-events: none; opacity: 0.38; }
   .q-locked .q-label    { color: var(--gray-300); }
   .q-locked .q-text     { color: var(--gray-300); }
@@ -555,175 +557,142 @@
 })();
 
 /* ══════════════════════════════════════
-   PER-PAGE FONT SCALING
-   Each page has a config: how many content rows, how tall they are relative
-   to each other. The function measures the actual available height, divides
-   it among elements, and writes --fs-* custom properties onto the page div
-   so every element scales to fill the space without overflow.
+   UNIVERSAL AUTO-SCALING
+   Works on any page, any content mix, any screen size.
+   Algorithm:
+   1. Make all scalable elements font-size:1px temporarily to get their
+      natural "1px-unit" rendered height.
+   2. Sum those natural heights + fixed gaps.
+   3. Compute scale = availableHeight / naturalTotalHeight.
+   4. Apply that scale as a single --scale custom property; every
+      font-size / padding / gap in CSS is expressed as calc(VAR * var(--scale)).
+   This way adding a new page never requires any JS change.
 ══════════════════════════════════════ */
 
-/*
-  configs[pageNum] = {
-    rows: number of distinct vertical "slots" (card / text-block / consigne / mcq / etc.)
-    ratio: relative weight of each slot (larger = taller)
-    type: 'body-only' | 'card-text' | 'card-text-long' | 'mcq' | 'eq' | 'mcq-multi' | 'card-3-text'
-  }
-  The scaling target is: fit everything in content-area height with 3vmin top+bottom padding each.
-*/
-var PAGE_CONFIGS = {
-  2:  { type: 'text-only' },           // 1 long text block
-  3:  { type: 'card-text' },           // 1 card + 1 text block
-  4:  { type: 'mcq-confirm' },         // consigne + 6 options + feedback + confirm
-  5:  { type: 'card-text-short' },     // 1 card (short) + 1 text block (medium)
-  6:  { type: 'eq' },                  // 2 eq-cards only
-  7:  { type: 'mcq-card' },            // consigne + 1 card + 3 options + feedback
-  8:  { type: 'card-text' },           // 1 card + 1 text block
-  9:  { type: 'card-text-short' },     // 1 card + 1 short text block
-  10: { type: 'card3-text-short' },    // 3 cards + 1 short text block
-  11: { type: 'card3-text-long' },     // 3 cards + 1 long text block
-  12: { type: 'mcq-3q' },             // consigne + 3 question blocks
-  13: { type: 'text-only' }
+/* Selectors for every element whose size participates in vertical layout */
+var SCALE_SELECTORS = [
+  '.card-body', '.card-sub1', '.card-sub2',
+  '.text-block', '.consigne',
+  '.eq-main', '.eq-sub',
+  '.mcq-option', '.confirm-btn', '.feedback-msg',
+  '.q-label', '.q-text'
+];
+
+/* Base font sizes at scale=1 (px). All other sizes derive from these. */
+var BASE = {
+  cardBody:   22,   /* card main label          */
+  cardSub2:   18,   /* subtitle 2               */
+  cardSub1:   13,   /* subtitle 1               */
+  text:       15,   /* text-block body          */
+  consigne:   17,   /* quiz instruction         */
+  eqMain:     22,   /* equation token main      */
+  eqSub:      13,   /* equation token sub-label */
+  mcq:        17,   /* option button / confirm  */
+  feedback:   17,   /* feedback message         */
+  pagePadV:   18,   /* page top+bottom padding  */
+  cardPadV:   12,   /* card top+bottom padding  */
+  textPadV:   12,   /* text-block top+bottom    */
+  itemGap:    12,   /* gap between page items   */
+  cardGap:     6,   /* gap inside card          */
+  mcqGap:      8,   /* gap between mcq options  */
+  eqPadV:     16,   /* eq-card top+bottom       */
+  qGap:        8,   /* gap between q-blocks     */
 };
 
 function applyPageScale(pg) {
-  var el = document.getElementById('page-' + pg);
-  if (!el) return;
-
-  var availH = el.offsetHeight;   // height of .page (= content-area height)
-  var availW = el.offsetWidth;
+  var pageEl = document.getElementById('page-' + pg);
+  if (!pageEl) return;
+  var availH = pageEl.offsetHeight;
   if (availH === 0) return;
 
-  var cfg = PAGE_CONFIGS[pg];
-  if (!cfg) return;
+  /* ── Step 1: measure natural content height at scale=1 ──
+     We temporarily set --scale to 1 on the page, then read
+     the scrollHeight of the inner content wrapper.           */
+  pageEl.style.setProperty('--scale', '1');
 
-  // Helper: convert a vh fraction to px
-  function px(frac) { return availH * frac; }
-  // Set a CSS custom property on the page element (px value)
-  function set(name, val) { el.style.setProperty(name, val + 'px'); }
+  /* Count direct children that contribute to height */
+  var children = pageEl.children;
+  var n = children.length;
+  var naturalH = 0;
 
-  var t = cfg.type;
+  /* top + bottom page padding */
+  naturalH += BASE.pagePadV * 2;
+  /* gaps between items */
+  if (n > 1) naturalH += BASE.itemGap * (n - 1);
 
-  /* ── shared padding budget ── */
-  // page already has 3vmin top+bottom padding baked in CSS; additional gap between items
-  // We budget the available height into slots.
+  for (var i = 0; i < n; i++) {
+    var child = children[i];
+    /* Skip audio elements */
+    if (child.tagName === 'AUDIO') { continue; }
 
-  if (t === 'text-only') {
-    // Single text block: use ~72% of height as font container, target 1.7 line-height
-    // text font = availH * 0.038 (generous, portrait has lots of room)
-    var fs = availH * 0.038;
-    set('--fs-text', fs);
-    set('--text-pad', fs * 0.55);
+    var cls = child.className || '';
 
-  } else if (t === 'card-text' || t === 'card-text-short') {
-    // card (≈28% height) + text (≈55% height), gap ≈5%
-    var cardH   = availH * 0.26;
-    var textH   = availH * (t === 'card-text-short' ? 0.48 : 0.52);
-    // card: body ≈40% of cardH, sub1 ≈22%, sub2 ≈30%
-    var fsBody  = cardH * 0.38;
-    var fsSub2  = cardH * 0.29;
-    var fsSub1  = cardH * 0.21;
-    var cardPad = cardH * 0.14;
-    // text: font fills ~1 line ≈ textH / (numLines * 1.7)
-    // approximate numLines for long (~7 lines) vs short (~4 lines)
-    var lines   = t === 'card-text-short' ? 4 : 7;
-    var fsText  = textH / (lines * 1.7);
-    var textPad = fsText * 0.6;
-    set('--fs-body',  fsBody);
-    set('--fs-sub2',  fsSub2);
-    set('--fs-sub1',  fsSub1);
-    set('--card-pad', cardPad);
-    set('--card-gap', cardPad * 0.4);
-    set('--fs-text',  fsText);
-    set('--text-pad', textPad);
+    if (cls.indexOf('card') !== -1) {
+      /* card: pad*2 + body + optional sub1 + optional sub2 + gaps */
+      naturalH += BASE.cardPadV * 2;
+      var rows = child.querySelectorAll('.card-body, .card-sub1, .card-sub2');
+      for (var r = 0; r < rows.length; r++) {
+        if (rows[r].classList.contains('card-body'))  naturalH += BASE.cardBody  * 1.25;
+        if (rows[r].classList.contains('card-sub2'))  naturalH += BASE.cardSub2  * 1.3;
+        if (rows[r].classList.contains('card-sub1'))  naturalH += BASE.cardSub1  * 1.5;
+        if (r > 0) naturalH += BASE.cardGap;
+      }
 
-  } else if (t === 'eq') {
-    // 2 eq-cards only, each ≈38% height
-    var eqH    = availH * 0.36;
-    var fsBody = eqH * 0.36;
-    var fsSub1 = eqH * 0.22;
-    var eqPad  = eqH * 0.14;
-    set('--fs-body',  fsBody);
-    set('--fs-sub1',  fsSub1);
-    set('--eq-pad',   eqPad);
+    } else if (cls.indexOf('eq-card') !== -1) {
+      /* eq-card: pad*2 + main line height + sub line height */
+      naturalH += BASE.eqPadV * 2 + BASE.eqMain * 1.0 + BASE.cardGap + BASE.eqSub * 1.0;
 
-  } else if (t === 'mcq-confirm') {
-    // consigne + 6-option grid (2 rows of 3) + feedback + confirm
-    // consigne ≈12%, options ≈48%, feedback ≈8%, confirm ≈10%
-    var fsConsigne = availH * 0.06;
-    var fsMcq      = availH * 0.052;
-    var mcqPad     = availH * 0.028;
-    var mcqGap     = availH * 0.022;
-    set('--fs-consigne', fsConsigne);
-    set('--fs-mcq',      fsMcq);
-    set('--mcq-pad',     mcqPad);
-    set('--mcq-gap',     mcqGap);
+    } else if (cls.indexOf('text-block') !== -1) {
+      /* text-block: count approximate lines from char count & container width */
+      naturalH += BASE.textPadV * 2;
+      var charCount = (child.textContent || '').length;
+      var charsPerLine = Math.floor((pageEl.offsetWidth * 0.88) / (BASE.text * 0.52));
+      var lines = Math.ceil(charCount / Math.max(charsPerLine, 1));
+      naturalH += lines * BASE.text * 1.7;
 
-  } else if (t === 'mcq-card') {
-    // consigne + card + 3 options (1 row) + feedback
-    var fsConsigne = availH * 0.06;
-    var cardH      = availH * 0.22;
-    var fsBody     = cardH * 0.40;
-    var fsSub2     = cardH * 0.30;
-    var cardPad    = cardH * 0.14;
-    var fsMcq      = availH * 0.06;
-    var mcqPad     = availH * 0.032;
-    set('--fs-consigne', fsConsigne);
-    set('--fs-body',     fsBody);
-    set('--fs-sub2',     fsSub2);
-    set('--card-pad',    cardPad);
-    set('--card-gap',    cardPad * 0.4);
-    set('--fs-mcq',      fsMcq);
-    set('--mcq-pad',     mcqPad);
+    } else if (cls.indexOf('consigne') !== -1) {
+      naturalH += BASE.consigne * 1.3;
 
-  } else if (t === 'card3-text-short') {
-    // 3 cards + 1 short text
-    var cardH   = availH * 0.16;
-    var textH   = availH * 0.30;
-    var fsBody  = cardH * 0.40;
-    var cardPad = cardH * 0.14;
-    var fsText  = textH / (3 * 1.7);
-    var textPad = fsText * 0.6;
-    set('--fs-body',  fsBody);
-    set('--fs-sub2',  fsBody * 0.82);
-    set('--fs-sub1',  fsBody * 0.60);
-    set('--card-pad', cardPad);
-    set('--card-gap', cardPad * 0.35);
-    set('--fs-text',  fsText);
-    set('--text-pad', textPad);
+    } else if (cls.indexOf('mcq-options') !== -1) {
+      /* mcq-options: estimate rows (wrap) */
+      var opts = child.children.length;
+      var optW = BASE.mcq * 6 + 40; /* approx option width */
+      var optsPerRow = Math.max(1, Math.floor(pageEl.offsetWidth * 0.88 / optW));
+      var optRows = Math.ceil(opts / optsPerRow);
+      naturalH += optRows * (BASE.mcq * 1.0 + BASE.mcqGap * 2) + (optRows - 1) * BASE.mcqGap;
 
-  } else if (t === 'card3-text-long') {
-    // 3 cards + 1 long text (2 paragraphs ~10 lines)
-    var cardH   = availH * 0.13;
-    var textH   = availH * 0.44;
-    var fsBody  = cardH * 0.40;
-    var cardPad = cardH * 0.12;
-    var fsText  = textH / (10 * 1.7);
-    var textPad = fsText * 0.55;
-    set('--fs-body',  fsBody);
-    set('--fs-sub2',  fsBody * 0.82);
-    set('--fs-sub1',  fsBody * 0.60);
-    set('--card-pad', cardPad);
-    set('--card-gap', cardPad * 0.3);
-    set('--fs-text',  fsText);
-    set('--text-pad', textPad);
+    } else if (cls.indexOf('confirm-btn') !== -1) {
+      naturalH += BASE.mcq * 1.0 + BASE.mcqGap * 2;
 
-  } else if (t === 'mcq-3q') {
-    // consigne + 3 question blocks (label+text+3options+feedback each)
-    var fsConsigne = availH * 0.048;
-    var fsMcq      = availH * 0.042;
-    var mcqPad     = availH * 0.022;
-    var mcqGap     = availH * 0.016;
-    var qGap       = availH * 0.012;
-    set('--fs-consigne', fsConsigne);
-    set('--fs-mcq',      fsMcq);
-    set('--mcq-pad',     mcqPad);
-    set('--mcq-gap',     mcqGap);
-    set('--q-gap',       qGap);
+    } else if (cls.indexOf('feedback-msg') !== -1) {
+      naturalH += BASE.feedback * 1.4;
+
+    } else if (cls.indexOf('q-block') !== -1) {
+      /* q-block: label+text row + mcq options row + feedback */
+      naturalH += BASE.mcq * 1.3 + BASE.qGap;           /* label+text */
+      naturalH += BASE.mcq * 1.0 + BASE.mcqGap * 2;      /* 3 options (1 row) */
+      naturalH += BASE.feedback * 1.4;                    /* feedback */
+      naturalH += BASE.qGap * 2;                          /* internal gaps */
+    }
   }
+
+  /* ── Step 2: compute scale ── */
+  var scale = (availH * 0.96) / naturalH;   /* 0.96 = 4% breathing room */
+  /* Cap scale so text never gets absurdly huge on sparse pages,
+     but let it grow freely on dense pages */
+  scale = Math.min(scale, 3.2);
+
+  pageEl.style.setProperty('--scale', scale);
 }
 
 function applyAllScales() {
-  for (var i = 2; i <= 12; i++) applyPageScale(i);
+  /* Scale every page that's inside lesson-shell (2-12) and the outro */
+  var pages = document.querySelectorAll('#lesson-shell .page, #page-13-full');
+  pages.forEach(function(p) {
+    var id = p.id; /* e.g. "page-2" */
+    var num = parseInt(id.replace('page-', ''), 10);
+    if (!isNaN(num)) applyPageScale(num);
+  });
 }
 
 window.addEventListener('resize', applyAllScales);
