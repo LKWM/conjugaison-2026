@@ -2,303 +2,282 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Leçon 1 – Les concepts importants</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --blue-50:  #eff6ff;
-    --blue-100: #dbeafe;
-    --blue-200: #bfdbfe;
-    --blue-300: #93c5fd;
-    --blue-400: #60a5fa;
-    --blue-500: #3b82f6;
-    --blue-600: #2563eb;
-    --blue-700: #1d4ed8;
-    --blue-800: #1e40af;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-300: #d1d5db;
-    --gray-400: #9ca3af;
-    --gray-500: #6b7280;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
-    --gray-800: #1f2937;
-    --green-100: #dcfce7;
-    --green-500: #22c55e;
-    --red-100:  #fee2e2;
-    --red-500:  #ef4444;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--blue-50); color: var(--gray-800); }
+html, body {
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #eff6ff;
+  color: #1e293b;
+}
 
-  /* ══ BOTTOM BAR ══
-     Portrait : 12vh tall. Landscape : 10vh tall.
-     Buttons use flex:1 so they share space equally and never overflow.
-     All text in the bar is tied to vh so it shrinks with the bar in landscape.
-  ══ */
-  .bottom-bar {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    height: 12vh;
-    background: #fff;
-    border-top: 1.5px solid var(--gray-200);
-    display: flex; align-items: center;
-    padding: 0 3vw; gap: 2vw;
-    z-index: 100;
-  }
-  @media (orientation: landscape) { .bottom-bar { height: 10vh; } }
+/* ══════════════════════════════
+   APP SHELL
+══════════════════════════════ */
+#app {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+}
 
-  .progress-bar-wrap {
-    position: fixed; bottom: 12vh; left: 0; right: 0;
-    height: 0.5vh; background: var(--gray-200); z-index: 100;
-  }
-  @media (orientation: landscape) { .progress-bar-wrap { bottom: 10vh; } }
-  .progress-bar-fill { height: 100%; background: var(--blue-500); transition: width 0.4s ease; }
+/* Progress bar – fixed thin strip */
+#prog-wrap {
+  flex-shrink: 0;
+  height: 0.5vh; background: #e2e8f0;
+}
+#prog-bar {
+  height: 100%; background: #3b82f6;
+  transition: width 0.35s ease; width: 0%;
+}
 
-  .nav-btn {
-    border: none; cursor: pointer; border-radius: 1.5vmin;
-    font-family: inherit; font-weight: 600;
-    font-size: 4vmin;
-    padding: 1.5vmin 3vw;
-    transition: background 0.2s, opacity 0.2s;
-    white-space: nowrap;
-    flex: 1 1 0;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .nav-btn:disabled { opacity: 0.3; cursor: default; }
-  .btn-prev { background: var(--gray-100); color: var(--gray-600); border: 1.5px solid var(--gray-200); }
-  .btn-prev:not(:disabled):hover { background: var(--gray-200); }
-  .btn-next { background: var(--blue-600); color: #fff; }
-  .btn-next:not(:disabled):hover { background: var(--blue-700); }
+/* Pages container – takes all space between progress and bottom nav */
+#pages {
+  flex: 1;
+  min-height: 0;       /* critical: allow flex child to shrink */
+  position: relative;
+  overflow: hidden;
+}
 
-  .page-indicator {
-    flex: 0 0 auto;
-    text-align: center;
-    font-size: 4vmin;
-    color: var(--gray-500); font-weight: 600;
-    white-space: nowrap;
-    padding: 0 2vw;
-  }
+/* Bottom nav */
+#bottom-nav {
+  flex-shrink: 0;
+  height: 13vmin;
+  max-height: 80px;
+  min-height: 52px;
+  background: #fff;
+  border-top: 1.5px solid #e2e8f0;
+  display: none;           /* shown after startLesson() */
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6vw;
+}
+.nav-btn {
+  border: none; background: none; cursor: pointer;
+  font-family: inherit; font-weight: 700;
+  font-size: clamp(0.95rem, 3vmin, 1.3rem);
+  display: flex; align-items: center; gap: 0.3em;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+.nav-btn:disabled { opacity: 0.28; cursor: default; }
+#btn-prev { color: #64748b; }
+#btn-next { color: #2563eb; }
+#page-num  { font-size: clamp(0.9rem, 2.8vmin, 1.2rem); font-weight: 600; color: #94a3b8; }
 
-  /* ══ CONTENT AREA ══ */
-  .content-area {
-    position: fixed; top: 0; left: 0; right: 0;
-    height: calc(100vh - 12vh - 0.5vh);
-    overflow: hidden;
-  }
-  @media (orientation: landscape) { .content-area { height: calc(100vh - 10vh - 0.5vh); } }
+/* ══════════════════════════════
+   PAGE
+   Full height of #pages, flex column, content centred.
+   ALL font sizes in vh so they scale with available height.
+   Padding in % of height so it's always proportional.
+   Overflow hidden – content never scrolls or overflows.
+══════════════════════════════ */
+.page {
+  display: none;
+  position: absolute; inset: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3vh 6vw;
+  gap: 2.5vh;
+  overflow: hidden;
+  animation: fadeUp 0.28s ease forwards;
+}
+.page.active { display: flex; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  /* ══ PAGE ══
-     padding and gap in vmin → proportional on all screen sizes.
-  ══ */
-  .page {
-    display: none;
-    width: 100%; height: 100%;
-    flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: calc(18px * var(--scale, 1)) 6vw; gap: calc(12px * var(--scale, 1));
-  }
-  .page.active { display: flex; animation: fadeIn 0.28s ease forwards; }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(0.5vmin); } to { opacity:1; transform:translateY(0); } }
+/* ══════════════════════════════
+   COVER PAGE
+══════════════════════════════ */
+#page-0 { background: #eff6ff; }
+.cover-badge {
+  background: #dbeafe; color: #1d4ed8;
+  border-radius: 99px;
+  padding: 0.5vh 3vw;
+  font-size: 2.2vh;
+  font-weight: 600; letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.cover-title {
+  font-size: 5.5vh;
+  font-weight: 800; color: #1e3a8a;
+  text-align: center; line-height: 1.15;
+}
+.cover-start {
+  background: #2563eb; color: #fff;
+  border: none; border-radius: 99px; cursor: pointer;
+  font-family: inherit; font-weight: 700;
+  font-size: 3vh;
+  padding: 1.5vh 8vw;
+  box-shadow: 0 4px 18px rgba(37,99,235,0.3);
+  transition: background 0.18s, transform 0.1s;
+  margin-top: 1vh;
+  text-align: center;
+}
+.cover-start:hover { background: #1d4ed8; transform: translateY(-2px); }
 
-  /* ══ PAGE 1: INTRO ══ */
-  #page-1 {
-    position: fixed; top:0; left:0; right:0; bottom:0;
-    height: 100vh; background: var(--blue-50); z-index: 50;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: calc(20px * var(--scale, 1)) 10vw;
-    gap: calc(14px * var(--scale, 1));
-  }
-  #page-1.gone { display: none; }
+/* ══════════════════════════════
+   CARD WITH TEXT
+   card-body  = main text  (largest, bold)
+   card-sub1  = Subtitle 1 (small, normal weight, colour OK)
+   card-sub2  = Subtitle 2 (medium, bold, no colour)
+══════════════════════════════ */
+.card {
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 1.5vh;
+  padding: 2.2vh 6vw;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  gap: 0.8vh;
+  flex-shrink: 0;
+}
+.card-body { font-size: calc(3.6vh * var(--fit, 1)); font-weight: 800; color: #1e293b; line-height: 1.2; }
+.card-sub2 { font-size: calc(2.2vh * var(--fit, 1)); font-weight: 700; color: #1e293b; line-height: 1.3; }
+.card-sub1 { font-size: calc(1.8vh * var(--fit, 1)); font-weight: 500; color: #64748b; line-height: 1.45; }
 
-  .intro-badge {
-    background: var(--blue-100); color: var(--blue-700);
-    border-radius: calc(8px * var(--scale, 1));
-    padding: calc(6px * var(--scale, 1)) 3vw;
-    font-size: calc(13px * var(--scale, 1));
-    font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase;
-  }
-  .intro-divider {
-    width: 8vw; height: 2px;
-    background: var(--blue-300); border-radius: 2px;
-  }
-  .lesson-title {
-    font-size: calc(42px * var(--scale, 1));
-    font-weight: 700; color: var(--blue-800);
-    text-align: center; line-height: 1.2;
-  }
-  .lesson-sub {
-    font-size: calc(18px * var(--scale, 1));
-    color: var(--gray-500); text-align: center;
-  }
-  .chapter-label {
-    font-size: calc(13px * var(--scale, 1));
-    font-weight: 600; color: var(--blue-500);
-    letter-spacing: 0.06em; text-transform: uppercase; text-align: center;
-  }
-  .start-btn {
-    background: var(--blue-600); color: #fff;
-    border: none; border-radius: calc(8px * var(--scale, 1));
-    padding: calc(14px * var(--scale, 1)) 8vw;
-    font-family: inherit; font-weight: 700;
-    font-size: calc(20px * var(--scale, 1));
-    cursor: pointer; letter-spacing: 0.04em;
-    transition: background 0.2s, transform 0.1s;
-    box-shadow: 0 3px 14px rgba(37,99,235,0.3);
-    margin-top: calc(10px * var(--scale, 1));
-  }
-  .start-btn:hover { background: var(--blue-700); transform: translateY(-1px); }
+/* ══════════════════════════════
+   TEXT BLOCK
+   Natural size = content size. No flex-grow, no fixed height.
+   JS fitText() will reduce font-size if page overflows.
+══════════════════════════════ */
+.text-block {
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 1.5vh;
+  padding: 2vh 6vw;
+  width: 100%;
+  font-size: calc(2.4vh * var(--fit, 1));
+  line-height: 1.7;
+  color: #334155;
+  text-align: justify;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  flex-shrink: 0;
+}
 
-  /* ══ CARD WITH TEXT ══
-     card-body  = main text (largest, bold)
-     card-sub2  = Subtitle 2 (second largest, bold, no colour)
-     card-sub1  = Subtitle 1 (smallest, regular weight, colour allowed)
-     All sizes derive from --scale set by JS per page.
-  ══ */
-  .card {
-    background: #fff;
-    border: 1.5px solid var(--gray-200);
-    border-radius: 1.4vmin;
-    padding: calc(12px * var(--scale, 1)) 5vw;
-    width: 100%;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-    display: flex; flex-direction: column;
-    align-items: center; text-align: center;
-    gap: calc(6px * var(--scale, 1));
-  }
-  .card-body  { font-size: calc(22px * var(--scale, 1)); font-weight: 700; color: var(--gray-800); line-height: 1.25; }
-  .card-sub2  { font-size: calc(18px * var(--scale, 1)); font-weight: 700; color: var(--gray-800); line-height: 1.3;  }
-  .card-sub1  { font-size: calc(13px * var(--scale, 1)); font-weight: 400; color: var(--gray-500); line-height: 1.5;  }
+/* ══════════════════════════════
+   EQUATION CARD (page 5)
+══════════════════════════════ */
+.eq-card {
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 1.5vh;
+  padding: 3vh 6vw;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.eq-row   { display: flex; align-items: flex-end; gap: 3vw; justify-content: center; }
+.eq-token { display: flex; flex-direction: column; align-items: center; gap: 0.5vh; }
+.eq-main  { font-size: 3.6vh; font-weight: 800; color: #1e293b; line-height: 1; }
+.eq-sub   { font-size: 1.8vh; font-weight: 500; color: #94a3b8; line-height: 1; }
+.eq-op    { font-size: 3.2vh; color: #94a3b8; font-weight: 400;
+            padding-bottom: calc(1.8vh + 0.5vh); }
 
-  /* ══ TEXT BLOCK ══ */
-  .text-block {
-    background: #fff;
-    border: 1.5px solid var(--gray-200);
-    border-radius: 1.4vmin;
-    padding: calc(12px * var(--scale, 1)) 5vw;
-    width: 100%;
-    font-size: calc(15px * var(--scale, 1));
-    color: var(--gray-700); line-height: 1.7;
-    text-align: justify;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-  }
+/* ══════════════════════════════
+   MCQ
+══════════════════════════════ */
+.consigne {
+  font-size: calc(3vh * var(--fit, 1));
+  font-weight: 700; color: #1e293b;
+  text-align: center; line-height: 1.35;
+  width: 100%; flex-shrink: 0;
+}
+.mcq-opts {
+  display: flex; flex-wrap: wrap;
+  gap: calc(1.4vh * var(--fit, 1)) 2vw;
+  justify-content: center;
+  width: 100%; flex-shrink: 0;
+}
+.mcq-opt {
+  background: #fff; border: 2px solid #e2e8f0;
+  border-radius: 1vh;
+  padding: calc(1.2vh * var(--fit, 1)) 5vw;
+  font-family: inherit; font-size: calc(2.6vh * var(--fit, 1));
+  font-weight: 600; color: #475569;
+  cursor: pointer; transition: all 0.15s; user-select: none;
+  flex-shrink: 0;
+}
+.mcq-opt:hover:not(.disabled):not(.correct):not(.wrong):not(.revealed) {
+  border-color: #3b82f6; color: #1d4ed8; background: #eff6ff;
+}
+.mcq-opt.selected { border-color: #3b82f6; background: #eff6ff; color: #1d4ed8; }
+.mcq-opt.correct  { border-color: #22c55e; background: #dcfce7; color: #15803d; cursor: default; }
+.mcq-opt.wrong    { border-color: #ef4444; background: #fee2e2; color: #b91c1c; }
+.mcq-opt.revealed { border-color: #22c55e; background: #dcfce7; color: #15803d; cursor: default; }
+.mcq-opt.disabled { cursor: default; }
 
-  /* ══ CONSIGNE ══ */
-  .consigne {
-    font-size: calc(17px * var(--scale, 1));
-    font-weight: 600; color: var(--blue-700);
-    text-align: center; width: 100%;
-  }
+.feedback {
+  font-size: calc(2.4vh * var(--fit, 1));
+  font-weight: 700; text-align: center;
+  min-height: 1.4em; width: 100%; flex-shrink: 0;
+}
+.feedback.ok  { color: #15803d; }
+.feedback.err { color: #b91c1c; }
 
-  /* ══ PAGE 6: EQUATION CARD ══ */
-  .eq-card {
-    background: #fff;
-    border: 1.5px solid var(--gray-200);
-    border-radius: 1.4vmin;
-    padding: calc(16px * var(--scale, 1)) 5vw;
-    width: 100%;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .eq-row   { display: flex; align-items: flex-end; gap: 2vw; justify-content: center; }
-  .eq-token { display: flex; flex-direction: column; align-items: center; gap: calc(6px * var(--scale, 1)); }
-  .eq-main  { font-size: calc(22px * var(--scale, 1)); font-weight: 700; color: var(--gray-800); line-height: 1; }
-  .eq-sub   { font-size: calc(13px * var(--scale, 1)); font-weight: 400; color: var(--gray-500); line-height: 1; }
-  .eq-op    { font-size: calc(22px * var(--scale, 1)); font-weight: 400; color: var(--gray-400);
-              padding-bottom: calc((13px + 6px) * var(--scale, 1)); }
+.confirm {
+  background: #2563eb; color: #fff; border: none;
+  border-radius: 99px; cursor: pointer;
+  font-family: inherit; font-weight: 700;
+  font-size: calc(2.6vh * var(--fit, 1));
+  padding: calc(1.2vh * var(--fit, 1)) 8vw;
+  box-shadow: 0 2px 10px rgba(37,99,235,0.25);
+  transition: background 0.18s; flex-shrink: 0;
+}
+.confirm:hover:not(:disabled) { background: #1d4ed8; }
+.confirm:disabled { opacity: 0.35; cursor: default; }
 
-  /* ══ MCQ ══ */
-  .mcq-options {
-    display: flex; flex-wrap: wrap;
-    gap: calc(8px * var(--scale, 1)) 2.5vw; justify-content: center; width: 100%;
-  }
-  .mcq-option {
-    background: #fff; border: 2px solid var(--gray-200);
-    border-radius: 1vmin;
-    padding: calc(8px * var(--scale, 1)) 5vw;
-    font-family: inherit; font-size: calc(17px * var(--scale, 1));
-    font-weight: 500; color: var(--gray-700);
-    cursor: pointer; transition: all 0.15s; user-select: none;
-  }
-  .mcq-option:hover:not(.disabled):not(.correct):not(.wrong):not(.revealed) {
-    border-color: var(--blue-400); color: var(--blue-700); background: var(--blue-50);
-  }
-  .mcq-option.selected { border-color: var(--blue-500); background: var(--blue-50); color: var(--blue-700); }
-  .mcq-option.correct  { border-color: var(--green-500); background: var(--green-100); color: #15803d; cursor: default; }
-  .mcq-option.wrong    { border-color: var(--red-500); background: var(--red-100); color: #b91c1c; }
-  .mcq-option.revealed { border-color: var(--green-500); background: var(--green-100); color: #15803d; cursor: default; }
-  .mcq-option.disabled { cursor: default; }
+/* ══════════════════════════════
+   PAGE 12 – 3-question MCQ
+   Same sizes as all other MCQ pages. fitPage() reduces if needed.
+══════════════════════════════ */
+#page-12 { justify-content: space-evenly; gap: 0; padding: 2.5vh 6vw; }
+.q-block { width: 100%; display: flex; flex-direction: column; align-items: center; gap: calc(1.4vh * var(--fit,1)); flex-shrink: 0; }
+.q-row   { display: flex; align-items: center; justify-content: center; gap: 2vw; width: 100%; }
+.q-label { font-size: calc(2.6vh * var(--fit, 1)); color: #3b82f6; font-weight: 700; flex-shrink: 0; }
+.q-text  { font-size: calc(2.6vh * var(--fit, 1)); color: #475569; font-weight: 500; text-align: center; }
+.q-locked .mcq-opt  { pointer-events: none; opacity: 0.32; }
+.q-locked .q-label  { color: #cbd5e1; }
+.q-locked .q-text   { color: #cbd5e1; }
 
-  .confirm-btn {
-    background: var(--blue-600); color: #fff;
-    border: none; border-radius: 1vmin;
-    padding: calc(8px * var(--scale, 1)) 8vw;
-    font-family: inherit; font-weight: 600;
-    font-size: calc(17px * var(--scale, 1));
-    cursor: pointer; transition: background 0.2s;
-  }
-  .confirm-btn:hover:not(:disabled) { background: var(--blue-700); }
-  .confirm-btn:disabled { opacity: 0.35; cursor: default; }
-
-  .feedback-msg {
-    font-size: calc(17px * var(--scale, 1));
-    font-weight: 600; text-align: center;
-    min-height: calc(17px * 1.4 * var(--scale, 1)); width: 100%;
-  }
-  .feedback-msg.ok  { color: #15803d; }
-  .feedback-msg.err { color: #b91c1c; }
-
-  /* ══ PAGE 12 ══ */
-  .q-block { width: 100%; display: flex; flex-direction: column; align-items: center; gap: calc(8px * var(--scale, 1)); }
-  .q-row   { display: flex; align-items: center; justify-content: center; gap: 2vw; width: 100%; }
-  .q-label { font-size: calc(17px * var(--scale, 1)); color: var(--blue-500); font-weight: 700; flex-shrink: 0; }
-  .q-text  { font-size: calc(17px * var(--scale, 1)); color: var(--gray-700); font-weight: 500; text-align: center; }
-  .q-locked .mcq-option { pointer-events: none; opacity: 0.38; }
-  .q-locked .q-label    { color: var(--gray-300); }
-  .q-locked .q-text     { color: var(--gray-300); }
-
-  /* ══ PAGE 13: OUTRO (full screen, no bottom bar) ══ */
-  #page-13-full {
-    position: fixed; top:0; left:0; right:0; bottom:0;
-    height: 100vh; background: var(--blue-50); z-index: 50;
-    display: none;
-    flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 6vmin 10vw;
-  }
-  #page-13-full.active { display: flex; animation: fadeIn 0.28s ease forwards; }
+/* ══════════════════════════════
+   OUTRO PAGE
+══════════════════════════════ */
+#page-13 { background: #eff6ff; }
 </style>
 </head>
 <body>
+<div id="app">
 
-<!-- ══ PAGE 1: INTRO ══ -->
-<div id="page-1">
-  <span class="intro-badge">Chapitre 1</span>
-  <div class="chapter-label">La conjugaison formelle</div>
-  <div class="intro-divider"></div>
-  <div class="lesson-title">Les concepts importants</div>
-  <div class="lesson-sub">Leçon 1</div>
-  <button class="start-btn" onclick="startLesson()">Commencer</button>
-</div>
+  <div id="prog-wrap"><div id="prog-bar"></div></div>
 
-<!-- ══ LESSON SHELL (pages 2-12) ══ -->
-<div id="lesson-shell" style="display:none;">
+  <div id="pages">
 
-  <div class="content-area">
+    <!-- PAGE 0: INTRO -->
+    <div class="page active" id="page-1">
+      <span class="cover-badge">Chapitre 1 : La conjugaison formelle</span>
+      <div class="cover-title">Leçon 1 : Les concepts importants</div>
+      <button class="cover-start" onclick="startLesson()">Commencer</button>
+    </div>
 
-    <!-- PAGE 2 -->
+    <!-- PAGE 1 -->
     <div class="page" id="page-2">
       <p class="text-block">Bonjour ! Bienvenue dans le programme « La conjugaison au présent ». Ce programme vous apprend à utiliser et conjuguer les prédicats coréens dans une phrase selon le registre. Aujourd'hui, on va surtout voir quelques notions de grammaire et de vocabulaire. Comme certaines expressions ne sont pas souvent utilisées dans la grammaire française, il sera très utile de les connaître avant d'apprendre les règles en détail.</p>
       <audio id="audio2" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873919/1-1_nwuskm.wav"></audio>
     </div>
 
-    <!-- PAGE 3 -->
+    <!-- PAGE 2 -->
     <div class="page" id="page-3">
       <div class="card">
         <div class="card-body">Prédicat</div>
@@ -309,22 +288,22 @@
       <audio id="audio3" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873923/1-2_wwe4g8.mp3"></audio>
     </div>
 
-    <!-- PAGE 4 -->
+    <!-- PAGE 3: MCQ multi-select -->
     <div class="page" id="page-4">
-      <div class="consigne">Choisissez toutes les classes grammaticales qui correspondent à des prédicats.</div>
-      <div class="mcq-options" id="p4-options">
-        <button class="mcq-option" onclick="toggleP4(this,'Adjectif')">Adjectif</button>
-        <button class="mcq-option" onclick="toggleP4(this,'Déterminant')">Déterminant</button>
-        <button class="mcq-option" onclick="toggleP4(this,'Adverbe')">Adverbe</button>
-        <button class="mcq-option" onclick="toggleP4(this,'Nom')">Nom</button>
-        <button class="mcq-option" onclick="toggleP4(this,'Verbe')">Verbe</button>
-        <button class="mcq-option" onclick="toggleP4(this,'Pronom')">Pronom</button>
+      <p class="consigne">Choisissez toutes les classes grammaticales qui correspondent à des prédicats.</p>
+      <div class="mcq-opts" id="p3-opts">
+        <button class="mcq-opt" onclick="toggleP3(this,'Adjectif')">Adjectif</button>
+        <button class="mcq-opt" onclick="toggleP3(this,'Déterminant')">Déterminant</button>
+        <button class="mcq-opt" onclick="toggleP3(this,'Adverbe')">Adverbe</button>
+        <button class="mcq-opt" onclick="toggleP3(this,'Nom')">Nom</button>
+        <button class="mcq-opt" onclick="toggleP3(this,'Verbe')">Verbe</button>
+        <button class="mcq-opt" onclick="toggleP3(this,'Pronom')">Pronom</button>
       </div>
-      <div class="feedback-msg" id="p4-fb"></div>
-      <button class="confirm-btn" id="p4-confirm" onclick="checkP4()" disabled>Confirmer</button>
+      <button class="confirm" id="p3-btn" onclick="checkP3()" disabled>Confirmer</button>
+      <p class="feedback" id="p3-fb"></p>
     </div>
 
-    <!-- PAGE 5 -->
+    <!-- PAGE 4 -->
     <div class="page" id="page-5">
       <div class="card">
         <div class="card-body">Infinitif du prédicat = Radical + 다</div>
@@ -333,62 +312,44 @@
       <audio id="audio5" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873922/1-3_lnmgr1.mp3"></audio>
     </div>
 
-    <!-- PAGE 6 -->
+    <!-- PAGE 5: Equation -->
     <div class="page" id="page-6">
       <div class="eq-card">
         <div class="eq-row">
-          <div class="eq-token">
-            <span class="eq-main">Faire</span>
-            <span class="eq-sub">Infinitif</span>
-          </div>
+          <div class="eq-token"><span class="eq-main">Faire</span><span class="eq-sub">Infinitif</span></div>
           <span class="eq-op">=</span>
-          <div class="eq-token">
-            <span class="eq-main">Fai</span>
-            <span class="eq-sub">radical</span>
-          </div>
+          <div class="eq-token"><span class="eq-main">Fai</span><span class="eq-sub">radical</span></div>
           <span class="eq-op">+</span>
-          <div class="eq-token">
-            <span class="eq-main">re</span>
-            <span class="eq-sub">terminaison</span>
-          </div>
+          <div class="eq-token"><span class="eq-main">re</span><span class="eq-sub">terminaison</span></div>
         </div>
       </div>
       <div class="eq-card">
         <div class="eq-row">
-          <div class="eq-token">
-            <span class="eq-main">하다</span>
-            <span class="eq-sub">Infinitif</span>
-          </div>
+          <div class="eq-token"><span class="eq-main">하다</span><span class="eq-sub">Infinitif</span></div>
           <span class="eq-op">=</span>
-          <div class="eq-token">
-            <span class="eq-main">하</span>
-            <span class="eq-sub">radical</span>
-          </div>
+          <div class="eq-token"><span class="eq-main">하</span><span class="eq-sub">radical</span></div>
           <span class="eq-op">+</span>
-          <div class="eq-token">
-            <span class="eq-main">다</span>
-            <span class="eq-sub">terminaison</span>
-          </div>
+          <div class="eq-token"><span class="eq-main">다</span><span class="eq-sub">terminaison</span></div>
         </div>
       </div>
     </div>
 
-    <!-- PAGE 7 -->
+    <!-- PAGE 6: MCQ single -->
     <div class="page" id="page-7">
-      <div class="consigne">Choisissez le radical du mot suivant.</div>
+      <p class="consigne">Choisissez le radical du mot suivant.</p>
       <div class="card">
         <div class="card-body">이다</div>
         <div class="card-sub2">être</div>
       </div>
-      <div class="mcq-options" id="p7-options">
-        <button class="mcq-option" onclick="checkP7(this,'이다')">이다</button>
-        <button class="mcq-option" onclick="checkP7(this,'이')">이</button>
-        <button class="mcq-option" onclick="checkP7(this,'다')">다</button>
+      <div class="mcq-opts" id="p6-opts">
+        <button class="mcq-opt" onclick="checkP6(this,'이다')">이다</button>
+        <button class="mcq-opt" onclick="checkP6(this,'이')">이</button>
+        <button class="mcq-opt" onclick="checkP6(this,'다')">다</button>
       </div>
-      <div class="feedback-msg" id="p7-fb"></div>
+      <p class="feedback" id="p6-fb"></p>
     </div>
 
-    <!-- PAGE 8 -->
+    <!-- PAGE 7 -->
     <div class="page" id="page-8">
       <div class="card">
         <div class="card-body">Style formel VS style poli &amp; informel</div>
@@ -397,7 +358,7 @@
       <audio id="audio8" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873927/1-4_q89hn3.mp3"></audio>
     </div>
 
-    <!-- PAGE 9 -->
+    <!-- PAGE 8 -->
     <div class="page" id="page-9">
       <div class="card">
         <div class="card-body">Style formel : -다. / -까?</div>
@@ -406,563 +367,306 @@
       <audio id="audio9" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873928/1-5_usfwi3.mp3"></audio>
     </div>
 
-    <!-- PAGE 10 -->
+    <!-- PAGE 9 -->
     <div class="page" id="page-10">
       <div class="card">
         <div class="card-body">Style Informel : forme polie + forme informelle</div>
-      </div>
-      <div class="card">
-        <div class="card-body">Forme polie (honorifique non formelle) : -요.</div>
-      </div>
-      <div class="card">
-        <div class="card-body">Forme informelle (non honorifique non formelle) : -⌀.</div>
+        <div class="card-body">1️⃣ Forme polie (honorifique non formelle) : -요.</div>
+        <div class="card-body">2️⃣ Forme informelle (non honorifique non formelle) : -⌀.</div>
       </div>
       <p class="text-block">Ce qu'on appelle le « style formel » dans la grammaire coréenne peut être divisé en deux grandes catégories. Les utilisations sont différentes mais la manière de conjuguer est la même.</p>
       <audio id="audio10" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873932/1-6_ljyhee.mp3"></audio>
     </div>
 
-    <!-- PAGE 11 -->
+    <!-- PAGE 10 -->
     <div class="page" id="page-11">
       <div class="card">
         <div class="card-body">Style Informel : forme polie + forme informelle</div>
-      </div>
-      <div class="card">
-        <div class="card-body">Forme polie (honorifique non formelle) : -요.</div>
-      </div>
-      <div class="card">
-        <div class="card-body">Forme informelle (non honorifique non formelle) : -⌀.</div>
+        <div class="card-body">1️⃣ Forme polie (honorifique non formelle) : -요.</div>
+        <div class="card-body">2️⃣ Forme informelle (non honorifique non formelle) : -⌀.</div>
       </div>
       <p class="text-block">La première s'appelle la « forme polie ». Elle est principalement utilisée dans les conversations du quotidien, peu importe la situation ou la relation avec l'interlocuteur. Toutes les phrases se terminent toujours par « 요 ».<br><br>La deuxième s'appelle la « forme informelle ». Elle s'utilise seulement avec des personnes plus jeunes, des personnes socialement inférieures ou des personnes très proches. La conjugaison est la même que dans la forme polie, mais on retire simplement la terminaison « -요 ».</p>
       <audio id="audio11" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873933/1-7_eaag67.wav"></audio>
     </div>
 
-    <!-- PAGE 12 -->
+    <!-- PAGE 12: MCQ 3 questions -->
     <div class="page" id="page-12">
-      <div class="consigne">Choisissez le registre adapté à chaque situation.</div>
+      <p class="consigne" style="flex-shrink:0;">Choisissez le registre adapté à chaque situation.</p>
 
-      <div class="q-block" id="p12-q1-block">
+      <div class="q-block" id="p12-q1">
         <div class="q-row">
           <span class="q-label">Q1</span>
           <span class="q-text">Parler à un ami très proche.</span>
         </div>
-        <div class="mcq-options" id="p12-q1-opts">
-          <button class="mcq-option" onclick="checkP12(1,this,'Formel')">Formel</button>
-          <button class="mcq-option" onclick="checkP12(1,this,'Poli')">Poli</button>
-          <button class="mcq-option" onclick="checkP12(1,this,'Informel')">Informel</button>
+        <div class="mcq-opts" id="p12-q1-opts">
+          <button class="mcq-opt" onclick="checkP12(1,this,'Formel')">Formel</button>
+          <button class="mcq-opt" onclick="checkP12(1,this,'Poli')">Poli</button>
+          <button class="mcq-opt" onclick="checkP12(1,this,'Informel')">Informel</button>
         </div>
-        <div class="feedback-msg" id="p12-fb1"></div>
+        <p class="feedback" id="p12-fb1"></p>
       </div>
 
-      <div class="q-block q-locked" id="p12-q2-block">
+      <div class="q-block q-locked" id="p12-q2">
         <div class="q-row">
           <span class="q-label">Q2</span>
           <span class="q-text">Présenter un projet devant tous les employés de l'entreprise.</span>
         </div>
-        <div class="mcq-options" id="p12-q2-opts">
-          <button class="mcq-option" onclick="checkP12(2,this,'Formel')">Formel</button>
-          <button class="mcq-option" onclick="checkP12(2,this,'Poli')">Poli</button>
-          <button class="mcq-option" onclick="checkP12(2,this,'Informel')">Informel</button>
+        <div class="mcq-opts" id="p12-q2-opts">
+          <button class="mcq-opt" onclick="checkP12(2,this,'Formel')">Formel</button>
+          <button class="mcq-opt" onclick="checkP12(2,this,'Poli')">Poli</button>
+          <button class="mcq-opt" onclick="checkP12(2,this,'Informel')">Informel</button>
         </div>
-        <div class="feedback-msg" id="p12-fb2"></div>
+        <p class="feedback" id="p12-fb2"></p>
       </div>
 
-      <div class="q-block q-locked" id="p12-q3-block">
+      <div class="q-block q-locked" id="p12-q3">
         <div class="q-row">
           <span class="q-label">Q3</span>
           <span class="q-text">Se présenter à quelqu'un qu'on ne connaît pas bien pendant un repas.</span>
         </div>
-        <div class="mcq-options" id="p12-q3-opts">
-          <button class="mcq-option" onclick="checkP12(3,this,'Formel')">Formel</button>
-          <button class="mcq-option" onclick="checkP12(3,this,'Poli')">Poli</button>
-          <button class="mcq-option" onclick="checkP12(3,this,'Informel')">Informel</button>
+        <div class="mcq-opts" id="p12-q3-opts">
+          <button class="mcq-opt" onclick="checkP12(3,this,'Formel')">Formel</button>
+          <button class="mcq-opt" onclick="checkP12(3,this,'Poli')">Poli</button>
+          <button class="mcq-opt" onclick="checkP12(3,this,'Informel')">Informel</button>
         </div>
-        <div class="feedback-msg" id="p12-fb3"></div>
+        <p class="feedback" id="p12-fb3"></p>
       </div>
     </div>
 
-  </div><!-- /content-area -->
+    <!-- PAGE 13: OUTRO -->
+    <div class="page" id="page-13">
+      <p class="text-block">Bon travail ! Même si ce qu'on a vu aujourd'hui n'est pas du vocabulaire coréen, cela vous aidera beaucoup à comprendre comment fonctionne la conjugaison en coréen. Passez maintenant à la Leçon 2 pour apprendre la première règle de la conjugaison formelle ! À très bientôt !</p>
+      <audio id="audio13" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873932/1-8_wtspeh.wav"></audio>
+    </div>
 
-  <div class="progress-bar-wrap">
-    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div><!-- /pages -->
+
+  <!-- BOTTOM NAV -->
+  <div id="bottom-nav">
+    <button class="nav-btn" id="btn-prev" onclick="go(-1)">◀ Précédent</button>
+    <span id="page-num"></span>
+    <button class="nav-btn" id="btn-next" onclick="go(1)">Suivant ▶</button>
   </div>
 
-  <div class="bottom-bar">
-    <button class="nav-btn btn-prev" id="btn-prev" onclick="prevPage()">◀ Précédent</button>
-    <span class="page-indicator" id="page-indicator"></span>
-    <button class="nav-btn btn-next" id="btn-next" onclick="nextPage()">Suivant ▶</button>
-  </div>
+</div><!-- /app -->
 
-</div><!-- /lesson-shell -->
-
-<!-- ══ PAGE 13: OUTRO (full screen, no bottom bar) ══ -->
-<div id="page-13-full">
-  <p class="text-block">Bon travail ! Même si ce qu'on a vu aujourd'hui n'est pas du vocabulaire coréen, cela vous aidera beaucoup à comprendre comment fonctionne la conjugaison en coréen. Passez maintenant à la Leçon 2 pour apprendre la première règle de la conjugaison formelle ! À très bientôt !</p>
-  <audio id="audio13" src="https://res.cloudinary.com/de76i94ia/video/upload/v1778873932/1-8_wtspeh.wav"></audio>
-</div>
-
-<!-- SFX -->
-<audio id="sfx-page"     preload="auto"></audio>
-<audio id="sfx-correct"  preload="auto"></audio>
-<audio id="sfx-wrong"    preload="auto"></audio>
-<audio id="sfx-complete" preload="auto"></audio>
+<!-- SFX (inline WAV) -->
+<audio id="sfx-pg"  preload="auto"></audio>
+<audio id="sfx-ok"  preload="auto"></audio>
+<audio id="sfx-err" preload="auto"></audio>
+<audio id="sfx-end" preload="auto"></audio>
 
 <script>
-/* ══════════════════════════════════════
-   INLINE WAV SOUND EFFECTS
-══════════════════════════════════════ */
-(function () {
-  var sr = 44100;
-
-  function makeWav(renderFn, dur) {
-    var len = Math.round(sr * dur);
-    var buf = new ArrayBuffer(44 + len * 2);
-    var v = new DataView(buf);
-    function s4(o, s) { for (var i = 0; i < 4; i++) v.setUint8(o + i, s.charCodeAt(i)); }
-    s4(0,'RIFF'); v.setUint32(4, 36+len*2, true); s4(8,'WAVE');
-    s4(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
-    v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true);
-    s4(36,'data'); v.setUint32(40, len*2, true);
-    for (var n = 0; n < len; n++) {
-      var t = n / sr;
-      var s = Math.max(-1, Math.min(1, renderFn(t, dur)));
-      v.setInt16(44 + n*2, s * 32767, true);
-    }
-    var bytes = new Uint8Array(buf), b64 = '';
-    for (var i = 0; i < bytes.length; i++) b64 += String.fromCharCode(bytes[i]);
-    return 'data:audio/wav;base64,' + btoa(b64);
+/* ── SFX ── */
+(function(){
+  var sr=44100;
+  function w(fn,d){
+    var n=Math.round(sr*d),b=new ArrayBuffer(44+n*2),v=new DataView(b);
+    function s(o,t){for(var i=0;i<4;i++)v.setUint8(o+i,t.charCodeAt(i));}
+    s(0,'RIFF');v.setUint32(4,36+n*2,true);s(8,'WAVE');s(12,'fmt ');
+    v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+    v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
+    s(36,'data');v.setUint32(40,n*2,true);
+    for(var i=0;i<n;i++){var t=i/sr;v.setInt16(44+i*2,Math.max(-1,Math.min(1,fn(t,d)))*32767,true);}
+    var u=new Uint8Array(b),c='';for(var i=0;i<u.length;i++)c+=String.fromCharCode(u[i]);
+    return 'data:audio/wav;base64,'+btoa(c);
   }
-
-  function env(t, dur, att, rel) {
-    if (t < att) return t / att;
-    if (t > dur - rel) return Math.max(0, (dur - t) / rel);
-    return 1;
-  }
-
-  /* page turn – soft 700 Hz sine */
-  document.getElementById('sfx-page').src = makeWav(function(t, d) {
-    return Math.sin(2*Math.PI*700*t) * env(t,d,0.005,0.04) * 0.35;
-  }, 0.09);
-
-  /* correct – 880 → 1108 Hz two-note */
-  document.getElementById('sfx-correct').src = makeWav(function(t, d) {
-    var f = t < 0.14 ? 880 : 1108;
-    return Math.sin(2*Math.PI*f*t) * env(t,d,0.008,0.07) * 0.5;
-  }, 0.32);
-
-  /* wrong – low 180 Hz square buzz */
-  document.getElementById('sfx-wrong').src = makeWav(function(t, d) {
-    return (Math.sin(2*Math.PI*180*t) > 0 ? 1 : -1) * env(t,d,0.01,0.06) * 0.4;
-  }, 0.28);
-
-  /* complete – warm 3-note chord 523+659+784 Hz with longer sustain */
-  document.getElementById('sfx-complete').src = makeWav(function(t, d) {
-    var e = env(t, d, 0.02, 0.3);
-    return (Math.sin(2*Math.PI*523*t) + Math.sin(2*Math.PI*659*t) + Math.sin(2*Math.PI*784*t)) / 3 * e * 0.55;
-  }, 1.2);
+  function e(t,d,a,r){return t<a?t/a:t>d-r?Math.max(0,(d-t)/r):1;}
+  document.getElementById('sfx-pg').src  = w(function(t,d){return Math.sin(2*Math.PI*700*t)*e(t,d,.005,.04)*.35;},0.09);
+  document.getElementById('sfx-ok').src  = w(function(t,d){return Math.sin(2*Math.PI*(t<.14?880:1108)*t)*e(t,d,.008,.07)*.5;},0.32);
+  document.getElementById('sfx-err').src = w(function(t,d){return(Math.sin(2*Math.PI*180*t)>0?1:-1)*e(t,d,.01,.06)*.4;},0.28);
+  document.getElementById('sfx-end').src = w(function(t,d){var x=e(t,d,.02,.3);return(Math.sin(2*Math.PI*523*t)+Math.sin(2*Math.PI*659*t)+Math.sin(2*Math.PI*784*t))/3*x*.55;},1.2);
 })();
 
-/* ══════════════════════════════════════
-   UNIVERSAL AUTO-SCALING
-   Works on any page, any content mix, any screen size.
-   Algorithm:
-   1. Make all scalable elements font-size:1px temporarily to get their
-      natural "1px-unit" rendered height.
-   2. Sum those natural heights + fixed gaps.
-   3. Compute scale = availableHeight / naturalTotalHeight.
-   4. Apply that scale as a single --scale custom property; every
-      font-size / padding / gap in CSS is expressed as calc(VAR * var(--scale)).
-   This way adding a new page never requires any JS change.
-══════════════════════════════════════ */
+/* ── CONFIG ── */
+var TOTAL = 13; // pages 1–13
+var LOCKED = new Set([4,7,12]);
+var AUTOPLAY = {2:'audio2',3:'audio3',5:'audio5',8:'audio8',9:'audio9',10:'audio10',11:'audio11',13:'audio13'};
 
-/* Selectors for every element whose size participates in vertical layout */
-var SCALE_SELECTORS = [
-  '.card-body', '.card-sub1', '.card-sub2',
-  '.text-block', '.consigne',
-  '.eq-main', '.eq-sub',
-  '.mcq-option', '.confirm-btn', '.feedback-msg',
-  '.q-label', '.q-text'
-];
+/* ── STATE ── */
+var cur = 1;
+var unlocked = new Set();
+var curAudio = null;
 
-/* Base font sizes at scale=1 (px). All other sizes derive from these. */
-var BASE = {
-  cardBody:   22,   /* card main label          */
-  cardSub2:   18,   /* subtitle 2               */
-  cardSub1:   13,   /* subtitle 1               */
-  text:       15,   /* text-block body          */
-  consigne:   17,   /* quiz instruction         */
-  eqMain:     22,   /* equation token main      */
-  eqSub:      13,   /* equation token sub-label */
-  mcq:        17,   /* option button / confirm  */
-  feedback:   17,   /* feedback message         */
-  pagePadV:   18,   /* page top+bottom padding  */
-  cardPadV:   12,   /* card top+bottom padding  */
-  textPadV:   12,   /* text-block top+bottom    */
-  itemGap:    12,   /* gap between page items   */
-  cardGap:     6,   /* gap inside card          */
-  mcqGap:      8,   /* gap between mcq options  */
-  eqPadV:     16,   /* eq-card top+bottom       */
-  qGap:        8,   /* gap between q-blocks     */
-  /* intro-specific base sizes */
-  introTitle:  42,
-  introSub:    18,
-  introBadge:  13,
-  introBtn:    20,
-  introBtnPad: 14,
-  introGap:    14,
-  introPadV:   20,
-  introMargin: 10,  /* margin-top on button     */
-};
+var p3sel=new Set(), p3tries=0, p3done=false, p3timer=null;
+var P3A=new Set(['Adjectif','Verbe']);
+var p6done=false, p6timer=null;
+var P12A={1:'Informel',2:'Formel',3:'Poli'};
+var p12done=[false,false,false];
+var p12t={1:null,2:null,3:null};
 
-function applyPageScale(pg) {
-  var pageEl = document.getElementById('page-' + pg);
-  if (!pageEl) return;
-  var availH = pageEl.offsetHeight;
-  if (availH === 0) return;
-
-  pageEl.style.setProperty('--scale', '1');
-
-  var children = pageEl.children;
-  var naturalH = 0;
-
-  /* Count only visible (non-audio) children for gap calculation */
-  var visibleCount = 0;
-  for (var i = 0; i < children.length; i++) {
-    if (children[i].tagName !== 'AUDIO') visibleCount++;
-  }
-
-  if (pg === 1) {
-    /* Intro: badge + chapter-label + divider + title + sub + btn */
-    naturalH += BASE.introPadV * 2;
-    naturalH += BASE.introBadge * 1.3;   /* badge */
-    naturalH += BASE.introBadge * 1.3;   /* chapter-label */
-    naturalH += 2;                        /* divider height */
-    naturalH += BASE.introTitle * 1.2;   /* lesson title */
-    naturalH += BASE.introSub * 1.3;     /* lesson sub */
-    naturalH += (BASE.introBtnPad * 2) + BASE.introBtn; /* button */
-    naturalH += BASE.introMargin;         /* button margin-top */
-    /* gaps: 6 visible items → 5 gaps */
-    naturalH += BASE.introGap * 5;
-  } else {
-    /* Regular pages */
-    naturalH += BASE.pagePadV * 2;
-    if (visibleCount > 1) naturalH += BASE.itemGap * (visibleCount - 1);
-
-    for (var i = 0; i < children.length; i++) {
-      var child = children[i];
-      if (child.tagName === 'AUDIO') continue;
-
-      var cls = child.className || '';
-
-      if (cls.indexOf('eq-card') !== -1) {
-        naturalH += BASE.eqPadV * 2 + BASE.eqMain + BASE.cardGap + BASE.eqSub;
-
-      } else if (cls.indexOf('card') !== -1) {
-        naturalH += BASE.cardPadV * 2;
-        var rows = child.querySelectorAll('.card-body, .card-sub1, .card-sub2');
-        for (var r = 0; r < rows.length; r++) {
-          if (rows[r].classList.contains('card-body')) naturalH += BASE.cardBody * 1.25;
-          if (rows[r].classList.contains('card-sub2')) naturalH += BASE.cardSub2 * 1.3;
-          if (rows[r].classList.contains('card-sub1')) naturalH += BASE.cardSub1 * 1.5;
-          if (r > 0) naturalH += BASE.cardGap;
-        }
-
-      } else if (cls.indexOf('text-block') !== -1) {
-        naturalH += BASE.textPadV * 2;
-        /* Count <br> tags to detect paragraph breaks; each <br><br> = extra blank line */
-        var brs = child.querySelectorAll('br').length;
-        var rawText = (child.textContent || '').replace(/\s+/g, ' ').trim();
-        var charsPerLine = Math.floor((pageEl.offsetWidth * 0.88) / (BASE.text * 0.52));
-        charsPerLine = Math.max(charsPerLine, 1);
-        var lines = Math.ceil(rawText.length / charsPerLine) + brs;
-        naturalH += lines * BASE.text * 1.7;
-
-      } else if (cls.indexOf('consigne') !== -1) {
-        naturalH += BASE.consigne * 1.3;
-
-      } else if (cls.indexOf('mcq-options') !== -1) {
-        var opts = child.children.length;
-        var optW = BASE.mcq * 6 + 40;
-        var optsPerRow = Math.max(1, Math.floor(pageEl.offsetWidth * 0.88 / optW));
-        var optRows = Math.ceil(opts / optsPerRow);
-        naturalH += optRows * (BASE.mcq + BASE.mcqGap * 2) + (optRows - 1) * BASE.mcqGap;
-
-      } else if (cls.indexOf('confirm-btn') !== -1) {
-        naturalH += BASE.mcq + BASE.mcqGap * 2;
-
-      } else if (cls.indexOf('feedback-msg') !== -1) {
-        naturalH += BASE.feedback * 1.4;
-
-      } else if (cls.indexOf('q-block') !== -1) {
-        naturalH += BASE.mcq * 1.3 + BASE.qGap;
-        naturalH += BASE.mcq + BASE.mcqGap * 2;
-        naturalH += BASE.feedback * 1.4;
-        naturalH += BASE.qGap * 2;
-      }
-    }
-  }
-
-  var scale = (availH * 0.94) / naturalH;
-  scale = Math.min(scale, 3.5);
-  pageEl.style.setProperty('--scale', scale);
+/* ── AUDIO ── */
+function sfx(id){var a=document.getElementById(id);if(a){a.currentTime=0;a.play().catch(function(){});}}
+function stopAudio(){if(curAudio){curAudio.pause();curAudio.currentTime=0;curAudio=null;}}
+function playAudio(id){
+  stopAudio();
+  var a=document.getElementById(id);
+  if(!a) return;
+  curAudio=a;
+  setTimeout(function(){a.play().catch(function(){});},500);
 }
 
-function applyAllScales() {
-  /* Scale every page that's inside lesson-shell (2-12) and the outro */
-  var pages = document.querySelectorAll('#lesson-shell .page, #page-13-full');
-  pages.forEach(function(p) {
-    var id = p.id; /* e.g. "page-2" */
-    var num = parseInt(id.replace('page-', ''), 10);
-    if (!isNaN(num)) applyPageScale(num);
-  });
+/* ── NAV ── */
+function startLesson(){
+  document.getElementById('bottom-nav').style.display='flex';
+  go(1, true); // go to page 2 (first lesson content page)
 }
 
-window.addEventListener('resize', applyAllScales);
-window.addEventListener('orientationchange', function() {
-  setTimeout(applyAllScales, 200);
-});
-
-/* ══════════════════════════════════════
-   STATE
-══════════════════════════════════════ */
-var TOTAL_PAGES = 13;
-var currentPage = 1;
-var nextUnlocked = true;
-
-var p4Selected = new Set();
-var p4Tries = 0;
-var P4_MAX = 3;
-var P4_ANSWERS = new Set(['Adjectif','Verbe']);
-var p4Resolved = false;
-
-var p7Done = false;
-
-var P12_ANSWERS = {1:'Informel', 2:'Formel', 3:'Poli'};
-var p12Done = [false, false, false];
-
-/* ══════════════════════════════════════
-   AUDIO
-══════════════════════════════════════ */
-var CONTENT_AUDIOS = ['audio2','audio3','audio5','audio8','audio9','audio10','audio11','audio13'];
-var AUTO_PLAY_MAP  = {2:'audio2',3:'audio3',5:'audio5',8:'audio8',9:'audio9',10:'audio10',11:'audio11',13:'audio13'};
-
-function sfx(id) {
-  var el = document.getElementById(id);
-  if (!el) return;
-  el.currentTime = 0;
-  el.play().catch(function(){});
-}
-
-function stopAllContent() {
-  CONTENT_AUDIOS.forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) { el.pause(); el.currentTime = 0; }
-  });
-}
-
-function autoPlay(pg) {
-  if (AUTO_PLAY_MAP[pg]) {
-    var id = AUTO_PLAY_MAP[pg];
-    setTimeout(function() {
-      var el = document.getElementById(id);
-      if (el) el.play().catch(function(){});
-    }, 500);
+function go(dir, force){
+  var next = force ? 2 : cur + dir;
+  if(next < 1 || next > TOTAL) return;
+  stopAudio();
+  if(!force) sfx('sfx-pg');
+  document.getElementById('page-'+cur).classList.remove('active');
+  cur = next;
+  document.getElementById('page-'+cur).classList.add('active');
+  render();
+  if(AUTOPLAY[cur]) playAudio(AUTOPLAY[cur]);
+  setTimeout(function(){ fitPage(document.getElementById('page-'+cur)); }, 30);
+  if(cur === TOTAL){
+    document.getElementById('bottom-nav').style.display='none';
+    sfx('sfx-end');
+    window.parent.postMessage({type:'lesson_complete'},'*');
   }
 }
 
-/* ══════════════════════════════════════
-   NAVIGATION
-══════════════════════════════════════ */
-function startLesson() {
-  document.getElementById('page-1').classList.add('gone');
-  document.getElementById('lesson-shell').style.display = '';
-  currentPage = 2;
-  nextUnlocked = true;
-  // Scales need the elements to be visible first
-  setTimeout(function() { applyAllScales(); updateUI(); autoPlay(2); }, 30);
+function render(){
+  document.getElementById('page-num').textContent = cur + ' / ' + TOTAL;
+  var pct = ((cur - 1) / (TOTAL - 1)) * 100;
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('btn-prev').disabled = (cur <= 2);
+  var nb = document.getElementById('btn-next');
+  if(cur === TOTAL){ nb.disabled = true; }
+  else if(LOCKED.has(cur) && !unlocked.has(cur)){ nb.disabled = true; }
+  else { nb.disabled = false; }
 }
 
-function showOutro() {
-  /* hide lesson shell entirely */
-  document.getElementById('lesson-shell').style.display = 'none';
-  /* show full-screen outro */
-  var outro = document.getElementById('page-13-full');
-  outro.classList.add('active');
-  sfx('sfx-complete');
-  autoPlay(13);
-  triggerLessonComplete();
+function unlock(pg){
+  unlocked.add(pg);
+  if(cur === pg) document.getElementById('btn-next').disabled = false;
 }
 
-function updateUI() {
-  for (var i = 2; i <= 12; i++) {
-    var el = document.getElementById('page-' + i);
-    if (el) el.classList.remove('active');
-  }
-  var cur = document.getElementById('page-' + currentPage);
-  if (cur) cur.classList.add('active');
-
-  /* progress: page 2 = 0%, page 12 = 100% (13 handled separately) */
-  var pct = ((currentPage - 2) / (TOTAL_PAGES - 2)) * 100;
-  document.getElementById('progress-fill').style.width = pct + '%';
-
-  document.getElementById('page-indicator').textContent = currentPage + ' / ' + TOTAL_PAGES;
-
-  document.getElementById('btn-prev').disabled = (currentPage <= 2);
-
-  var nextBtn = document.getElementById('btn-next');
-  nextBtn.disabled = !nextUnlocked;
+/* ── PAGE 3 ── */
+function toggleP3(btn,val){
+  if(btn.classList.contains('disabled')) return;
+  btn.classList.toggle('selected');
+  if(btn.classList.contains('selected')) p3sel.add(val); else p3sel.delete(val);
+  document.getElementById('p3-btn').disabled = (p3sel.size===0);
 }
-
-function goToPage(pg) {
-  stopAllContent();
-  sfx('sfx-page');
-
-  if (pg === TOTAL_PAGES) {
-    showOutro();
-    return;
-  }
-
-  currentPage = pg;
-
-  if (pg === 4) nextUnlocked = p4Resolved;
-  else if (pg === 7) nextUnlocked = p7Done;
-  else if (pg === 12) nextUnlocked = (p12Done[0] && p12Done[1] && p12Done[2]);
-  else nextUnlocked = true;
-
-  updateUI();
-  autoPlay(pg);
-}
-
-function nextPage() { if (nextUnlocked) goToPage(currentPage + 1); }
-function prevPage() { if (currentPage > 2) goToPage(currentPage - 1); }
-
-/* ══════════════════════════════════════
-   PAGE 4
-══════════════════════════════════════ */
-var p4WrongTimer = null;
-function toggleP4(btn, val) {
-  if (btn.classList.contains('disabled')) return;
-  if (btn.classList.contains('selected')) { btn.classList.remove('selected'); p4Selected.delete(val); }
-  else { btn.classList.add('selected'); p4Selected.add(val); }
-  document.getElementById('p4-confirm').disabled = (p4Selected.size === 0);
-}
-
-function checkP4() {
-  p4Tries++;
-  var correct = setsEqual(p4Selected, P4_ANSWERS);
-  var fb = document.getElementById('p4-fb');
-  var opts = document.querySelectorAll('#p4-options .mcq-option');
-
-  if (correct) {
-    if (p4WrongTimer) { clearTimeout(p4WrongTimer); p4WrongTimer = null; }
-    sfx('sfx-correct');
-    fb.textContent = 'Correcte :)'; fb.className = 'feedback-msg ok';
-    opts.forEach(function(o) {
+function checkP3(){
+  if(p3done) return;
+  p3tries++;
+  var ok = p3sel.size===P3A.size && [...p3sel].every(function(v){return P3A.has(v);});
+  var fb = document.getElementById('p3-fb');
+  var opts = document.querySelectorAll('#p3-opts .mcq-opt');
+  if(ok){
+    if(p3timer){clearTimeout(p3timer);p3timer=null;}
+    sfx('sfx-ok');
+    fb.textContent='Correcte :)'; fb.className='feedback ok';
+    opts.forEach(function(o){
       o.classList.add('disabled');
-      if (P4_ANSWERS.has(o.textContent.trim())) o.classList.add('correct');
+      if(P3A.has(o.textContent.trim())) o.classList.add('correct');
       else o.classList.remove('selected');
     });
-    document.getElementById('p4-confirm').disabled = true;
-    p4Resolved = true; nextUnlocked = true; updateUI();
+    document.getElementById('p3-btn').disabled=true;
+    p3done=true; unlock(4);
   } else {
-    sfx('sfx-wrong');
-    if (p4Tries >= P4_MAX) {
-      if (p4WrongTimer) { clearTimeout(p4WrongTimer); p4WrongTimer = null; }
-      opts.forEach(function(o) {
+    sfx('sfx-err');
+    if(p3tries>=3){
+      if(p3timer){clearTimeout(p3timer);p3timer=null;}
+      opts.forEach(function(o){
         o.classList.add('disabled');
-        if (P4_ANSWERS.has(o.textContent.trim())) { o.classList.remove('selected'); o.classList.add('revealed'); }
+        if(P3A.has(o.textContent.trim())){o.classList.remove('selected');o.classList.add('revealed');}
         else o.classList.remove('selected');
       });
-      document.getElementById('p4-confirm').disabled = true;
-      fb.textContent = 'Voici les bonnes réponses'; fb.className = 'feedback-msg ok';
-      p4Resolved = true; nextUnlocked = true; updateUI();
+      document.getElementById('p3-btn').disabled=true;
+      fb.textContent='Voici les bonnes réponses'; fb.className='feedback ok';
+      p3done=true; unlock(4);
     } else {
-      fb.textContent = 'Veuillez réessayer :('; fb.className = 'feedback-msg err';
-      opts.forEach(function(o) { o.classList.remove('selected'); });
-      p4Selected.clear();
-      document.getElementById('p4-confirm').disabled = true;
-      p4WrongTimer = setTimeout(function() {
-        fb.textContent = ''; fb.className = 'feedback-msg';
-        p4WrongTimer = null;
-      }, 2000);
+      fb.textContent='Veuillez réessayer :('; fb.className='feedback err';
+      opts.forEach(function(o){o.classList.remove('selected');}); p3sel.clear();
+      document.getElementById('p3-btn').disabled=true;
+      p3timer=setTimeout(function(){fb.textContent='';fb.className='feedback';p3timer=null;},2000);
     }
   }
 }
 
-/* ══════════════════════════════════════
-   PAGE 7
-══════════════════════════════════════ */
-var p7WrongTimer = null;
-function checkP7(btn, val) {
-  if (p7Done) return;
-  var opts = document.querySelectorAll('#p7-options .mcq-option');
-  var fb = document.getElementById('p7-fb');
-  opts.forEach(function(o) { o.classList.remove('selected','correct','wrong'); });
-
-  if (val === '이') {
-    if (p7WrongTimer) { clearTimeout(p7WrongTimer); p7WrongTimer = null; }
-    sfx('sfx-correct');
-    btn.classList.add('correct');
-    fb.textContent = 'Correcte :)'; fb.className = 'feedback-msg ok';
-    opts.forEach(function(o) { o.classList.add('disabled'); });
-    p7Done = true; nextUnlocked = true; updateUI();
+/* ── PAGE 6 ── */
+function checkP6(btn,val){
+  if(p6done) return;
+  var opts=document.querySelectorAll('#p6-opts .mcq-opt');
+  var fb=document.getElementById('p6-fb');
+  opts.forEach(function(o){o.classList.remove('selected','correct','wrong');});
+  if(val==='이'){
+    if(p6timer){clearTimeout(p6timer);p6timer=null;}
+    sfx('sfx-ok'); btn.classList.add('correct');
+    fb.textContent='Correcte :)'; fb.className='feedback ok';
+    opts.forEach(function(o){o.classList.add('disabled');});
+    p6done=true; unlock(7);
   } else {
-    sfx('sfx-wrong');
-    btn.classList.add('wrong');
-    fb.textContent = 'Veuillez réessayer :('; fb.className = 'feedback-msg err';
-    p7WrongTimer = setTimeout(function() {
-      btn.classList.remove('wrong');
-      fb.textContent = ''; fb.className = 'feedback-msg';
-      p7WrongTimer = null;
-    }, 2000);
+    sfx('sfx-err'); btn.classList.add('wrong');
+    fb.textContent='Veuillez réessayer :('; fb.className='feedback err';
+    p6timer=setTimeout(function(){btn.classList.remove('wrong');fb.textContent='';fb.className='feedback';p6timer=null;},2000);
   }
 }
 
-/* ══════════════════════════════════════
-   PAGE 12
-══════════════════════════════════════ */
-var p12WrongTimers = {1: null, 2: null, 3: null};
-function checkP12(q, btn, val) {
-  if (p12Done[q-1]) return;
-  var opts = document.querySelectorAll('#p12-q'+q+'-opts .mcq-option');
-  var fb = document.getElementById('p12-fb'+q);
-  opts.forEach(function(o) { o.classList.remove('selected','correct','wrong'); });
-
-  if (val === P12_ANSWERS[q]) {
-    if (p12WrongTimers[q]) { clearTimeout(p12WrongTimers[q]); p12WrongTimers[q] = null; }
-    sfx('sfx-correct');
-    btn.classList.add('correct');
-    fb.textContent = 'Correcte :)'; fb.className = 'feedback-msg ok';
-    opts.forEach(function(o) { o.classList.add('disabled'); });
-    p12Done[q-1] = true;
-    if (q < 3) document.getElementById('p12-q'+(q+1)+'-block').classList.remove('q-locked');
-    if (p12Done[0] && p12Done[1] && p12Done[2]) { nextUnlocked = true; updateUI(); }
+/* ── PAGE 11 ── */
+function checkP12(q,btn,val){
+  if(p12done[q-1]) return;
+  var opts=document.querySelectorAll('#p12-q'+q+'-opts .mcq-opt');
+  var fb=document.getElementById('p12-fb'+q);
+  opts.forEach(function(o){o.classList.remove('selected','correct','wrong');});
+  if(val===P12A[q]){
+    if(p12t[q]){clearTimeout(p12t[q]);p12t[q]=null;}
+    sfx('sfx-ok'); btn.classList.add('correct');
+    fb.textContent='Correcte :)'; fb.className='feedback ok';
+    opts.forEach(function(o){o.classList.add('disabled');});
+    p12done[q-1]=true;
+    if(q<3) document.getElementById('p12-q'+(q+1)).classList.remove('q-locked');
+    if(p12done[0]&&p12done[1]&&p12done[2]) unlock(12);
   } else {
-    sfx('sfx-wrong');
-    btn.classList.add('wrong');
-    fb.textContent = 'Veuillez réessayer :('; fb.className = 'feedback-msg err';
-    p12WrongTimers[q] = setTimeout(function() {
-      btn.classList.remove('wrong');
-      fb.textContent = ''; fb.className = 'feedback-msg';
-      p12WrongTimers[q] = null;
-    }, 2000);
+    sfx('sfx-err'); btn.classList.add('wrong');
+    fb.textContent='Veuillez réessayer :('; fb.className='feedback err';
+    p12t[q]=setTimeout(function(){btn.classList.remove('wrong');fb.textContent='';fb.className='feedback';p12t[q]=null;},2000);
   }
 }
 
-/* ══════════════════════════════════════
-   UTILS
-══════════════════════════════════════ */
-function setsEqual(a, b) {
-  if (a.size !== b.size) return false;
-  for (var x of a) if (!b.has(x)) return false;
-  return true;
+/* ── FIT TEXT ──
+   When a page's content is taller than the page itself,
+   reduce all scalable font-sizes proportionally until it fits.
+   Uses a CSS custom property --fit injected per page.
+   Default --fit = 1. All font-sizes are expressed as calc(BASE * var(--fit)).
+   We binary-search the right --fit value.
+── */
+function fitPage(pageEl) {
+  if (!pageEl) return;
+  // Reset to default scale
+  pageEl.style.setProperty('--fit', '1');
+
+  // Check if it overflows
+  if (pageEl.scrollHeight <= pageEl.offsetHeight) return;
+
+  // Binary search: find largest --fit where scrollHeight <= offsetHeight
+  var lo = 0.4, hi = 1.0, mid;
+  for (var i = 0; i < 12; i++) {
+    mid = (lo + hi) / 2;
+    pageEl.style.setProperty('--fit', mid);
+    if (pageEl.scrollHeight <= pageEl.offsetHeight) lo = mid;
+    else hi = mid;
+  }
+  pageEl.style.setProperty('--fit', lo);
 }
 
-function triggerLessonComplete() {
-  window.parent.postMessage({ type: 'lesson_complete' }, '*');
-}
-
-window.addEventListener('beforeunload', stopAllContent);
-document.addEventListener('visibilitychange', function() { if (document.hidden) stopAllContent(); });
+window.addEventListener('resize', function() {
+  var p = document.getElementById('page-' + cur);
+  if (p) fitPage(p);
+});
+window.addEventListener('orientationchange', function() {
+  setTimeout(function() {
+    var p = document.getElementById('page-' + cur);
+    if (p) fitPage(p);
+  }, 200);
+});
 </script>
 </body>
 </html>
