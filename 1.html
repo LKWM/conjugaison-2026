@@ -96,7 +96,7 @@ html, body {
 /* ══════════════════════════════
    COVER PAGE
 ══════════════════════════════ */
-#page-0 { background: #eff6ff; }
+#page-1 { background: #eff6ff; }
 .cover-badge {
   background: #dbeafe; color: #1d4ed8;
   border-radius: 99px;
@@ -126,11 +126,11 @@ html, body {
 
 /* ══════════════════════════════
    CARD WITH TEXT
-   card-body  = main text  (largest, bold)
+   card-body  = main text (largest, bold)
    card-sub1  = Subtitle 1 (small, normal weight, colour OK)
    card-sub2  = Subtitle 2 (medium, bold, no colour)
 ══════════════════════════════ */
-.card {
+.card-text {
   background: #fff;
   border: 2px solid #e2e8f0;
   border-radius: 1.5vh;
@@ -279,7 +279,7 @@ html, body {
 
     <!-- PAGE 2 -->
     <div class="page" id="page-3">
-      <div class="card">
+      <div class="card-text">
         <div class="card-body">Prédicat</div>
         <div class="card-sub1">서술어</div>
         <div class="card-sub2">Verbe + Adjectif</div>
@@ -305,7 +305,7 @@ html, body {
 
     <!-- PAGE 4 -->
     <div class="page" id="page-5">
-      <div class="card">
+      <div class="card-text">
         <div class="card-body">Infinitif du prédicat = Radical + 다</div>
       </div>
       <p class="text-block">Comme les verbes français se terminent par -er, -ir ou -re, tous les prédicats coréens se terminent par « -다 ». Et la partie qui reste quand on enlève « -다 », c'est-à-dire la partie réellement utilisée dans la conjugaison, s'appelle le « radical » ou la « racine ».</p>
@@ -337,7 +337,7 @@ html, body {
     <!-- PAGE 6: MCQ single -->
     <div class="page" id="page-7">
       <p class="consigne">Choisissez le radical du mot suivant.</p>
-      <div class="card">
+      <div class="card-text">
         <div class="card-body">이다</div>
         <div class="card-sub2">être</div>
       </div>
@@ -351,7 +351,7 @@ html, body {
 
     <!-- PAGE 7 -->
     <div class="page" id="page-8">
-      <div class="card">
+      <div class="card-text">
         <div class="card-body">Style formel VS style poli &amp; informel</div>
       </div>
       <p class="text-block">Enfin, la notion la plus importante à connaître en coréen est le registre selon le niveau de politesse. En grammaire, on divise généralement les styles en six catégories selon le niveau de politesse, mais dans la langue parlée, seulement trois sont vraiment utilisés au quotidien. En coréen, le niveau de politesse dépend de la situation et de l'interlocuteur avec qui vous parlez.</p>
@@ -360,7 +360,7 @@ html, body {
 
     <!-- PAGE 8 -->
     <div class="page" id="page-9">
-      <div class="card">
+      <div class="card-text">
         <div class="card-body">Style formel : -다. / -까?</div>
       </div>
       <p class="text-block">Le style formel est surtout utilisé dans les situations officielles, les discours formels ou à l'écrit. Les phrases déclaratives se terminent par « -다 » et les phrases interrogatives par « -까 ».</p>
@@ -369,7 +369,7 @@ html, body {
 
     <!-- PAGE 9 -->
     <div class="page" id="page-10">
-      <div class="card">
+      <div class="card-text">
         <div class="card-body">Style Informel : forme polie + forme informelle</div>
         <div class="card-body">1️⃣ Forme polie (honorifique non formelle) : -요.</div>
         <div class="card-body">2️⃣ Forme informelle (non honorifique non formelle) : -⌀.</div>
@@ -380,7 +380,7 @@ html, body {
 
     <!-- PAGE 10 -->
     <div class="page" id="page-11">
-      <div class="card">
+      <div class="card-text">
         <div class="card-body">Style Informel : forme polie + forme informelle</div>
         <div class="card-body">1️⃣ Forme polie (honorifique non formelle) : -요.</div>
         <div class="card-body">2️⃣ Forme informelle (non honorifique non formelle) : -⌀.</div>
@@ -644,14 +644,14 @@ function fitPage(pageEl) {
   pageEl.style.setProperty('--fit', '1');
 
   // Check if it overflows
-  if (pageEl.scrollHeight <= pageEl.offsetHeight) return;
+  if (pageEl.scrollHeight <= pageEl.offsetHeight && pageEl.scrollWidth <= pageEl.offsetWidth) return;
 
   // Binary search: find largest --fit where scrollHeight <= offsetHeight
   var lo = 0.4, hi = 1.0, mid;
   for (var i = 0; i < 12; i++) {
     mid = (lo + hi) / 2;
     pageEl.style.setProperty('--fit', mid);
-    if (pageEl.scrollHeight <= pageEl.offsetHeight) lo = mid;
+    if (pageEl.scrollHeight <= pageEl.offsetHeight && pageEl.scrollWidth <= pageEl.offsetWidth) lo = mid;
     else hi = mid;
   }
   pageEl.style.setProperty('--fit', lo);
