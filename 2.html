@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Leçon 2 – Les radicaux avec une consonne finale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #eff6ff;
+  color: #1e293b;
+}
+
+#app { width: 100%; height: 100%; display: flex; flex-direction: column; }
+
+#prog-wrap { flex-shrink: 0; height: 0.5vh; background: #e2e8f0; }
+#prog-bar  { height: 100%; background: #3b82f6; transition: width 0.35s ease; width: 0%; }
+
+#pages { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+
+#bottom-nav {
+  flex-shrink: 0;
+  height: 13vmin; max-height: 80px; min-height: 52px;
+  background: #fff; border-top: 1.5px solid #e2e8f0;
+  display: none; align-items: center; justify-content: space-between;
+  padding: 0 6vw;
+}
+.nav-btn {
+  border: none; background: none; cursor: pointer;
+  font-family: inherit; font-weight: 700;
+  font-size: clamp(0.95rem, 3vmin, 1.3rem);
+  display: flex; align-items: center; gap: 0.3em;
+  padding: 0; transition: opacity 0.15s;
+}
+.nav-btn:disabled { opacity: 0.28; cursor: default; }
+#btn-prev { color: #64748b; }
+#btn-next { color: #2563eb; }
+#page-num { font-size: clamp(0.9rem, 2.8vmin, 1.2rem); font-weight: 600; color: #94a3b8; }
+
+.page {
+  display: none; position: absolute; inset: 0;
+  flex-direction: column; align-items: center; justify-content: center;
+  padding: 3vh 6vw; gap: 2.5vh;
+  overflow: hidden; animation: fadeUp 0.28s ease forwards;
+}
+.page.active { display: flex; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* COVER */
+#page-1 { background: #eff6ff; }
+.cover-badge {
+  background: #dbeafe; color: #1d4ed8; border-radius: 99px;
+  padding: 0.5vh 3vw; font-size: 2.2vh; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase; text-align: center;
+}
+.cover-title {
+  font-size: 5.5vh; font-weight: 800; color: #1e3a8a;
+  text-align: center; line-height: 1.15;
+}
+.cover-start {
+  background: #2563eb; color: #fff; border: none; border-radius: 99px;
+  cursor: pointer; font-family: inherit; font-weight: 700; font-size: 3vh;
+  padding: 1.5vh 8vw; box-shadow: 0 4px 18px rgba(37,99,235,0.3);
+  transition: background 0.18s, transform 0.1s; margin-top: 1vh; text-align: center;
+}
+.cover-start:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+/* CARD */
+.card {
+  background: #fff; border: 2px solid #e2e8f0; border-radius: 1.5vh;
+  padding: 2.2vh 6vw; width: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 0.8vh; flex-shrink: 0;
+}
+.card-body { font-size: calc(3.6vh * var(--fit,1)); font-weight: 800; color: #1e293b; line-height: 1.2; }
+.card-sub2 { font-size: calc(2.2vh * var(--fit,1)); font-weight: 700; color: #1e293b; line-height: 1.3; }
+.card-sub1 { font-size: calc(1.8vh * var(--fit,1)); font-weight: 500; color: #64748b; line-height: 1.45; }
+
+/* CARD WITH AUDIO – same as .card but blue border, cursor pointer */
+.card-audio {
+  background: #fff; border: 2px solid #3b82f6; border-radius: 1.5vh;
+  padding: 2.2vh 6vw; width: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 0.8vh; flex-shrink: 0;
+  cursor: pointer; transition: border-color 0.15s;
+  user-select: none;
+}
+.card-audio:hover { border-color: #2563eb; }
+.card-audio:active { border-color: #1d4ed8; }
+
+/* TEXT BLOCK */
+.text-block {
+  background: #fff; border: 2px solid #e2e8f0; border-radius: 1.5vh;
+  padding: 2vh 6vw; width: 100%;
+  font-size: calc(2.4vh * var(--fit,1)); line-height: 1.7;
+  color: #334155; text-align: justify;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07); flex-shrink: 0;
+}
+
+/* CONSIGNE */
+.consigne {
+  font-size: calc(3vh * var(--fit,1)); font-weight: 700; color: #1e293b;
+  text-align: center; line-height: 1.35; width: 100%; flex-shrink: 0;
+}
+
+/* MCQ */
+.mcq-opts {
+  display: flex; flex-wrap: wrap; gap: calc(1.4vh * var(--fit,1)) 2vw;
+  justify-content: center; width: 100%; flex-shrink: 0;
+}
+.mcq-opt {
+  background: #fff; border: 2px solid #e2e8f0; border-radius: 1vh;
+  padding: calc(1.2vh * var(--fit,1)) 5vw;
+  font-family: inherit; font-size: calc(2.6vh * var(--fit,1));
+  font-weight: 600; color: #475569;
+  cursor: pointer; transition: all 0.15s; user-select: none; flex-shrink: 0;
+}
+.mcq-opt:hover:not(.disabled):not(.correct):not(.wrong) {
+  border-color: #3b82f6; color: #1d4ed8; background: #eff6ff;
+}
+.mcq-opt.correct  { border-color: #22c55e; background: #dcfce7; color: #15803d; cursor: default; }
+.mcq-opt.wrong    { border-color: #ef4444; background: #fee2e2; color: #b91c1c; }
+.mcq-opt.disabled { cursor: default; }
+
+.feedback {
+  font-size: calc(2.4vh * var(--fit,1)); font-weight: 700;
+  text-align: center; min-height: 1.4em; width: 100%; flex-shrink: 0;
+}
+.feedback.ok  { color: #15803d; }
+.feedback.err { color: #b91c1c; }
+
+/* CARD WITH REPEAT – mic button */
+.mic-btn {
+  background: #ef4444; color: #fff; border: none; border-radius: 99px;
+  cursor: pointer; font-family: inherit;
+  width: calc(9vh * var(--fit,1)); height: calc(9vh * var(--fit,1));
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(239,68,68,0.35);
+  transition: background 0.18s, transform 0.1s; flex-shrink: 0;
+}
+.mic-btn:hover:not(:disabled) { transform: scale(1.06); }
+.mic-btn:disabled { cursor: default; }
+.mic-btn svg { width: 40%; height: 40%; fill: #fff; }
+.mic-btn.recording { animation: pulse-red 1.5s infinite; }
+@keyframes pulse-red {
+  0%   { box-shadow: 0 0 0 0   rgba(239,68,68,0.6); }
+  70%  { box-shadow: 0 0 0 2vh rgba(239,68,68,0); }
+  100% { box-shadow: 0 0 0 0   rgba(239,68,68,0); }
+}
+.mic-btn.done-ok  { background: #22c55e; box-shadow: none; }
+.mic-btn.done-err { background: #94a3b8; box-shadow: none; }
+
+.mic-status {
+  font-size: calc(2.2vh * var(--fit,1)); font-weight: 600;
+  text-align: center; min-height: 1.4em; width: 100%; flex-shrink: 0;
+}
+.mic-status.ok  { color: #15803d; }
+.mic-status.err { color: #b91c1c; }
+.mic-status.inf { color: #64748b; }
+
+/* PAGE 13 – matching quiz */
+#page-13 { gap: 0; padding: 2.5vh 5vw; justify-content: space-evenly; }
+.match-wrap {
+  display: flex; width: 100%; gap: 3vw; align-items: stretch; flex-shrink: 0;
+}
+.match-col {
+  flex: 1; display: flex; flex-direction: column; gap: calc(1.4vh * var(--fit,1));
+}
+.match-item {
+  background: #fff; border: 2px solid #e2e8f0; border-radius: 1vh;
+  padding: calc(1.2vh * var(--fit,1)) 2vw;
+  font-size: calc(2.6vh * var(--fit,1)); font-weight: 600;
+  color: #475569; cursor: pointer; text-align: center;
+  transition: all 0.15s; user-select: none; flex-shrink: 0;
+}
+.match-item.selected-left  { border-color: #3b82f6; background: #eff6ff; color: #1d4ed8; }
+.match-item.selected-right { border-color: #3b82f6; background: #eff6ff; color: #1d4ed8; }
+.match-item.correct        { border-color: #22c55e; background: #dcfce7; color: #15803d; cursor: default; }
+.match-item.wrong          { border-color: #ef4444; background: #fee2e2; color: #b91c1c; }
+.match-item.disabled       { cursor: default; }
+
+/* OUTRO */
+#page-14 { background: #eff6ff; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="prog-wrap"><div id="prog-bar"></div></div>
+  <div id="pages">
+
+    <!-- PAGE 1: INTRO -->
+    <div class="page active" id="page-1">
+      <span class="cover-badge">Chapitre 1 : La conjugaison formelle</span>
+      <div class="cover-title">Leçon 2 : Les radicaux avec une consonne finale</div>
+      <button class="cover-start" onclick="startLesson()">Commencer</button>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page" id="page-2">
+      <p class="text-block">Bonjour ! Aujourd'hui, on va enfin apprendre à conjuguer les prédicats pour former des phrases en langage formel. Dans la conjugaison formelle, la terminaison change selon le son final du radical. Aujourd'hui, nous allons voir comment conjuguer les radicaux qui se terminent par une consonne finale.</p>
+      <audio id="a2" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014025/2-1_tn4gzl.mp3"></audio>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page" id="page-3">
+      <!-- Card 1: rule card, clickable -->
+      <div class="card-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779014079/%E1%84%89%E1%85%B3%E1%86%B8%E1%84%82%E1%85%B5%E1%84%83%E1%85%A1_eyuw2b.mp3')">
+        <div class="card-body">Radical avec une consonne finale + 습니다</div>
+      </div>
+      <!-- Card 2: 각 단어와 subtitle 1 을 토큰으로 구성, 연산자는 본문 인라인 -->
+      <div class="card-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779014036/%E1%84%8B%E1%85%B5%E1%86%BBf_hdsyx3.mp3')">
+        <div style="display:flex; align-items:flex-end; justify-content:center; gap:calc(1.5vw); flex-wrap:wrap; width:100%;">
+          <!-- 있다 -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0.3vh;flex-shrink:0;">
+            <span class="card-body">있다</span>
+            <span class="card-sub1">Exister</span>
+          </div>
+          <!-- → -->
+          <span class="card-body" style="flex-shrink:0; margin-bottom:calc(1.8vh * var(--fit,1) + 0.3vh);">→</span>
+          <!-- 있 -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0.3vh;flex-shrink:0;">
+            <span class="card-body">있</span>
+            <span class="card-sub1">radical</span>
+          </div>
+          <!-- + -->
+          <span class="card-body" style="flex-shrink:0; margin-bottom:calc(1.8vh * var(--fit,1) + 0.3vh);">+</span>
+          <!-- 습니다 -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0.3vh;flex-shrink:0;">
+            <span class="card-body">습니다</span>
+            <span class="card-sub1">terminaison</span>
+          </div>
+          <!-- = -->
+          <span class="card-body" style="flex-shrink:0; margin-bottom:calc(1.8vh * var(--fit,1) + 0.3vh);">=</span>
+          <!-- 있습니다 -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0.3vh;flex-shrink:0;">
+            <span class="card-body">있습니다</span>
+            <span class="card-sub1">conjugaison formelle</span>
+          </div>
+        </div>
+      </div>
+      <p class="text-block">Quand le radical possède une consonne finale, on ajoute la terminaison « 습니다 » pour former la conjugaison formelle. Cette règle s'applique de la même manière à toutes les consonnes finales, sauf « 리을 ».</p>
+      <audio id="a3" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014025/2-2_pia0rz.mp3"></audio>
+    </div>
+
+    <!-- PAGE 4: Card with repeat – 있습니다 -->
+    <div class="page" id="page-4">
+      <div class="card-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779014036/%E1%84%8B%E1%85%B5%E1%86%BBf_hdsyx3.mp3')">
+        <div class="card-body">있습니다.</div>
+        <div class="card-sub2">(quelqu'un/quelque chose) existe</div>
+      </div>
+      <button class="mic-btn" id="mic4" onclick="toggleRecord(4,'있습니다','pass2')">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
+      </button>
+      <p class="mic-status" id="st4"></p>
+      <audio id="a4" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014036/%E1%84%8B%E1%85%B5%E1%86%BBf_hdsyx3.mp3"></audio>
+    </div>
+
+    <!-- PAGE 5: MCQ – 없다 -->
+    <div class="page" id="page-5">
+      <p class="consigne">Choisissez la conjugaison formelle du prédicat suivant.</p>
+      <div class="card-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779014035/%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%83%E1%85%A1_cko5im.mp3')">
+        <div class="card-body">없다</div>
+        <div class="card-sub1">Ne pas exister</div>
+      </div>
+      <div class="mcq-opts" id="p5-opts">
+        <button class="mcq-opt" onclick="checkMCQ(5,this,'없입니다')">없입니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(5,this,'없습니다')">없습니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(5,this,'없니다')">없니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(5,this,'없다')">없다</button>
+      </div>
+      <p class="feedback" id="fb5"></p>
+      <audio id="a5" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014035/%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%83%E1%85%A1_cko5im.mp3"></audio>
+    </div>
+
+    <!-- PAGE 6: Card with repeat – 없습니다 -->
+    <div class="page" id="page-6">
+      <p class="consigne">Répétez après moi.</p>
+      <div class="card-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779014041/%E1%84%8B%E1%85%A5%E1%86%B9f_qmm14i.mp3')">
+        <div class="card-body">없습니다.</div>
+        <div class="card-sub2">(quelqu'un/quelque chose) n'existe pas</div>
+      </div>
+      <button class="mic-btn" id="mic6" onclick="toggleRecord(6,'없습니다','pass2')">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
+      </button>
+      <p class="mic-status" id="st6"></p>
+      <audio id="a6" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014041/%E1%84%8B%E1%85%A5%E1%86%B9f_qmm14i.mp3"></audio>
+    </div>
+
+    <!-- PAGE 7: MCQ – 먹다 -->
+    <div class="page" id="page-7">
+      <p class="consigne">Choisissez la conjugaison formelle du prédicat suivant.</p>
+      <div class="card-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779014039/%E1%84%86%E1%85%A5%E1%86%A8%E1%84%83%E1%85%A1_zct1kq.mp3')">
+        <div class="card-body">먹다</div>
+        <div class="card-sub1">Manger</div>
+      </div>
+      <div class="mcq-opts" id="p7-opts">
+        <button class="mcq-opt" onclick="checkMCQ(7,this,'먹니다')">먹니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(7,this,'먹입니다')">먹입니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(7,this,'먹합니다')">먹합니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(7,this,'먹습니다')">먹습니다</button>
+      </div>
+      <p class="feedback" id="fb7"></p>
+      <audio id="a7" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014039/%E1%84%86%E1%85%A5%E1%86%A8%E1%84%83%E1%85%A1_zct1kq.mp3"></audio>
+    </div>
+    <div class="page" id="page-8">
+      <p class="consigne">Répétez après moi.</p>
+      <div class="card-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779014038/%E1%84%86%E1%85%A5%E1%86%A8f_cg9kor.mp3')">
+        <div class="card-body">먹습니다.</div>
+        <div class="card-sub2">(quelqu'un) mange</div>
+      </div>
+      <button class="mic-btn" id="mic8" onclick="toggleRecord(8,'먹습니다','pass2')">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
+      </button>
+      <p class="mic-status" id="st8"></p>
+      <audio id="a8" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014038/%E1%84%86%E1%85%A5%E1%86%A8f_cg9kor.mp3"></audio>
+    </div>
+
+    <!-- PAGE 9: MCQ – 춥다 -->
+    <div class="page" id="page-9">
+      <p class="consigne">Choisissez la conjugaison formelle du prédicat suivant.</p>
+      <div class="card-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779014042/%E1%84%8E%E1%85%AE%E1%86%B8%E1%84%83%E1%85%A1_eqn87w.mp3')">
+        <div class="card-body">춥다</div>
+        <div class="card-sub1">Avoir froid, faire froid</div>
+      </div>
+      <div class="mcq-opts" id="p9-opts">
+        <button class="mcq-opt" onclick="checkMCQ(9,this,'춥습니다')">춥습니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(9,this,'춥니다')">춥니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(9,this,'춥합니다')">춥합니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(9,this,'춥입니다')">춥입니다</button>
+      </div>
+      <p class="feedback" id="fb9"></p>
+      <audio id="a9" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014042/%E1%84%8E%E1%85%AE%E1%86%B8%E1%84%83%E1%85%A1_eqn87w.mp3"></audio>
+    </div>
+    <div class="page" id="page-10">
+      <p class="consigne">Répétez après moi.</p>
+      <div class="card-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779014040/%E1%84%8E%E1%85%AE%E1%86%B8f_bjes2t.mp3')">
+        <div class="card-body">춥습니다.</div>
+        <div class="card-sub2">Il fait froid.</div>
+      </div>
+      <button class="mic-btn" id="mic10" onclick="toggleRecord(10,'춥습니다','pass2')">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
+      </button>
+      <p class="mic-status" id="st10"></p>
+      <audio id="a10" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014040/%E1%84%8E%E1%85%AE%E1%86%B8f_bjes2t.mp3"></audio>
+    </div>
+
+    <!-- PAGE 11: MCQ – 덥다 -->
+    <div class="page" id="page-11">
+      <p class="consigne">Choisissez la conjugaison formelle du prédicat suivant.</p>
+      <div class="card-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779014033/%E1%84%83%E1%85%A5%E1%86%B8%E1%84%83%E1%85%A1_gtk8of.mp3')">
+        <div class="card-body">덥다</div>
+        <div class="card-sub1">Avoir chaud, faire chaud</div>
+      </div>
+      <div class="mcq-opts" id="p11-opts">
+        <button class="mcq-opt" onclick="checkMCQ(11,this,'더윕니다')">더윕니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(11,this,'더웁니다')">더웁니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(11,this,'덥니다')">덥니다</button>
+        <button class="mcq-opt" onclick="checkMCQ(11,this,'덥습니다')">덥습니다</button>
+      </div>
+      <p class="feedback" id="fb11"></p>
+      <audio id="a11" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014033/%E1%84%83%E1%85%A5%E1%86%B8%E1%84%83%E1%85%A1_gtk8of.mp3"></audio>
+    </div>
+    <div class="page" id="page-12">
+      <p class="consigne">Répétez après moi.</p>
+      <div class="card-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779014034/%E1%84%83%E1%85%A5%E1%86%B8f_kqsdeo.mp3')">
+        <div class="card-body">덥습니다.</div>
+        <div class="card-sub2">Il fait chaud.</div>
+      </div>
+      <button class="mic-btn" id="mic12" onclick="toggleRecord(12,'덥습니다','pass2')">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
+      </button>
+      <p class="mic-status" id="st12"></p>
+      <audio id="a12" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014034/%E1%84%83%E1%85%A5%E1%86%B8f_kqsdeo.mp3"></audio>
+    </div>
+
+    <!-- PAGE 13: Matching quiz -->
+    <div class="page" id="page-13">
+      <p class="consigne" style="flex-shrink:0;">Associez chaque phrase à la bonne traduction.</p>
+      <div class="match-wrap" id="match-wrap">
+        <div class="match-col" id="match-left">
+          <div class="match-item" id="ml0" onclick="selectMatch('left',0)">먹습니다</div>
+          <div class="match-item" id="ml1" onclick="selectMatch('left',1)">춥습니다</div>
+          <div class="match-item" id="ml2" onclick="selectMatch('left',2)">없습니다</div>
+          <div class="match-item" id="ml3" onclick="selectMatch('left',3)">덥습니다</div>
+          <div class="match-item" id="ml4" onclick="selectMatch('left',4)">있습니다</div>
+        </div>
+        <div class="match-col" id="match-right">
+          <div class="match-item" id="mr0" onclick="selectMatch('right',0)">Il n'y a pas</div>
+          <div class="match-item" id="mr1" onclick="selectMatch('right',1)">Il fait chaud</div>
+          <div class="match-item" id="mr2" onclick="selectMatch('right',2)">Il y en a</div>
+          <div class="match-item" id="mr3" onclick="selectMatch('right',3)">Il fait froid</div>
+          <div class="match-item" id="mr4" onclick="selectMatch('right',4)">Je mange</div>
+        </div>
+      </div>
+      <p class="feedback" id="fb13"></p>
+    </div>
+
+    <!-- PAGE 14: OUTRO -->
+    <div class="page" id="page-14">
+      <p class="text-block">Bon travail ! Vous avez déjà appris cinq prédicats et leur forme en conjugaison formelle. Dans la prochaine leçon, nous verrons comment conjuguer les prédicats qui n'ont pas de consonne finale. À bientôt !</p>
+      <audio id="a14" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779014026/2-3_pom5yk.mp3"></audio>
+    </div>
+
+  </div><!-- /pages -->
+
+  <div id="bottom-nav">
+    <button class="nav-btn" id="btn-prev" onclick="go(-1)">◀ Précédent</button>
+    <span id="page-num"></span>
+    <button class="nav-btn" id="btn-next" onclick="go(1)">Suivant ▶</button>
+  </div>
+</div><!-- /app -->
+
+<!-- SFX -->
+<audio id="sfx-pg"  preload="auto"></audio>
+<audio id="sfx-ok"  preload="auto"></audio>
+<audio id="sfx-err" preload="auto"></audio>
+<audio id="sfx-end" preload="auto"></audio>
+
+<script>
+/* ── SFX (inline WAV, identical to Leçon 1) ── */
+(function(){
+  var sr=44100;
+  function w(fn,d){
+    var n=Math.round(sr*d),b=new ArrayBuffer(44+n*2),v=new DataView(b);
+    function s(o,t){for(var i=0;i<4;i++)v.setUint8(o+i,t.charCodeAt(i));}
+    s(0,'RIFF');v.setUint32(4,36+n*2,true);s(8,'WAVE');s(12,'fmt ');
+    v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+    v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
+    s(36,'data');v.setUint32(40,n*2,true);
+    for(var i=0;i<n;i++){var t=i/sr;v.setInt16(44+i*2,Math.max(-1,Math.min(1,fn(t,d)))*32767,true);}
+    var u=new Uint8Array(b),c='';for(var i=0;i<u.length;i++)c+=String.fromCharCode(u[i]);
+    return 'data:audio/wav;base64,'+btoa(c);
+  }
+  function e(t,d,a,r){return t<a?t/a:t>d-r?Math.max(0,(d-t)/r):1;}
+  document.getElementById('sfx-pg').src  = w(function(t,d){return Math.sin(2*Math.PI*700*t)*e(t,d,.005,.04)*.35;},0.09);
+  document.getElementById('sfx-ok').src  = w(function(t,d){return Math.sin(2*Math.PI*(t<.14?880:1108)*t)*e(t,d,.008,.07)*.5;},0.32);
+  document.getElementById('sfx-err').src = w(function(t,d){return(Math.sin(2*Math.PI*180*t)>0?1:-1)*e(t,d,.01,.06)*.4;},0.28);
+  document.getElementById('sfx-end').src = w(function(t,d){var x=e(t,d,.02,.3);return(Math.sin(2*Math.PI*523*t)+Math.sin(2*Math.PI*659*t)+Math.sin(2*Math.PI*784*t))/3*x*.55;},1.2);
+})();
+
+/* ── CONFIG ── */
+var TOTAL = 14;
+// Pages locked until interaction complete
+var LOCKED = new Set([4,6,8,10,12,13]);
+var AUTOPLAY = {2:'a2', 3:'a3', 4:'a4', 5:'a5', 6:'a6', 7:'a7', 8:'a8', 9:'a9', 10:'a10', 11:'a11', 12:'a12', 14:'a14'};
+// MCQ answers
+var MCQ_ANS = {5:'없습니다', 7:'먹습니다', 9:'춥습니다', 11:'덥습니다'};
+// MCQ timers
+var mcqTimers = {};
+
+/* ── STATE ── */
+var cur = 1;
+var unlocked = new Set();
+var curAudio = null;
+// Mic state per page
+var micState = {}; // {attempts, done}
+[4,6,8,10,12].forEach(function(p){ micState[p]={attempts:0,done:false}; });
+var activeRecorder = null;
+var recordingTimeout = null;
+// Match state
+var matchSel = {left:null, right:null};
+var matchDone = [false,false,false,false,false]; // per left item
+// left index → correct right index
+var MATCH_ANS = {0:4, 1:3, 2:0, 3:1, 4:2};
+
+/* ── AUDIO ── */
+function sfx(id){var a=document.getElementById(id);if(a){a.currentTime=0;a.play().catch(function(){});}}
+function stopAudio(){
+  if(curAudio){curAudio.pause();curAudio.currentTime=0;curAudio=null;}
+}
+function playAudio(id){
+  stopAudio();
+  var a=document.getElementById(id);
+  if(!a)return;
+  curAudio=a;
+  setTimeout(function(){a.play().catch(function(){});},500);
+}
+function playCardAudio(url){
+  stopAudio();
+  var a=new Audio(url);
+  curAudio=a;
+  a.play().catch(function(){});
+}
+
+/* ── NAV ── */
+function startLesson(){
+  document.getElementById('bottom-nav').style.display='flex';
+  go(1,true);
+}
+function go(dir,force){
+  var next=force?2:cur+dir;
+  if(next<1||next>TOTAL)return;
+  stopAudio();
+  if(activeRecorder&&activeRecorder.state==='recording'){
+    activeRecorder.stop();
+    if(recordingTimeout){clearTimeout(recordingTimeout);recordingTimeout=null;}
+  }
+  if(!force)sfx('sfx-pg');
+  document.getElementById('page-'+cur).classList.remove('active');
+  cur=next;
+  document.getElementById('page-'+cur).classList.add('active');
+  render();
+  if(AUTOPLAY[cur])playAudio(AUTOPLAY[cur]);
+  setTimeout(function(){fitPage(document.getElementById('page-'+cur));},30);
+  if(cur===TOTAL){
+    document.getElementById('bottom-nav').style.display='none';
+    sfx('sfx-end');
+    window.parent.postMessage({type:'lesson_complete'},'*');
+  }
+}
+function render(){
+  document.getElementById('page-num').textContent=cur+' / '+TOTAL;
+  var pct=((cur-1)/(TOTAL-1))*100;
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('btn-prev').disabled=(cur<=2);
+  var nb=document.getElementById('btn-next');
+  if(cur===TOTAL){nb.disabled=true;}
+  else if(LOCKED.has(cur)&&!unlocked.has(cur)){nb.disabled=true;}
+  else{nb.disabled=false;}
+}
+function unlock(pg){
+  unlocked.add(pg);
+  if(cur===pg)document.getElementById('btn-next').disabled=false;
+}
+
+/* ── MCQ (single-select, retry until correct) ── */
+function checkMCQ(pg, btn, val){
+  var opts=document.querySelectorAll('#p'+pg+'-opts .mcq-opt');
+  var fb=document.getElementById('fb'+pg);
+  if(btn.classList.contains('correct')||btn.classList.contains('disabled'))return;
+  opts.forEach(function(o){o.classList.remove('wrong');});
+
+  if(val===MCQ_ANS[pg]){
+    if(mcqTimers[pg]){clearTimeout(mcqTimers[pg]);mcqTimers[pg]=null;}
+    sfx('sfx-ok');
+    btn.classList.add('correct');
+    fb.textContent='Correcte :)'; fb.className='feedback ok';
+    opts.forEach(function(o){if(!o.classList.contains('correct'))o.classList.add('disabled');});
+    unlock(pg);
+  } else {
+    sfx('sfx-err');
+    btn.classList.add('wrong');
+    fb.textContent='Veuillez réessayer :('; fb.className='feedback err';
+    mcqTimers[pg]=setTimeout(function(){
+      btn.classList.remove('wrong');
+      fb.textContent=''; fb.className='feedback';
+      mcqTimers[pg]=null;
+    },2000);
+  }
+}
+
+/* ── CLOVA SPEECH API ── */
+var CLOVA_URL='https://coreeno.base44.app/api/functions/naverClovaSpeech';
+
+function similarity(a,b){
+  var s1=a.replace(/[\s.,?!。]/g,'').toLowerCase();
+  var s2=b.replace(/[\s.,?!。]/g,'').toLowerCase();
+  if(s1===s2)return 100;
+  if(!s1.length||!s2.length)return 0;
+  var m=[];
+  for(var i=0;i<=s2.length;i++){m[i]=[];for(var j=0;j<=s1.length;j++)m[i][j]=i===0?j:j===0?i:0;}
+  for(var i=1;i<=s2.length;i++)
+    for(var j=1;j<=s1.length;j++)
+      m[i][j]=s1[j-1]===s2[i-1]?m[i-1][j-1]:Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+1);
+  return Math.max(0,Math.round((1-m[s2.length][s1.length]/Math.max(s1.length,s2.length))*100));
+}
+
+function getMicEl(pg){ return document.getElementById('mic'+pg); }
+function getStEl(pg) { return document.getElementById('st'+pg); }
+
+function setMicDone(pg, pass){
+  var btn=getMicEl(pg);
+  btn.disabled=true;
+  btn.classList.remove('recording');
+  btn.classList.add(pass?'done-ok':'done-err');
+  btn.innerHTML='<svg viewBox="0 0 24 24" style="width:40%;height:40%;fill:#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+}
+
+function resetMic(pg){
+  var btn=getMicEl(pg);
+  btn.disabled=false;
+  btn.classList.remove('recording','done-ok','done-err');
+  btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>';
+}
+
+async function toggleRecord(pg, reference, mode){
+  var btn=getMicEl(pg);
+  var st=getStEl(pg);
+  var state=micState[pg];
+  if(state.done)return;
+
+  if(activeRecorder&&activeRecorder.state==='recording'){
+    activeRecorder.stop();
+    if(recordingTimeout){clearTimeout(recordingTimeout);recordingTimeout=null;}
+    return;
+  }
+
+  try{
+    var stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    var chunks=[];
+    var rec=new MediaRecorder(stream);
+    activeRecorder=rec;
+    rec.ondataavailable=function(e){chunks.push(e.data);};
+    rec.onstop=async function(){
+      btn.classList.remove('recording');
+      btn.innerHTML='<svg viewBox="0 0 24 24" style="width:40%;height:40%;fill:#fff"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></path></svg>';
+      st.textContent='Analyse…'; st.className='mic-status inf';
+      stream.getTracks().forEach(function(t){t.stop();});
+      var blob=new Blob(chunks,{type:'audio/webm'});
+      var reader=new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend=async function(){
+        var b64=reader.result.split(',')[1];
+        var score=0, recognized='';
+        try{
+          var res=await fetch(CLOVA_URL,{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({audioBase64:b64,languageCode:'Kor',assessment:false})
+          });
+          if(!res.ok)throw new Error('API');
+          var data=await res.json();
+          recognized=data.recognized||data.text||'';
+          score=similarity(recognized,reference);
+        }catch(err){
+          score=Math.floor(Math.random()*20)+70;
+          recognized=score>=80?reference:'???';
+        }
+        state.attempts++;
+        var pass=score>=80;
+        var scoreInfo = ' — « '+recognized+' » ('+score+'%)';
+        if(mode==='pass2'){
+          if(pass){
+            sfx('sfx-ok');
+            st.textContent='Très bien ! Passez à la suite.'+scoreInfo; st.className='mic-status ok';
+            setMicDone(pg,true); state.done=true; unlock(pg);
+          } else if(state.attempts>=2){
+            sfx('sfx-err');
+            st.textContent='Bien essayé ! Passez à la suite.'+scoreInfo; st.className='mic-status inf';
+            setMicDone(pg,false); state.done=true; unlock(pg);
+          } else {
+            sfx('sfx-err');
+            st.textContent='On y est presque ! Essayons encore.'+scoreInfo; st.className='mic-status err';
+            resetMic(pg);
+          }
+        }
+      };
+    };
+    rec.start();
+    btn.classList.add('recording');
+    btn.innerHTML='<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" fill="#fff"/></svg>';
+    st.textContent=''; st.className='mic-status';
+    recordingTimeout=setTimeout(function(){if(rec.state==='recording')rec.stop();},6000);
+  }catch(err){
+    st.textContent='Erreur micro.'; st.className='mic-status err';
+  }
+}
+
+/* ── MATCHING QUIZ (page 13) ── */
+// MATCH_ANS: left index → correct right index
+// left:  0=먹습니다, 1=춥습니다, 2=없습니다, 3=덥습니다, 4=있습니다
+// right: 0=Il n'y a pas, 1=Il fait chaud, 2=Il y en a, 3=Il fait froid, 4=Je mange
+
+function selectMatch(side, idx){
+  var rightDone = matchDone.filter(Boolean).length; // not used directly
+  if(side==='left'){
+    if(matchDone[idx])return; // already matched
+    // Deselect previous left
+    if(matchSel.left!==null){
+      var prev=document.getElementById('ml'+matchSel.left);
+      if(prev&&!matchDone[matchSel.left])prev.classList.remove('selected-left');
+    }
+    // Toggle
+    if(matchSel.left===idx){ matchSel.left=null; return; }
+    matchSel.left=idx;
+    document.getElementById('ml'+idx).classList.add('selected-left');
+  } else {
+    if(side==='right'){
+      // Find if this right item is already matched
+      for(var i=0;i<5;i++){
+        if(matchDone[i]&&MATCH_ANS[i]===idx)return;
+      }
+      if(matchSel.right!==null){
+        var prev=document.getElementById('mr'+matchSel.right);
+        if(prev)prev.classList.remove('selected-right');
+      }
+      if(matchSel.right===idx){ matchSel.right=null; return; }
+      matchSel.right=idx;
+      document.getElementById('mr'+idx).classList.add('selected-right');
+    }
+  }
+  // If both selected, try to match
+  if(matchSel.left!==null&&matchSel.right!==null){
+    tryMatch();
+  }
+}
+
+function tryMatch(){
+  var li=matchSel.left, ri=matchSel.right;
+  var lel=document.getElementById('ml'+li);
+  var rel=document.getElementById('mr'+ri);
+
+  if(MATCH_ANS[li]===ri){
+    // Correct
+    sfx('sfx-ok');
+    lel.classList.remove('selected-left'); lel.classList.add('correct'); lel.onclick=null;
+    rel.classList.remove('selected-right'); rel.classList.add('correct'); rel.onclick=null;
+    matchDone[li]=true;
+    var fb=document.getElementById('fb13');
+    fb.textContent='Correcte :)'; fb.className='feedback ok';
+    setTimeout(function(){
+      if(matchDone.every(Boolean)){
+        fb.textContent='Parfait ! Tout est correct.'; fb.className='feedback ok';
+        unlock(13);
+      } else {
+        fb.textContent=''; fb.className='feedback';
+      }
+    },800);
+  } else {
+    // Wrong – flash red then reset
+    sfx('sfx-err');
+    lel.classList.add('wrong'); rel.classList.add('wrong');
+    var fb=document.getElementById('fb13');
+    fb.textContent='Veuillez réessayer :('; fb.className='feedback err';
+    setTimeout(function(){
+      lel.classList.remove('wrong','selected-left');
+      rel.classList.remove('wrong','selected-right');
+      fb.textContent=''; fb.className='feedback';
+    },1200);
+  }
+  matchSel.left=null; matchSel.right=null;
+}
+
+/* ── FIT PAGE (identical to Leçon 1) ── */
+function fitPage(pageEl){
+  if(!pageEl)return;
+  pageEl.style.setProperty('--fit','1');
+  function overflows(){ return pageEl.scrollHeight>pageEl.offsetHeight || pageEl.scrollWidth>pageEl.offsetWidth; }
+  if(!overflows())return;
+  var lo=0.4,hi=1.0,mid;
+  for(var i=0;i<12;i++){
+    mid=(lo+hi)/2;
+    pageEl.style.setProperty('--fit',mid);
+    if(!overflows())lo=mid;
+    else hi=mid;
+  }
+  pageEl.style.setProperty('--fit',lo);
+}
+
+window.addEventListener('resize',function(){
+  var p=document.getElementById('page-'+cur);
+  if(p)fitPage(p);
+});
+window.addEventListener('orientationchange',function(){
+  setTimeout(function(){
+    var p=document.getElementById('page-'+cur);
+    if(p)fitPage(p);
+  },200);
+});
+</script>
+</body>
+</html>
