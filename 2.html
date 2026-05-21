@@ -153,26 +153,27 @@ html, body {
 .feedback.ok  { color: #15803d; }
 .feedback.err { color: #b91c1c; }
 
-/* CARD WITH REPEAT – mic button */
+/* CARD WITH REPEAT – mic button: ~70% of card-repeat height */
 .mic-btn {
   background: #ef4444; color: #fff; border: none; border-radius: 99px;
   cursor: pointer; font-family: inherit;
-  width: calc(9vh * var(--fit,1)); height: calc(9vh * var(--fit,1));
+  width: calc(13vh * var(--fit,1)); height: calc(13vh * var(--fit,1));
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 4px 16px rgba(239,68,68,0.35);
   transition: background 0.18s, transform 0.1s; flex-shrink: 0;
 }
 .mic-btn:hover:not(:disabled) { transform: scale(1.06); }
-.mic-btn:disabled { cursor: default; }
+.mic-btn:disabled { cursor: default; opacity: 0.5; }
 .mic-btn svg { width: 40%; height: 40%; fill: #fff; }
-.mic-btn.recording { animation: pulse-red 1.5s infinite; }
+.mic-btn.recording { animation: pulse-red 1.5s infinite; opacity: 1; }
 @keyframes pulse-red {
   0%   { box-shadow: 0 0 0 0   rgba(239,68,68,0.6); }
   70%  { box-shadow: 0 0 0 2vh rgba(239,68,68,0); }
   100% { box-shadow: 0 0 0 0   rgba(239,68,68,0); }
 }
-.mic-btn.done-ok  { background: #22c55e; box-shadow: none; }
-.mic-btn.done-err { background: #94a3b8; box-shadow: none; }
+.mic-btn.done-ok  { background: #22c55e; box-shadow: none; opacity: 1; }
+.mic-btn.done-err { background: #94a3b8; box-shadow: none; opacity: 1; }
+.mic-btn.audio-playing { opacity: 0.35; cursor: not-allowed; }
 
 .mic-status {
   font-size: calc(2.2vh * var(--fit,1)); font-weight: 600;
@@ -402,18 +403,18 @@ html, body {
       <p class="consigne" style="flex-shrink:0;">Associez chaque phrase à la bonne traduction.</p>
       <div class="match-wrap" id="match-wrap">
         <div class="match-col" id="match-left">
-          <div class="match-item" id="ml0" onclick="selectMatch('left',0)">먹습니다</div>
-          <div class="match-item" id="ml1" onclick="selectMatch('left',1)">춥습니다</div>
-          <div class="match-item" id="ml2" onclick="selectMatch('left',2)">없습니다</div>
-          <div class="match-item" id="ml3" onclick="selectMatch('left',3)">덥습니다</div>
-          <div class="match-item" id="ml4" onclick="selectMatch('left',4)">있습니다</div>
+          <div class="match-item" id="ml0" onclick="selectMatch('left',0)">먹습니다.</div>
+          <div class="match-item" id="ml1" onclick="selectMatch('left',1)">춥습니다.</div>
+          <div class="match-item" id="ml2" onclick="selectMatch('left',2)">없습니다.</div>
+          <div class="match-item" id="ml3" onclick="selectMatch('left',3)">덥습니다.</div>
+          <div class="match-item" id="ml4" onclick="selectMatch('left',4)">있습니다.</div>
         </div>
         <div class="match-col" id="match-right">
-          <div class="match-item" id="mr0" onclick="selectMatch('right',0)">Il n'y a pas</div>
-          <div class="match-item" id="mr1" onclick="selectMatch('right',1)">Il fait chaud</div>
-          <div class="match-item" id="mr2" onclick="selectMatch('right',2)">Il y en a</div>
-          <div class="match-item" id="mr3" onclick="selectMatch('right',3)">Il fait froid</div>
-          <div class="match-item" id="mr4" onclick="selectMatch('right',4)">Je mange</div>
+          <div class="match-item" id="mr0" onclick="selectMatch('right',0)">Il n'y a pas.</div>
+          <div class="match-item" id="mr1" onclick="selectMatch('right',1)">Il fait chaud.</div>
+          <div class="match-item" id="mr2" onclick="selectMatch('right',2)">Il y en a.</div>
+          <div class="match-item" id="mr3" onclick="selectMatch('right',3)">Il fait froid.</div>
+          <div class="match-item" id="mr4" onclick="selectMatch('right',4)">Je mange.</div>
         </div>
       </div>
       <p class="feedback" id="fb13"></p>
@@ -489,21 +490,31 @@ var MATCH_ANS = {0:4, 1:3, 2:0, 3:1, 4:2};
 
 /* ── AUDIO ── */
 function sfx(id){var a=document.getElementById(id);if(a){a.currentTime=0;a.play().catch(function(){});}}
+function blockMics(){ document.querySelectorAll('.mic-btn:not(.done-ok):not(.done-err):not(.recording)').forEach(function(b){ b.classList.add('audio-playing'); b.disabled=true; }); }
+function restoreMics(){ document.querySelectorAll('.mic-btn.audio-playing').forEach(function(b){ b.classList.remove('audio-playing'); if(!b.classList.contains('done-ok')&&!b.classList.contains('done-err')) b.disabled=false; }); }
+
 function stopAudio(){
   if(curAudio){curAudio.pause();curAudio.currentTime=0;curAudio=null;}
+  restoreMics();
 }
 function playAudio(id){
   stopAudio();
   var a=document.getElementById(id);
   if(!a)return;
   curAudio=a;
-  setTimeout(function(){a.play().catch(function(){});},500);
+  blockMics();
+  a.addEventListener('ended', restoreMics, {once:true});
+  a.addEventListener('pause', restoreMics, {once:true});
+  setTimeout(function(){a.play().catch(function(){restoreMics();});},500);
 }
 function playCardAudio(url){
   stopAudio();
   var a=new Audio(url);
   curAudio=a;
-  a.play().catch(function(){});
+  blockMics();
+  a.addEventListener('ended', restoreMics, {once:true});
+  a.addEventListener('pause', restoreMics, {once:true});
+  a.play().catch(function(){restoreMics();});
 }
 
 /* ── NAV ── */
@@ -613,6 +624,9 @@ async function toggleRecord(pg, reference, mode){
   var state=micState[pg];
   if(state.done)return;
 
+  // Block if audio is playing
+  if(btn.classList.contains('audio-playing')) return;
+
   if(activeRecorder&&activeRecorder.state==='recording'){
     activeRecorder.stop();
     if(recordingTimeout){clearTimeout(recordingTimeout);recordingTimeout=null;}
@@ -665,6 +679,10 @@ async function toggleRecord(pg, reference, mode){
             sfx('sfx-err');
             st.textContent='On y est presque ! Essayons encore.'+scoreInfo; st.className='mic-status err';
             resetMic(pg);
+            // Auto-replay card audio before retry
+            var cardAudioId = 'a'+pg;
+            var cardAudioEl = document.getElementById(cardAudioId);
+            if(cardAudioEl){ playAudio(cardAudioId); }
           }
         }
       };
