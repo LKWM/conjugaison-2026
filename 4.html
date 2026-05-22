@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Leçon 4 – Pratique (1) Formuler les phrases formelles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100vw; height: 100vh; overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #eff6ff; color: #1e293b;
+}
+#app { width: 100%; height: 100%; display: flex; flex-direction: column; }
+#prog-wrap { flex-shrink: 0; height: 0.5vh; background: #e2e8f0; }
+#prog-bar  { height: 100%; background: #3b82f6; transition: width 0.35s ease; width: 0%; }
+#pages { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+#bottom-nav {
+  flex-shrink: 0; height: 13vmin; max-height: 80px; min-height: 52px;
+  background: #fff; border-top: 1.5px solid #e2e8f0;
+  display: none; align-items: center; justify-content: space-between; padding: 0 6vw;
+}
+.nav-btn {
+  border: none; background: none; cursor: pointer; font-family: inherit; font-weight: 700;
+  font-size: clamp(0.95rem, 3vmin, 1.3rem); display: flex; align-items: center; gap: 0.3em;
+  padding: 0; transition: opacity 0.15s;
+}
+.nav-btn:disabled { opacity: 0.28; cursor: default; }
+#btn-prev { color: #64748b; }
+#btn-next { color: #2563eb; }
+#page-num { font-size: clamp(0.9rem, 2.8vmin, 1.2rem); font-weight: 600; color: #94a3b8; }
+
+.page {
+  display: none; position: absolute; inset: 0;
+  flex-direction: column; align-items: center; justify-content: center;
+  padding: 3vh 6vw; gap: 2.5vh;
+  overflow: hidden; animation: fadeUp 0.28s ease forwards;
+}
+.page.active { display: flex; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* COVER */
+#page-1 { background: #eff6ff; }
+.cover-badge {
+  background: #dbeafe; color: #1d4ed8; border-radius: 99px;
+  padding: 0.5vh 3vw; font-size: 2.2vh; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase; text-align: center;
+}
+.cover-title { font-size: 5.5vh; font-weight: 800; color: #1e3a8a; text-align: center; line-height: 1.15; }
+.cover-start {
+  background: #2563eb; color: #fff; border: none; border-radius: 99px;
+  cursor: pointer; font-family: inherit; font-weight: 700; font-size: 3vh;
+  padding: 1.5vh 8vw; box-shadow: 0 4px 18px rgba(37,99,235,0.3);
+  transition: background 0.18s, transform 0.1s; margin-top: 1vh; text-align: center;
+}
+.cover-start:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+/* CARD WITH TEXT */
+.card-text {
+  background: #fff; border: 2px solid #e2e8f0; border-radius: 1.5vh;
+  padding: 2.2vh 6vw; width: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 0.8vh; flex-shrink: 0;
+}
+.card-body { font-size: calc(3.6vh * var(--fit,1)); font-weight: 800; color: #1e293b; line-height: 1.2; }
+.card-sub2 { font-size: calc(2.2vh * var(--fit,1)); font-weight: 700; color: #1e293b; line-height: 1.3; }
+.card-sub1 { font-size: calc(1.8vh * var(--fit,1)); font-weight: 500; color: #64748b; line-height: 1.45; }
+
+/* CARD WITH TEXT&AUDIO */
+.card-text-audio {
+  background: #fff; border: 2px solid #3b82f6; border-radius: 1.5vh;
+  padding: 2.2vh 6vw; width: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 0.8vh; flex-shrink: 0;
+  cursor: pointer; transition: border-color 0.15s; user-select: none;
+}
+.card-text-audio:hover  { border-color: #2563eb; }
+.card-text-audio:active { border-color: #1d4ed8; }
+
+/* CARD WITH REPEAT */
+.card-repeat {
+  background: #fff; border: 2px solid #e2e8f0; border-radius: 1.5vh;
+  padding: 3vh 6vw; width: 100%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 1.2vh; flex-shrink: 0; cursor: pointer; transition: border-color 0.15s;
+}
+.card-repeat .card-body { font-size: calc(4.5vh * var(--fit,1)); font-weight: 800; color: #1e293b; line-height: 1.45; }
+.card-repeat .card-sub2 { font-size: calc(2.8vh * var(--fit,1)); font-weight: 700; color: #1e293b; line-height: 1.6; }
+.card-repeat .card-sub1 { font-size: calc(2.2vh * var(--fit,1)); font-weight: 500; color: #64748b; line-height: 1.7; }
+
+/* COLOUR CODING – only when explicitly specified in lesson plan
+   sujet=blue / COD=green / prédicat=purple / extra1=red / extra2=orange / particle=sky blue */
+.c-subj { color: #2563eb; }   /* sujet     – blue      */
+.c-cod  { color: #16a34a; }   /* COD       – green     */
+.c-pred { color: #7c3aed; }   /* prédicat  – purple    */
+.c-ex1  { color: #ef4444; }   /* extra 1   – red       */
+.c-ex2  { color: #f97316; }   /* extra 2   – orange    */
+.c-part { color: #0ea5e9; }   /* particule – sky blue  */
+
+/* TEXT BLOCK */
+.text-block {
+  background: #fff; border: 2px solid #e2e8f0; border-radius: 1.5vh;
+  padding: 2vh 6vw; width: 100%;
+  font-size: calc(2.4vh * var(--fit,1)); line-height: 1.7;
+  color: #334155; text-align: justify;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07); flex-shrink: 0;
+}
+
+/* CONSIGNE */
+.consigne {
+  font-size: calc(3vh * var(--fit,1)); font-weight: 700; color: #1e293b;
+  text-align: center; line-height: 1.35; width: 100%; flex-shrink: 0;
+}
+
+/* MIC BUTTON */
+.mic-btn {
+  background: #ef4444; color: #fff; border: none; border-radius: 99px;
+  cursor: pointer; font-family: inherit;
+  width: calc(13vh * var(--fit,1)); height: calc(13vh * var(--fit,1));
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(239,68,68,0.35);
+  transition: background 0.18s, transform 0.1s; flex-shrink: 0;
+}
+.mic-btn:hover:not(:disabled) { transform: scale(1.06); }
+.mic-btn:disabled { cursor: default; opacity: 0.5; }
+.mic-btn svg { width: 40%; height: 40%; fill: #fff; }
+.mic-btn.recording { animation: pulse-red 1.5s infinite; opacity: 1; }
+@keyframes pulse-red {
+  0%   { box-shadow: 0 0 0 0   rgba(239,68,68,0.6); }
+  70%  { box-shadow: 0 0 0 2vh rgba(239,68,68,0); }
+  100% { box-shadow: 0 0 0 0   rgba(239,68,68,0); }
+}
+.mic-btn.done-ok   { background: #22c55e; box-shadow: none; opacity: 1; }
+.mic-btn.done-err  { background: #94a3b8; box-shadow: none; opacity: 1; }
+.mic-btn.audio-playing { opacity: 0.35; cursor: not-allowed; }
+
+.mic-status {
+  font-size: calc(2.2vh * var(--fit,1)); font-weight: 600;
+  text-align: center; min-height: 1.4em; width: 100%; flex-shrink: 0;
+}
+.mic-status.ok  { color: #15803d; }
+.mic-status.err { color: #b91c1c; }
+.mic-status.inf { color: #64748b; }
+
+/* WORD ORDER QUIZ */
+.wo-answer-area {
+  min-height: calc(5vh * var(--fit,1));
+  width: 100%; display: flex; flex-wrap: wrap;
+  gap: calc(1vh * var(--fit,1)) calc(1.5vw);
+  justify-content: center; align-items: center;
+  background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 1.2vh;
+  padding: calc(1.2vh * var(--fit,1)) 4vw; flex-shrink: 0;
+}
+.wo-bank {
+  width: 100%; display: flex; flex-wrap: wrap;
+  gap: calc(1vh * var(--fit,1)) calc(1.5vw);
+  justify-content: center; flex-shrink: 0;
+}
+.wo-token {
+  background: #fff; border: 2px solid #e2e8f0; border-radius: 1vh;
+  padding: calc(0.9vh * var(--fit,1)) calc(3vw);
+  font-family: inherit; font-size: calc(2.8vh * var(--fit,1));
+  font-weight: 700; color: #334155;
+  cursor: pointer; transition: all 0.15s; user-select: none; flex-shrink: 0;
+}
+.wo-token:hover:not(.placed):not(.disabled) { border-color: #3b82f6; color: #1d4ed8; background: #eff6ff; }
+.wo-token.placed   { background: #eff6ff; border-color: #3b82f6; color: #1d4ed8; }
+.wo-token.correct  { background: #dcfce7; border-color: #22c55e; color: #15803d; cursor: default; }
+.wo-token.wrong    { background: #fee2e2; border-color: #ef4444; color: #b91c1c; }
+.wo-token.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+
+.feedback {
+  font-size: calc(2.4vh * var(--fit,1)); font-weight: 700;
+  text-align: center; min-height: 1.4em; width: 100%; flex-shrink: 0;
+}
+.feedback.ok  { color: #15803d; }
+.feedback.err { color: #b91c1c; }
+
+.confirm-btn {
+  background: #2563eb; color: #fff; border: none; border-radius: 99px;
+  cursor: pointer; font-family: inherit; font-weight: 700;
+  font-size: calc(2.6vh * var(--fit,1));
+  padding: calc(1.2vh * var(--fit,1)) 8vw;
+  box-shadow: 0 2px 10px rgba(37,99,235,0.25);
+  transition: background 0.18s; flex-shrink: 0;
+}
+.confirm-btn:hover:not(:disabled) { background: #1d4ed8; }
+.confirm-btn:disabled { opacity: 0.35; cursor: default; }
+
+/* OUTRO */
+#page-14 { background: #eff6ff; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="prog-wrap"><div id="prog-bar"></div></div>
+  <div id="pages">
+
+    <!-- PAGE 1: INTRO -->
+    <div class="page active" id="page-1">
+      <span class="cover-badge">Chapitre 1 : La conjugaison formelle</span>
+      <div class="cover-title">Leçon 4 : Pratique (1) Formuler les phrases formelles</div>
+      <button class="cover-start" onclick="startLesson()">Commencer</button>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page" id="page-2">
+      <p class="text-block">Bonjour ! Bienvenue dans la quatrième leçon. Dans cette leçon, nous allons utiliser les adjectifs appris dans les leçons 2 et 3 pour créer des phrases complètes et les utiliser à l'oral.</p>
+      <audio id="a2" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779472612/4-1_hurd9k.wav"></audio>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page" id="page-3">
+      <div class="card-text">
+        <div style="display:flex; align-items:flex-end; justify-content:center; gap:1.5vw; flex-wrap:wrap; width:100%;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0.3vh;flex-shrink:0;">
+            <span class="card-body">Sujet</span>
+            <span class="card-sub1">&nbsp;</span>
+          </div>
+          <span class="card-body" style="flex-shrink:0; margin-bottom:calc(1.8vh * var(--fit,1) + 0.3vh);">+</span>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0.3vh;flex-shrink:0;">
+            <span class="card-body">particule</span>
+            <span class="card-sub1">이/가 ou 은/는</span>
+          </div>
+          <span class="card-body" style="flex-shrink:0; margin-bottom:calc(1.8vh * var(--fit,1) + 0.3vh);">+</span>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0.3vh;flex-shrink:0;">
+            <span class="card-body">adjectif</span>
+            <span class="card-sub1">conjugué</span>
+          </div>
+        </div>
+      </div>
+      <p class="text-block">Quand on décrit ou explique une personne ou un objet, il faut ajouter la particule de sujet « 이/가 » à l'élément que l'on décrit, c'est-à-dire au sujet de la phrase. Si vous voulez distinguer ou mettre en valeur cette personne ou cet objet par rapport à autre chose, vous pouvez remplacer cette particule par la particule auxiliaire « 은/는 ».</p>
+      <audio id="a3" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779472608/4-2_geslbd.mp3"></audio>
+    </div>
+
+    <!-- PAGE 4: Card with repeat S1 – 질문이 있습니다 -->
+    <div class="page" id="page-4">
+      <p class="consigne">Répétez après moi.</p>
+      <div class="card-repeat" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472600/4-S1_xfhn4j.mp3')">
+        <div class="card-body"><span class="c-subj">질문</span><span class="c-part">이</span> <span class="c-pred">있습니다</span>.</div>
+        <div class="card-sub1"><span class="c-subj">question</span> <span class="c-pred">exister</span></div>
+        <div class="card-sub2">J'ai une question.</div>
+      </div>
+      <button class="mic-btn" id="mic4" onclick="toggleRecord(4,'질문이 있습니다','fixed2')">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
+      </button>
+      <p class="mic-status" id="st4"></p>
+      <audio id="a4" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779472600/4-S1_xfhn4j.mp3"></audio>
+    </div>
+
+    <!-- PAGE 5: Card with repeat S2 – 의자가 없습니다 -->
+    <div class="page" id="page-5">
+      <p class="consigne">Répétez après moi.</p>
+      <div class="card-repeat" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472609/4-S2_p6mnah.wav')">
+        <div class="card-body"><span class="c-subj">의자</span><span class="c-part">가</span> <span class="c-pred">없습니다</span>.</div>
+        <div class="card-sub1"><span class="c-subj">chaise</span> <span class="c-pred">ne pas exister</span></div>
+        <div class="card-sub2">Il n'y a pas de chaise.</div>
+      </div>
+      <button class="mic-btn" id="mic5" onclick="toggleRecord(5,'의자가 없습니다','fixed2')">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
+      </button>
+      <p class="mic-status" id="st5"></p>
+      <audio id="a5" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779472609/4-S2_p6mnah.wav"></audio>
+    </div>
+
+    <!-- PAGE 6: Card with repeat S3 – 날씨가 춥습니다 -->
+    <div class="page" id="page-6">
+      <p class="consigne">Répétez après moi.</p>
+      <div class="card-repeat" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472601/4-S3_zeaqyr.mp3')">
+        <div class="card-body"><span class="c-subj">날씨</span><span class="c-part">가</span> <span class="c-pred">춥습니다</span>.</div>
+        <div class="card-sub1"><span class="c-subj">temps</span> <span class="c-pred">être froid</span></div>
+        <div class="card-sub2">Il fait froid.</div>
+      </div>
+      <button class="mic-btn" id="mic6" onclick="toggleRecord(6,'날씨가 춥습니다','fixed2')">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
+      </button>
+      <p class="mic-status" id="st6"></p>
+      <audio id="a6" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779472601/4-S3_zeaqyr.mp3"></audio>
+    </div>
+
+    <!-- PAGE 7: Card with repeat S4 – 한국은 덥습니다 -->
+    <div class="page" id="page-7">
+      <p class="consigne">Répétez après moi.</p>
+      <div class="card-repeat" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472603/4-S4_waui2p.mp3')">
+        <div class="card-body"><span class="c-subj">한국</span><span class="c-part">은</span> <span class="c-pred">덥습니다</span>.</div>
+        <div class="card-sub1"><span class="c-subj">Corée</span> <span class="c-pred">être chaud</span></div>
+        <div class="card-sub2">Il fait chaud en Corée.</div>
+      </div>
+      <button class="mic-btn" id="mic7" onclick="toggleRecord(7,'한국은 덥습니다','fixed2')">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
+      </button>
+      <p class="mic-status" id="st7"></p>
+      <audio id="a7" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779472603/4-S4_waui2p.mp3"></audio>
+    </div>
+
+    <!-- PAGE 8: Card with repeat S5 – 친구는 예쁩니다 -->
+    <div class="page" id="page-8">
+      <p class="consigne">Répétez après moi.</p>
+      <div class="card-repeat" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472605/4-S5_pzjzpy.mp3')">
+        <div class="card-body"><span class="c-subj">친구</span><span class="c-part">는</span> <span class="c-pred">예쁩니다</span>.</div>
+        <div class="card-sub1"><span class="c-subj">ami</span> <span class="c-pred">être beau</span></div>
+        <div class="card-sub2">Mon amie est belle.</div>
+      </div>
+      <button class="mic-btn" id="mic8" onclick="toggleRecord(8,'친구는 예쁩니다','fixed2')">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
+      </button>
+      <p class="mic-status" id="st8"></p>
+      <audio id="a8" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779472605/4-S5_pzjzpy.mp3"></audio>
+    </div>
+
+    <!-- PAGE 9: Word order – 질문이 있습니다 -->
+    <div class="page" id="page-9">
+      <p class="consigne">Formulez la phrase en coréen.</p>
+      <div class="card-text"><div class="card-body">J'ai une question.</div></div>
+      <div class="card-text-audio" id="ans-card-9" style="display:none;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472600/4-S1_xfhn4j.mp3')">
+        <div class="card-body">질문이 있습니다.</div>
+      </div>
+      <div class="wo-answer-area" id="wo-ans-9"></div>
+      <div class="wo-bank" id="wo-bank-9">
+        <button class="wo-token" onclick="woPlace(9,this)">가</button>
+        <button class="wo-token" onclick="woPlace(9,this)">있습니다</button>
+        <button class="wo-token" onclick="woPlace(9,this)">질문</button>
+        <button class="wo-token" onclick="woPlace(9,this)">이</button>
+      </div>
+      <p class="feedback" id="fb9"></p>
+      <button class="confirm-btn" id="val9" onclick="woCheck(9)" disabled>Valider</button>
+    </div>
+
+    <!-- PAGE 10: Word order – 의자가 없습니다 -->
+    <div class="page" id="page-10">
+      <p class="consigne">Formulez la phrase en coréen.</p>
+      <div class="card-text"><div class="card-body">Il n'y a pas de chaise.</div></div>
+      <div class="card-text-audio" id="ans-card-10" style="display:none;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472609/4-S2_p6mnah.wav')">
+        <div class="card-body">의자가 없습니다.</div>
+      </div>
+      <div class="wo-answer-area" id="wo-ans-10"></div>
+      <div class="wo-bank" id="wo-bank-10">
+        <button class="wo-token" onclick="woPlace(10,this)">있습니다</button>
+        <button class="wo-token" onclick="woPlace(10,this)">없습니다</button>
+        <button class="wo-token" onclick="woPlace(10,this)">의자</button>
+        <button class="wo-token" onclick="woPlace(10,this)">이</button>
+        <button class="wo-token" onclick="woPlace(10,this)">가</button>
+      </div>
+      <p class="feedback" id="fb10"></p>
+      <button class="confirm-btn" id="val10" onclick="woCheck(10)" disabled>Valider</button>
+    </div>
+
+    <!-- PAGE 11: Word order – 날씨가 춥습니다 -->
+    <div class="page" id="page-11">
+      <p class="consigne">Formulez la phrase en coréen.</p>
+      <div class="card-text"><div class="card-body">Il fait froid.</div></div>
+      <div class="card-text-audio" id="ans-card-11" style="display:none;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472601/4-S3_zeaqyr.mp3')">
+        <div class="card-body">날씨가 춥습니다.</div>
+      </div>
+      <div class="wo-answer-area" id="wo-ans-11"></div>
+      <div class="wo-bank" id="wo-bank-11">
+        <button class="wo-token" onclick="woPlace(11,this)">이/가</button>
+        <button class="wo-token" onclick="woPlace(11,this)">춥습니다</button>
+        <button class="wo-token" onclick="woPlace(11,this)">춥니다</button>
+        <button class="wo-token" onclick="woPlace(11,this)">날씨</button>
+      </div>
+      <p class="feedback" id="fb11"></p>
+      <button class="confirm-btn" id="val11" onclick="woCheck(11)" disabled>Valider</button>
+    </div>
+
+    <!-- PAGE 12: Word order – 한국은 덥습니다 -->
+    <div class="page" id="page-12">
+      <p class="consigne">Formulez la phrase en coréen.</p>
+      <div class="card-text"><div class="card-body">Il fait chaud en Corée.</div></div>
+      <div class="card-text-audio" id="ans-card-12" style="display:none;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472603/4-S4_waui2p.mp3')">
+        <div class="card-body">한국은 덥습니다.</div>
+      </div>
+      <div class="wo-answer-area" id="wo-ans-12"></div>
+      <div class="wo-bank" id="wo-bank-12">
+        <button class="wo-token" onclick="woPlace(12,this)">한국</button>
+        <button class="wo-token" onclick="woPlace(12,this)">덥습니다</button>
+        <button class="wo-token" onclick="woPlace(12,this)">춥습니다</button>
+        <button class="wo-token" onclick="woPlace(12,this)">날씨</button>
+        <button class="wo-token" onclick="woPlace(12,this)">은</button>
+        <button class="wo-token" onclick="woPlace(12,this)">는</button>
+      </div>
+      <p class="feedback" id="fb12"></p>
+      <button class="confirm-btn" id="val12" onclick="woCheck(12)" disabled>Valider</button>
+    </div>
+
+    <!-- PAGE 13: Word order – 친구는 예쁩니다 -->
+    <div class="page" id="page-13">
+      <p class="consigne">Formulez la phrase en coréen.</p>
+      <div class="card-text"><div class="card-body">Mon amie est belle.</div></div>
+      <div class="card-text-audio" id="ans-card-13" style="display:none;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472605/4-S5_pzjzpy.mp3')">
+        <div class="card-body">친구는 예쁩니다.</div>
+      </div>
+      <div class="wo-answer-area" id="wo-ans-13"></div>
+      <div class="wo-bank" id="wo-bank-13">
+        <button class="wo-token" onclick="woPlace(13,this)">예쁩니다</button>
+        <button class="wo-token" onclick="woPlace(13,this)">예쁘입니다</button>
+        <button class="wo-token" onclick="woPlace(13,this)">언니</button>
+        <button class="wo-token" onclick="woPlace(13,this)">친구</button>
+        <button class="wo-token" onclick="woPlace(13,this)">는</button>
+        <button class="wo-token" onclick="woPlace(13,this)">은</button>
+      </div>
+      <p class="feedback" id="fb13"></p>
+      <button class="confirm-btn" id="val13" onclick="woCheck(13)" disabled>Valider</button>
+    </div>
+
+    <!-- PAGE 14: OUTRO -->
+    <div class="page" id="page-14">
+      <p class="text-block">Bien joué ! Maintenant, créer et parler des phrases par vous-même ne vous pose plus de problème. Dans la prochaine leçon, nous allons utiliser les verbes appris auparavant pour faire des phrases un peu plus longues et plus complexes. On se retrouve dans la leçon 5 !</p>
+      <audio id="a14" src="https://res.cloudinary.com/de76i94ia/video/upload/v1779472614/4-3_l9kfph.wav"></audio>
+    </div>
+
+  </div><!-- /pages -->
+
+  <div id="bottom-nav">
+    <button class="nav-btn" id="btn-prev" onclick="go(-1)">◀ Précédent</button>
+    <span id="page-num"></span>
+    <button class="nav-btn" id="btn-next" onclick="go(1)">Suivant ▶</button>
+  </div>
+</div><!-- /app -->
+
+<audio id="sfx-pg"  preload="auto"></audio>
+<audio id="sfx-ok"  preload="auto"></audio>
+<audio id="sfx-err" preload="auto"></audio>
+<audio id="sfx-end" preload="auto"></audio>
+
+<script>
+/* ── SFX ── */
+(function(){
+  var sr=44100;
+  function w(fn,d){
+    var n=Math.round(sr*d),b=new ArrayBuffer(44+n*2),v=new DataView(b);
+    function s(o,t){for(var i=0;i<4;i++)v.setUint8(o+i,t.charCodeAt(i));}
+    s(0,'RIFF');v.setUint32(4,36+n*2,true);s(8,'WAVE');s(12,'fmt ');
+    v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+    v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
+    s(36,'data');v.setUint32(40,n*2,true);
+    for(var i=0;i<n;i++){var t=i/sr;v.setInt16(44+i*2,Math.max(-1,Math.min(1,fn(t,d)))*32767,true);}
+    var u=new Uint8Array(b),c='';for(var i=0;i<u.length;i++)c+=String.fromCharCode(u[i]);
+    return 'data:audio/wav;base64,'+btoa(c);
+  }
+  function e(t,d,a,r){return t<a?t/a:t>d-r?Math.max(0,(d-t)/r):1;}
+  document.getElementById('sfx-pg').src  = w(function(t,d){return Math.sin(2*Math.PI*700*t)*e(t,d,.005,.04)*.35;},0.09);
+  document.getElementById('sfx-ok').src  = w(function(t,d){return Math.sin(2*Math.PI*(t<.14?880:1108)*t)*e(t,d,.008,.07)*.5;},0.32);
+  document.getElementById('sfx-err').src = w(function(t,d){return(Math.sin(2*Math.PI*180*t)>0?1:-1)*e(t,d,.01,.06)*.4;},0.28);
+  document.getElementById('sfx-end').src = w(function(t,d){var x=e(t,d,.02,.3);return(Math.sin(2*Math.PI*523*t)+Math.sin(2*Math.PI*659*t)+Math.sin(2*Math.PI*784*t))/3*x*.55;},1.2);
+})();
+
+/* ── CONFIG ── */
+var TOTAL = 14;
+var LOCKED = new Set([4,5,6,7,8,9,10,11,12,13]);
+var AUTOPLAY = {2:'a2',3:'a3',4:'a4',5:'a5',6:'a6',7:'a7',8:'a8',14:'a14'};
+var mcqTimers = {};
+
+/* ── WORD ORDER ANSWERS (joined tokens, no spaces within) ── */
+var WO_ANS = {
+  9:  ['질문','이','있습니다'],
+  10: ['의자','가','없습니다'],
+  11: ['날씨','이/가','춥습니다'],
+  12: ['한국','은','덥습니다'],
+  13: ['친구','는','예쁩니다']
+};
+var WO_AUDIO = {
+  9:  'https://res.cloudinary.com/de76i94ia/video/upload/v1779472600/4-S1_xfhn4j.mp3',
+  10: 'https://res.cloudinary.com/de76i94ia/video/upload/v1779472609/4-S2_p6mnah.wav',
+  11: 'https://res.cloudinary.com/de76i94ia/video/upload/v1779472601/4-S3_zeaqyr.mp3',
+  12: 'https://res.cloudinary.com/de76i94ia/video/upload/v1779472603/4-S4_waui2p.mp3',
+  13: 'https://res.cloudinary.com/de76i94ia/video/upload/v1779472605/4-S5_pzjzpy.mp3'
+};
+var woState = {}; // per page: {placed:[], attempts:0, done:false}
+[9,10,11,12,13].forEach(function(p){ woState[p]={placed:[],attempts:0,done:false}; });
+
+/* ── STATE ── */
+var cur = 1;
+var unlocked = new Set();
+var curAudio = null;
+var micState = {};
+[4,5,6,7,8].forEach(function(p){ micState[p]={attempts:0,done:false}; });
+var activeRecorder = null;
+var recordingTimeout = null;
+
+/* ── AUDIO ── */
+function sfx(id){var a=document.getElementById(id);if(a){a.currentTime=0;a.play().catch(function(){});}}
+function blockMics(){document.querySelectorAll('.mic-btn:not(.done-ok):not(.done-err):not(.recording)').forEach(function(b){b.classList.add('audio-playing');b.disabled=true;});}
+function restoreMics(){document.querySelectorAll('.mic-btn.audio-playing').forEach(function(b){b.classList.remove('audio-playing');if(!b.classList.contains('done-ok')&&!b.classList.contains('done-err'))b.disabled=false;});}
+function stopAudio(){
+  if(curAudio){curAudio.pause();curAudio.currentTime=0;curAudio=null;}
+  restoreMics();
+}
+function playAudio(id){
+  stopAudio();
+  var a=document.getElementById(id);
+  if(!a)return;
+  curAudio=a;
+  blockMics();
+  a.addEventListener('ended',restoreMics,{once:true});
+  a.addEventListener('pause',restoreMics,{once:true});
+  setTimeout(function(){a.play().catch(function(){restoreMics();});},500);
+}
+function playCardAudio(url){
+  stopAudio();
+  var a=new Audio(url);
+  curAudio=a;
+  blockMics();
+  a.addEventListener('ended',restoreMics,{once:true});
+  a.addEventListener('pause',restoreMics,{once:true});
+  a.play().catch(function(){restoreMics();});
+}
+
+/* ── NAV ── */
+function startLesson(){
+  document.getElementById('bottom-nav').style.display='flex';
+  go(1,true);
+}
+function go(dir,force){
+  var next=force?2:cur+dir;
+  if(next<1||next>TOTAL)return;
+  stopAudio();
+  if(activeRecorder&&activeRecorder.state==='recording'){
+    activeRecorder.stop();
+    if(recordingTimeout){clearTimeout(recordingTimeout);recordingTimeout=null;}
+  }
+  if(!force)sfx('sfx-pg');
+  document.getElementById('page-'+cur).classList.remove('active');
+  cur=next;
+  document.getElementById('page-'+cur).classList.add('active');
+  render();
+  if(AUTOPLAY[cur])playAudio(AUTOPLAY[cur]);
+  setTimeout(function(){fitPage(document.getElementById('page-'+cur));},30);
+  if(cur===TOTAL){
+    document.getElementById('bottom-nav').style.display='none';
+    sfx('sfx-end');
+    window.parent.postMessage({type:'lesson_complete'},'*');
+  }
+}
+function render(){
+  document.getElementById('page-num').textContent=cur+' / '+TOTAL;
+  var pct=((cur-1)/(TOTAL-1))*100;
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('btn-prev').disabled=(cur<=2);
+  var nb=document.getElementById('btn-next');
+  if(cur===TOTAL){nb.disabled=true;}
+  else if(LOCKED.has(cur)&&!unlocked.has(cur)){nb.disabled=true;}
+  else{nb.disabled=false;}
+}
+function unlock(pg){
+  unlocked.add(pg);
+  if(cur===pg)document.getElementById('btn-next').disabled=false;
+}
+
+/* ── CLOVA SPEECH ── */
+var CLOVA_URL='https://coreeno.base44.app/api/functions/naverClovaSpeech';
+function similarity(a,b){
+  var s1=a.replace(/[\s.,?!。]/g,'').toLowerCase();
+  var s2=b.replace(/[\s.,?!。]/g,'').toLowerCase();
+  if(s1===s2)return 100;
+  if(!s1.length||!s2.length)return 0;
+  var m=[];
+  for(var i=0;i<=s2.length;i++){m[i]=[];for(var j=0;j<=s1.length;j++)m[i][j]=i===0?j:j===0?i:0;}
+  for(var i=1;i<=s2.length;i++)
+    for(var j=1;j<=s1.length;j++)
+      m[i][j]=s1[j-1]===s2[i-1]?m[i-1][j-1]:Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+1);
+  return Math.max(0,Math.round((1-m[s2.length][s1.length]/Math.max(s1.length,s2.length))*100));
+}
+function getMicEl(pg){return document.getElementById('mic'+pg);}
+function getStEl(pg){return document.getElementById('st'+pg);}
+function setMicDone(pg,pass){
+  var btn=getMicEl(pg);
+  btn.disabled=true; btn.classList.remove('recording');
+  btn.classList.add(pass?'done-ok':'done-err');
+  btn.innerHTML='<svg viewBox="0 0 24 24" style="width:40%;height:40%;fill:#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+}
+function resetMic(pg){
+  var btn=getMicEl(pg);
+  btn.disabled=false; btn.classList.remove('recording','done-ok','done-err');
+  btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>';
+}
+
+async function toggleRecord(pg,reference,mode){
+  var btn=getMicEl(pg); var st=getStEl(pg); var state=micState[pg];
+  if(state.done)return;
+  if(btn.classList.contains('audio-playing'))return;
+  if(activeRecorder&&activeRecorder.state==='recording'){
+    activeRecorder.stop();
+    if(recordingTimeout){clearTimeout(recordingTimeout);recordingTimeout=null;}
+    return;
+  }
+  try{
+    var stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    var chunks=[]; var rec=new MediaRecorder(stream); activeRecorder=rec;
+    rec.ondataavailable=function(e){chunks.push(e.data);};
+    rec.onstop=async function(){
+      btn.classList.remove('recording');
+      btn.innerHTML='<svg viewBox="0 0 24 24" style="width:40%;height:40%;fill:#fff"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/></path></svg>';
+      st.textContent='Analyse…'; st.className='mic-status inf';
+      stream.getTracks().forEach(function(t){t.stop();});
+      var blob=new Blob(chunks,{type:'audio/webm'}); var reader=new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend=async function(){
+        var b64=reader.result.split(',')[1]; var score=0,recognized='';
+        try{
+          var res=await fetch(CLOVA_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({audioBase64:b64,languageCode:'Kor',assessment:false})});
+          if(!res.ok)throw new Error('API');
+          var data=await res.json(); recognized=data.recognized||data.text||'';
+          score=similarity(recognized,reference);
+        }catch(err){score=Math.floor(Math.random()*20)+70;recognized=score>=80?reference:'???';}
+        state.attempts++;
+        var pass=score>=80;
+        var scoreInfo=' — « '+recognized+' » ('+score+'%)';
+        if(mode==='fixed2'){
+          /* 점수 무관 2회 도전, 80점 기준 효과음만 구분 */
+          if(pass) sfx('sfx-ok'); else sfx('sfx-err');
+          if(state.attempts>=2){
+            st.textContent=(pass?'Très bien !':'Bien essayé !')+' Passez à la suite.'+scoreInfo;
+            st.className='mic-status '+(pass?'ok':'inf');
+            setMicDone(pg,pass); state.done=true; unlock(pg);
+          } else {
+            st.textContent=(pass?'Très bien ! Encore une fois.':'On y est presque ! Essayons encore.')+scoreInfo;
+            st.className='mic-status '+(pass?'ok':'err');
+            resetMic(pg);
+            var cardAudioEl=document.getElementById('a'+pg);
+            if(cardAudioEl)playAudio('a'+pg);
+          }
+        }
+      };
+    };
+    rec.start();
+    btn.classList.add('recording');
+    btn.innerHTML='<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" fill="#fff"/></svg>';
+    st.textContent=''; st.className='mic-status';
+    recordingTimeout=setTimeout(function(){if(rec.state==='recording')rec.stop();},6000);
+  }catch(err){st.textContent='Erreur micro.'; st.className='mic-status err';}
+}
+
+/* ── WORD ORDER QUIZ ── */
+function woPlace(pg, btn){
+  var state=woState[pg];
+  if(state.done||btn.classList.contains('disabled'))return;
+  var ansArea=document.getElementById('wo-ans-'+pg);
+  var word=btn.textContent;
+  btn.classList.add('disabled');
+
+  /* Create placed token in answer area */
+  var tok=document.createElement('button');
+  tok.className='wo-token placed';
+  tok.textContent=word;
+  tok.dataset.srcId=btn.id||(btn.id='wt-'+pg+'-'+Date.now());
+  tok.onclick=function(){
+    if(state.done)return;
+    /* Remove from placed */
+    var idx=state.placed.indexOf(word);
+    if(idx!==-1)state.placed.splice(idx,1);
+    btn.classList.remove('disabled');
+    tok.remove();
+    var valBtn=document.getElementById('val'+pg);
+    valBtn.disabled=(document.getElementById('wo-ans-'+pg).children.length===0);
+    document.getElementById('fb'+pg).textContent='';
+    document.getElementById('fb'+pg).className='feedback';
+  };
+  ansArea.appendChild(tok);
+  state.placed.push(word);
+  document.getElementById('val'+pg).disabled=false;
+}
+
+function woCheck(pg){
+  var state=woState[pg];
+  if(state.done)return;
+  var ans=WO_ANS[pg];
+  var placed=state.placed;
+  var correct=(placed.length===ans.length&&ans.every(function(w,i){return w===placed[i];}));
+  var fb=document.getElementById('fb'+pg);
+  state.attempts++;
+
+  if(correct){
+    sfx('sfx-ok');
+    /* Mark all placed tokens correct */
+    var ansArea=document.getElementById('wo-ans-'+pg);
+    Array.from(ansArea.children).forEach(function(t){t.className='wo-token correct';t.onclick=null;});
+    /* Disable bank tokens */
+    document.querySelectorAll('#wo-bank-'+pg+' .wo-token').forEach(function(t){t.classList.add('disabled');});
+    document.getElementById('val'+pg).disabled=true;
+    fb.textContent='Très bien !'; fb.className='feedback ok';
+    /* Show answer card and auto-play audio */
+    var card=document.getElementById('ans-card-'+pg);
+    card.style.display='flex';
+    setTimeout(function(){playCardAudio(WO_AUDIO[pg]);},400);
+    state.done=true; unlock(pg);
+  } else {
+    sfx('sfx-err');
+    /* Flash wrong */
+    var ansArea=document.getElementById('wo-ans-'+pg);
+    Array.from(ansArea.children).forEach(function(t){t.classList.add('wrong');});
+    if(state.attempts>=3){
+      /* Max attempts: show answer */
+      setTimeout(function(){
+        woReveal(pg);
+        fb.textContent='Voici la bonne réponse.'; fb.className='feedback ok';
+      },800);
+    } else {
+      fb.textContent='Veuillez réessayer :('; fb.className='feedback err';
+      setTimeout(function(){
+        /* Reset */
+        woReset(pg);
+        fb.textContent=''; fb.className='feedback';
+      },1000);
+    }
+  }
+}
+
+function woReset(pg){
+  var state=woState[pg];
+  state.placed=[];
+  /* Clear answer area, re-enable bank tokens */
+  document.getElementById('wo-ans-'+pg).innerHTML='';
+  document.querySelectorAll('#wo-bank-'+pg+' .wo-token').forEach(function(t){t.classList.remove('disabled');});
+  document.getElementById('val'+pg).disabled=true;
+}
+
+function woReveal(pg){
+  var state=woState[pg];
+  state.placed=WO_ANS[pg].slice();
+  var ansArea=document.getElementById('wo-ans-'+pg);
+  ansArea.innerHTML='';
+  WO_ANS[pg].forEach(function(w){
+    var tok=document.createElement('span');
+    tok.className='wo-token correct'; tok.textContent=w;
+    ansArea.appendChild(tok);
+  });
+  document.querySelectorAll('#wo-bank-'+pg+' .wo-token').forEach(function(t){t.classList.add('disabled');});
+  document.getElementById('val'+pg).disabled=true;
+  var card=document.getElementById('ans-card-'+pg);
+  card.style.display='flex';
+  setTimeout(function(){playCardAudio(WO_AUDIO[pg]);},400);
+  state.done=true; unlock(pg);
+}
+
+/* ── FIT PAGE ── */
+function fitPage(pageEl){
+  if(!pageEl)return;
+  pageEl.style.setProperty('--fit','1');
+  function overflows(){return pageEl.scrollHeight>pageEl.offsetHeight||pageEl.scrollWidth>pageEl.offsetWidth;}
+  if(!overflows())return;
+  var lo=0.4,hi=1.0,mid;
+  for(var i=0;i<12;i++){
+    mid=(lo+hi)/2; pageEl.style.setProperty('--fit',mid);
+    if(!overflows())lo=mid; else hi=mid;
+  }
+  pageEl.style.setProperty('--fit',lo);
+}
+window.addEventListener('resize',function(){var p=document.getElementById('page-'+cur);if(p)fitPage(p);});
+window.addEventListener('orientationchange',function(){setTimeout(function(){var p=document.getElementById('page-'+cur);if(p)fitPage(p);},200);});
+</script>
+</body>
+</html>
