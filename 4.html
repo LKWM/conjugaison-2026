@@ -148,13 +148,12 @@ html, body {
 .mic-status.inf { color: #64748b; }
 
 /* WORD ORDER QUIZ */
-.wo-answer-area {
-  min-height: calc(5vh * var(--fit,1));
-  width: 100%; display: flex; flex-wrap: wrap;
-  gap: calc(1vh * var(--fit,1)) calc(1.5vw);
+/* WORD ORDER – answer card inner token area */
+.wo-card-inner {
+  display: flex; flex-wrap: wrap; gap: 0.6vh 1vw;
   justify-content: center; align-items: center;
-  background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 1.2vh;
-  padding: calc(1.2vh * var(--fit,1)) 4vw; flex-shrink: 0;
+  min-height: calc(3.6vh * var(--fit,1) * 1.2);
+  width: 100%;
 }
 .wo-bank {
   width: 100%; display: flex; flex-wrap: wrap;
@@ -317,28 +316,26 @@ html, body {
     <div class="page" id="page-9">
       <p class="consigne">Formulez la phrase en coréen.</p>
       <div class="card-text"><div class="card-body">J'ai une question.</div></div>
-      <div class="card-text-audio" id="ans-card-9" style="display:none;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472600/4-S1_xfhn4j.mp3')">
-        <div class="card-body">질문이 있습니다.</div>
+      <div class="card-text-audio" id="ans-card-9" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472600/4-S1_xfhn4j.mp3')">
+        <div class="wo-card-inner" id="wo-ans-9"></div>
       </div>
-      <div class="wo-answer-area" id="wo-ans-9"></div>
       <div class="wo-bank" id="wo-bank-9">
         <button class="wo-token" onclick="woPlace(9,this)">가</button>
         <button class="wo-token" onclick="woPlace(9,this)">있습니다</button>
         <button class="wo-token" onclick="woPlace(9,this)">질문</button>
         <button class="wo-token" onclick="woPlace(9,this)">이</button>
       </div>
-      <p class="feedback" id="fb9"></p>
       <button class="confirm-btn" id="val9" onclick="woCheck(9)" disabled>Valider</button>
+      <p class="feedback" id="fb9"></p>
     </div>
 
     <!-- PAGE 10: Word order – 의자가 없습니다 -->
     <div class="page" id="page-10">
       <p class="consigne">Formulez la phrase en coréen.</p>
       <div class="card-text"><div class="card-body">Il n'y a pas de chaise.</div></div>
-      <div class="card-text-audio" id="ans-card-10" style="display:none;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472609/4-S2_p6mnah.wav')">
-        <div class="card-body">의자가 없습니다.</div>
+      <div class="card-text-audio" id="ans-card-10" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472609/4-S2_p6mnah.wav')">
+        <div class="wo-card-inner" id="wo-ans-10"></div>
       </div>
-      <div class="wo-answer-area" id="wo-ans-10"></div>
       <div class="wo-bank" id="wo-bank-10">
         <button class="wo-token" onclick="woPlace(10,this)">있습니다</button>
         <button class="wo-token" onclick="woPlace(10,this)">없습니다</button>
@@ -346,36 +343,34 @@ html, body {
         <button class="wo-token" onclick="woPlace(10,this)">이</button>
         <button class="wo-token" onclick="woPlace(10,this)">가</button>
       </div>
-      <p class="feedback" id="fb10"></p>
       <button class="confirm-btn" id="val10" onclick="woCheck(10)" disabled>Valider</button>
+      <p class="feedback" id="fb10"></p>
     </div>
 
     <!-- PAGE 11: Word order – 날씨가 춥습니다 -->
     <div class="page" id="page-11">
       <p class="consigne">Formulez la phrase en coréen.</p>
       <div class="card-text"><div class="card-body">Il fait froid.</div></div>
-      <div class="card-text-audio" id="ans-card-11" style="display:none;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472601/4-S3_zeaqyr.mp3')">
-        <div class="card-body">날씨가 춥습니다.</div>
+      <div class="card-text-audio" id="ans-card-11" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472601/4-S3_zeaqyr.mp3')">
+        <div class="wo-card-inner" id="wo-ans-11"></div>
       </div>
-      <div class="wo-answer-area" id="wo-ans-11"></div>
       <div class="wo-bank" id="wo-bank-11">
         <button class="wo-token" onclick="woPlace(11,this)">이/가</button>
         <button class="wo-token" onclick="woPlace(11,this)">춥습니다</button>
         <button class="wo-token" onclick="woPlace(11,this)">춥니다</button>
         <button class="wo-token" onclick="woPlace(11,this)">날씨</button>
       </div>
-      <p class="feedback" id="fb11"></p>
       <button class="confirm-btn" id="val11" onclick="woCheck(11)" disabled>Valider</button>
+      <p class="feedback" id="fb11"></p>
     </div>
 
     <!-- PAGE 12: Word order – 한국은 덥습니다 -->
     <div class="page" id="page-12">
       <p class="consigne">Formulez la phrase en coréen.</p>
       <div class="card-text"><div class="card-body">Il fait chaud en Corée.</div></div>
-      <div class="card-text-audio" id="ans-card-12" style="display:none;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472603/4-S4_waui2p.mp3')">
-        <div class="card-body">한국은 덥습니다.</div>
+      <div class="card-text-audio" id="ans-card-12" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472603/4-S4_waui2p.mp3')">
+        <div class="wo-card-inner" id="wo-ans-12"></div>
       </div>
-      <div class="wo-answer-area" id="wo-ans-12"></div>
       <div class="wo-bank" id="wo-bank-12">
         <button class="wo-token" onclick="woPlace(12,this)">한국</button>
         <button class="wo-token" onclick="woPlace(12,this)">덥습니다</button>
@@ -384,18 +379,17 @@ html, body {
         <button class="wo-token" onclick="woPlace(12,this)">은</button>
         <button class="wo-token" onclick="woPlace(12,this)">는</button>
       </div>
-      <p class="feedback" id="fb12"></p>
       <button class="confirm-btn" id="val12" onclick="woCheck(12)" disabled>Valider</button>
+      <p class="feedback" id="fb12"></p>
     </div>
 
     <!-- PAGE 13: Word order – 친구는 예쁩니다 -->
     <div class="page" id="page-13">
       <p class="consigne">Formulez la phrase en coréen.</p>
       <div class="card-text"><div class="card-body">Mon amie est belle.</div></div>
-      <div class="card-text-audio" id="ans-card-13" style="display:none;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472605/4-S5_pzjzpy.mp3')">
-        <div class="card-body">친구는 예쁩니다.</div>
+      <div class="card-text-audio" id="ans-card-13" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472605/4-S5_pzjzpy.mp3')">
+        <div class="wo-card-inner" id="wo-ans-13"></div>
       </div>
-      <div class="wo-answer-area" id="wo-ans-13"></div>
       <div class="wo-bank" id="wo-bank-13">
         <button class="wo-token" onclick="woPlace(13,this)">예쁩니다</button>
         <button class="wo-token" onclick="woPlace(13,this)">예쁘입니다</button>
@@ -404,8 +398,8 @@ html, body {
         <button class="wo-token" onclick="woPlace(13,this)">는</button>
         <button class="wo-token" onclick="woPlace(13,this)">은</button>
       </div>
-      <p class="feedback" id="fb13"></p>
       <button class="confirm-btn" id="val13" onclick="woCheck(13)" disabled>Valider</button>
+      <p class="feedback" id="fb13"></p>
     </div>
 
     <!-- PAGE 14: OUTRO -->
@@ -643,21 +637,16 @@ function woPlace(pg, btn){
   var ansArea=document.getElementById('wo-ans-'+pg);
   var word=btn.textContent;
   btn.classList.add('disabled');
-
-  /* Create placed token in answer area */
   var tok=document.createElement('button');
   tok.className='wo-token placed';
   tok.textContent=word;
-  tok.dataset.srcId=btn.id||(btn.id='wt-'+pg+'-'+Date.now());
   tok.onclick=function(){
     if(state.done)return;
-    /* Remove from placed */
     var idx=state.placed.indexOf(word);
     if(idx!==-1)state.placed.splice(idx,1);
     btn.classList.remove('disabled');
     tok.remove();
-    var valBtn=document.getElementById('val'+pg);
-    valBtn.disabled=(document.getElementById('wo-ans-'+pg).children.length===0);
+    document.getElementById('val'+pg).disabled=(ansArea.children.length===0);
     document.getElementById('fb'+pg).textContent='';
     document.getElementById('fb'+pg).className='feedback';
   };
@@ -666,36 +655,34 @@ function woPlace(pg, btn){
   document.getElementById('val'+pg).disabled=false;
 }
 
+function woActivateCard(pg){
+  var card=document.getElementById('ans-card-'+pg);
+  card.style.pointerEvents='auto';
+  card.style.borderColor='#3b82f6';
+}
+
 function woCheck(pg){
   var state=woState[pg];
   if(state.done)return;
   var ans=WO_ANS[pg];
-  var placed=state.placed;
-  var correct=(placed.length===ans.length&&ans.every(function(w,i){return w===placed[i];}));
+  var correct=(state.placed.length===ans.length&&ans.every(function(w,i){return w===state.placed[i];}));
   var fb=document.getElementById('fb'+pg);
   state.attempts++;
-
   if(correct){
     sfx('sfx-ok');
-    /* Mark all placed tokens correct */
     var ansArea=document.getElementById('wo-ans-'+pg);
     Array.from(ansArea.children).forEach(function(t){t.className='wo-token correct';t.onclick=null;});
-    /* Disable bank tokens */
     document.querySelectorAll('#wo-bank-'+pg+' .wo-token').forEach(function(t){t.classList.add('disabled');});
     document.getElementById('val'+pg).disabled=true;
     fb.textContent='Très bien !'; fb.className='feedback ok';
-    /* Show answer card and auto-play audio */
-    var card=document.getElementById('ans-card-'+pg);
-    card.style.display='flex';
+    woActivateCard(pg);
     setTimeout(function(){playCardAudio(WO_AUDIO[pg]);},400);
     state.done=true; unlock(pg);
   } else {
     sfx('sfx-err');
-    /* Flash wrong */
     var ansArea=document.getElementById('wo-ans-'+pg);
     Array.from(ansArea.children).forEach(function(t){t.classList.add('wrong');});
     if(state.attempts>=3){
-      /* Max attempts: show answer */
       setTimeout(function(){
         woReveal(pg);
         fb.textContent='Voici la bonne réponse.'; fb.className='feedback ok';
@@ -703,7 +690,6 @@ function woCheck(pg){
     } else {
       fb.textContent='Veuillez réessayer :('; fb.className='feedback err';
       setTimeout(function(){
-        /* Reset */
         woReset(pg);
         fb.textContent=''; fb.className='feedback';
       },1000);
@@ -714,7 +700,6 @@ function woCheck(pg){
 function woReset(pg){
   var state=woState[pg];
   state.placed=[];
-  /* Clear answer area, re-enable bank tokens */
   document.getElementById('wo-ans-'+pg).innerHTML='';
   document.querySelectorAll('#wo-bank-'+pg+' .wo-token').forEach(function(t){t.classList.remove('disabled');});
   document.getElementById('val'+pg).disabled=true;
@@ -732,8 +717,7 @@ function woReveal(pg){
   });
   document.querySelectorAll('#wo-bank-'+pg+' .wo-token').forEach(function(t){t.classList.add('disabled');});
   document.getElementById('val'+pg).disabled=true;
-  var card=document.getElementById('ans-card-'+pg);
-  card.style.display='flex';
+  woActivateCard(pg);
   setTimeout(function(){playCardAudio(WO_AUDIO[pg]);},400);
   state.done=true; unlock(pg);
 }
