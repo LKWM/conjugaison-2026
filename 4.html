@@ -83,12 +83,14 @@ html, body {
 
 /* CARD WITH REPEAT */
 .card-repeat {
-  background: #fff; border: 2px solid #e2e8f0; border-radius: 1.5vh;
+  background: #fff; border: 2px solid #3b82f6; border-radius: 1.5vh;
   padding: 3vh 6vw; width: 100%;
   box-shadow: 0 2px 10px rgba(0,0,0,0.07);
   display: flex; flex-direction: column; align-items: center; text-align: center;
-  gap: 1.2vh; flex-shrink: 0; cursor: pointer; transition: border-color 0.15s;
+  gap: 1.2vh; flex-shrink: 0; cursor: pointer; transition: border-color 0.15s; user-select: none;
 }
+.card-repeat:hover  { border-color: #2563eb; }
+.card-repeat:active { border-color: #1d4ed8; }
 .card-repeat .card-body { font-size: calc(4.5vh * var(--fit,1)); font-weight: 800; color: #1e293b; line-height: 1.45; }
 .card-repeat .card-sub2 { font-size: calc(2.8vh * var(--fit,1)); font-weight: 700; color: #1e293b; line-height: 1.6; }
 .card-repeat .card-sub1 { font-size: calc(2.2vh * var(--fit,1)); font-weight: 500; color: #64748b; line-height: 1.7; }
@@ -148,12 +150,13 @@ html, body {
 .mic-status.inf { color: #64748b; }
 
 /* WORD ORDER QUIZ */
-/* WORD ORDER – answer card inner token area */
+/* WORD ORDER – answer card inner token area: fixed height, never changes */
 .wo-card-inner {
+  height: calc(4.5vh * var(--fit,1) * 1.45);  /* same as card-repeat card-body line-height = tallest single token row */
+  width: 100%;
   display: flex; flex-wrap: wrap; gap: 0.6vh 1vw;
   justify-content: center; align-items: center;
-  min-height: calc(3.6vh * var(--fit,1) * 1.2);
-  width: 100%;
+  overflow: hidden;
 }
 .wo-bank {
   width: 100%; display: flex; flex-wrap: wrap;
