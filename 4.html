@@ -376,13 +376,14 @@ html, body {
       <div class="card-text-audio" id="ans-card-11" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472601/4-S3_zeaqyr.mp3')">
         <div class="wo-card-inner">
           <div class="wo-hidden-row">
-            <span class="wo-token">날씨</span><span class="wo-token">이/가</span><span class="wo-token">춥습니다</span>
+            <span class="wo-token">날씨</span><span class="wo-token">가</span><span class="wo-token">춥습니다</span>
           </div>
           <div class="wo-placed-row" id="wo-ans-11"></div>
         </div>
       </div>
       <div class="wo-bank" id="wo-bank-11">
-        <button class="wo-token" onclick="woPlace(11,this)">이/가</button>
+        <button class="wo-token" onclick="woPlace(11,this)">이</button>
+        <button class="wo-token" onclick="woPlace(11,this)">가</button>
         <button class="wo-token" onclick="woPlace(11,this)">춥습니다</button>
         <button class="wo-token" onclick="woPlace(11,this)">춥니다</button>
         <button class="wo-token" onclick="woPlace(11,this)">날씨</button>
@@ -491,7 +492,7 @@ var mcqTimers = {};
 var WO_ANS = {
   9:  ['질문','이','있습니다'],
   10: ['의자','가','없습니다'],
-  11: ['날씨','이/가','춥습니다'],
+  11: ['날씨','가','춥습니다'],
   12: ['한국','은','덥습니다'],
   13: ['친구','는','예쁩니다']
 };
