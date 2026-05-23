@@ -149,14 +149,23 @@ html, body {
 .mic-status.err { color: #b91c1c; }
 .mic-status.inf { color: #64748b; }
 
-/* WORD ORDER QUIZ */
-/* WORD ORDER – answer card inner token area: fixed height, never changes */
+/* WORD ORDER – answer card inner: relative container */
 .wo-card-inner {
-  height: calc(4.5vh * var(--fit,1) * 1.45);  /* same as card-repeat card-body line-height = tallest single token row */
+  position: relative;
   width: 100%;
+}
+/* Hidden answer tokens — fix the card size, never visible to user until revealed */
+.wo-hidden-row {
   display: flex; flex-wrap: wrap; gap: 0.6vh 1vw;
   justify-content: center; align-items: center;
-  overflow: hidden;
+  visibility: hidden;
+  width: 100%;
+}
+/* User-placed tokens — absolutely overlaid on top of hidden row */
+.wo-placed-row {
+  position: absolute; inset: 0;
+  display: flex; flex-wrap: wrap; gap: 0.6vh 1vw;
+  justify-content: center; align-items: center;
 }
 .wo-bank {
   width: 100%; display: flex; flex-wrap: wrap;
@@ -320,7 +329,12 @@ html, body {
       <p class="consigne">Formulez la phrase en coréen.</p>
       <div class="card-text"><div class="card-body">J'ai une question.</div></div>
       <div class="card-text-audio" id="ans-card-9" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472600/4-S1_xfhn4j.mp3')">
-        <div class="wo-card-inner" id="wo-ans-9"></div>
+        <div class="wo-card-inner">
+          <div class="wo-hidden-row">
+            <span class="wo-token">질문</span><span class="wo-token">이</span><span class="wo-token">있습니다</span>
+          </div>
+          <div class="wo-placed-row" id="wo-ans-9"></div>
+        </div>
       </div>
       <div class="wo-bank" id="wo-bank-9">
         <button class="wo-token" onclick="woPlace(9,this)">가</button>
@@ -337,7 +351,12 @@ html, body {
       <p class="consigne">Formulez la phrase en coréen.</p>
       <div class="card-text"><div class="card-body">Il n'y a pas de chaise.</div></div>
       <div class="card-text-audio" id="ans-card-10" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472609/4-S2_p6mnah.wav')">
-        <div class="wo-card-inner" id="wo-ans-10"></div>
+        <div class="wo-card-inner">
+          <div class="wo-hidden-row">
+            <span class="wo-token">의자</span><span class="wo-token">가</span><span class="wo-token">없습니다</span>
+          </div>
+          <div class="wo-placed-row" id="wo-ans-10"></div>
+        </div>
       </div>
       <div class="wo-bank" id="wo-bank-10">
         <button class="wo-token" onclick="woPlace(10,this)">있습니다</button>
@@ -355,7 +374,12 @@ html, body {
       <p class="consigne">Formulez la phrase en coréen.</p>
       <div class="card-text"><div class="card-body">Il fait froid.</div></div>
       <div class="card-text-audio" id="ans-card-11" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472601/4-S3_zeaqyr.mp3')">
-        <div class="wo-card-inner" id="wo-ans-11"></div>
+        <div class="wo-card-inner">
+          <div class="wo-hidden-row">
+            <span class="wo-token">날씨</span><span class="wo-token">이/가</span><span class="wo-token">춥습니다</span>
+          </div>
+          <div class="wo-placed-row" id="wo-ans-11"></div>
+        </div>
       </div>
       <div class="wo-bank" id="wo-bank-11">
         <button class="wo-token" onclick="woPlace(11,this)">이/가</button>
@@ -372,7 +396,12 @@ html, body {
       <p class="consigne">Formulez la phrase en coréen.</p>
       <div class="card-text"><div class="card-body">Il fait chaud en Corée.</div></div>
       <div class="card-text-audio" id="ans-card-12" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472603/4-S4_waui2p.mp3')">
-        <div class="wo-card-inner" id="wo-ans-12"></div>
+        <div class="wo-card-inner">
+          <div class="wo-hidden-row">
+            <span class="wo-token">한국</span><span class="wo-token">은</span><span class="wo-token">덥습니다</span>
+          </div>
+          <div class="wo-placed-row" id="wo-ans-12"></div>
+        </div>
       </div>
       <div class="wo-bank" id="wo-bank-12">
         <button class="wo-token" onclick="woPlace(12,this)">한국</button>
@@ -391,7 +420,12 @@ html, body {
       <p class="consigne">Formulez la phrase en coréen.</p>
       <div class="card-text"><div class="card-body">Mon amie est belle.</div></div>
       <div class="card-text-audio" id="ans-card-13" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1779472605/4-S5_pzjzpy.mp3')">
-        <div class="wo-card-inner" id="wo-ans-13"></div>
+        <div class="wo-card-inner">
+          <div class="wo-hidden-row">
+            <span class="wo-token">친구</span><span class="wo-token">는</span><span class="wo-token">예쁩니다</span>
+          </div>
+          <div class="wo-placed-row" id="wo-ans-13"></div>
+        </div>
       </div>
       <div class="wo-bank" id="wo-bank-13">
         <button class="wo-token" onclick="woPlace(13,this)">예쁩니다</button>
@@ -710,14 +744,14 @@ function woReset(pg){
 
 function woReveal(pg){
   var state=woState[pg];
-  state.placed=WO_ANS[pg].slice();
-  var ansArea=document.getElementById('wo-ans-'+pg);
-  ansArea.innerHTML='';
-  WO_ANS[pg].forEach(function(w){
-    var tok=document.createElement('span');
-    tok.className='wo-token correct'; tok.textContent=w;
-    ansArea.appendChild(tok);
-  });
+  /* Clear placed row */
+  document.getElementById('wo-ans-'+pg).innerHTML='';
+  /* Show the hidden answer row */
+  var card=document.getElementById('ans-card-'+pg);
+  var hiddenRow=card.querySelector('.wo-hidden-row');
+  hiddenRow.style.visibility='visible';
+  /* Style hidden tokens as correct */
+  Array.from(hiddenRow.children).forEach(function(t){t.className='wo-token correct';});
   document.querySelectorAll('#wo-bank-'+pg+' .wo-token').forEach(function(t){t.classList.add('disabled');});
   document.getElementById('val'+pg).disabled=true;
   woActivateCard(pg);
