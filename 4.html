@@ -523,17 +523,19 @@ function stopAudio(){
   if(curAudio){curAudio.pause();curAudio.currentTime=0;curAudio=null;}
   restoreMics();
 }
+function isRecording(){ return activeRecorder&&activeRecorder.state==='recording'; }
 function playAudio(id){
+  if(isRecording())return;
   stopAudio();
   var a=document.getElementById(id);
   if(!a)return;
   curAudio=a;
-  blockMics();
   a.addEventListener('ended',restoreMics,{once:true});
   a.addEventListener('pause',restoreMics,{once:true});
-  setTimeout(function(){a.play().catch(function(){restoreMics();});},500);
+  setTimeout(function(){blockMics();a.play().catch(function(){restoreMics();});},500);
 }
 function playCardAudio(url){
+  if(isRecording())return;
   stopAudio();
   var a=new Audio(url);
   curAudio=a;
