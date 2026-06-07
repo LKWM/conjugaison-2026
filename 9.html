@@ -77,6 +77,7 @@ html, body {
   display: flex; flex-direction: column; align-items: center; text-align: center;
   gap: 0.8vh; flex-shrink: 0;
   cursor: pointer; transition: border-color 0.15s; user-select: none;
+  overflow: hidden;
 }
 .card-text-audio:hover  { border-color: #2563eb; }
 .card-text-audio:active { border-color: #1d4ed8; }
@@ -146,8 +147,10 @@ html, body {
 
 .mic-status {
   font-size: calc(2.2vh * var(--fit,1)); font-weight: 600;
-  text-align: center; min-height: 1.4em; width: 100%; flex-shrink: 0;
+  text-align: center; height: calc(2.2vh * var(--fit,1) * 1.5 * 2);
+  width: 100%; flex-shrink: 0; visibility: hidden;
 }
+.mic-status.ok, .mic-status.err, .mic-status.inf { visibility: visible; }
 .mic-status.ok  { color: #15803d; }
 .mic-status.err { color: #b91c1c; }
 .mic-status.inf { color: #64748b; }
@@ -351,7 +354,7 @@ html, body {
       <div class="card-text-audio" id="ans-card-11" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1780493199/9-S9_okbdde.mp3')">
         <div class="wo-card-inner">
           <div class="wo-hidden-row">
-            <span class="wo-token">아빠</span><span class="wo-token">는</span><span class="wo-token">부산</span><span class="wo-token">에</span><span class="wo-token">살아요</span>
+            <span class="wo-token">아빠</span><span class="wo-token">는</span><span class="wo-token">부산</span><span class="wo-token">에</span><span class="wo-token">살아요</span><span class="wo-token">살습니다</span>
           </div>
           <div class="wo-placed-row" id="wo-ans-11"></div>
         </div>
@@ -375,7 +378,7 @@ html, body {
       <div class="card-text-audio" id="ans-card-12" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1780493199/9-S10_e4xi7c.mp3')">
         <div class="wo-card-inner">
           <div class="wo-hidden-row">
-            <span class="wo-token">내일</span><span class="wo-token">친구</span><span class="wo-token">를</span><span class="wo-token">만나</span>
+            <span class="wo-token">내일</span><span class="wo-token">친구</span><span class="wo-token">를</span><span class="wo-token">만나</span><span class="wo-token">오늘</span><span class="wo-token">저</span>
           </div>
           <div class="wo-placed-row" id="wo-ans-12"></div>
         </div>
@@ -399,7 +402,7 @@ html, body {
       <div class="card-text-audio" id="ans-card-13" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1780493199/9-S11_yzzysy.mp3')">
         <div class="wo-card-inner">
           <div class="wo-hidden-row">
-            <span class="wo-token">사람</span><span class="wo-token">이</span><span class="wo-token">많아요</span>
+            <span class="wo-token">사람</span><span class="wo-token">이</span><span class="wo-token">많아요</span><span class="wo-token">많이</span><span class="wo-token">을</span><span class="wo-token">있다</span><span class="wo-token">가</span>
           </div>
           <div class="wo-placed-row" id="wo-ans-13"></div>
         </div>
@@ -424,7 +427,7 @@ html, body {
       <div class="card-text-audio" id="ans-card-14" style="pointer-events:none; border-color:#e2e8f0;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1780493199/9-S12_pzpxf2.mp3')">
         <div class="wo-card-inner">
           <div class="wo-hidden-row">
-            <span class="wo-token">무엇</span><span class="wo-token">을</span><span class="wo-token">봐요</span>
+            <span class="wo-token">무엇</span><span class="wo-token">을</span><span class="wo-token">봐요</span><span class="wo-token">보습니까</span><span class="wo-token">당신</span><span class="wo-token">저는</span>
           </div>
           <div class="wo-placed-row" id="wo-ans-14"></div>
         </div>
