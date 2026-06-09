@@ -671,7 +671,8 @@ function woPlace(pg,btn){
   btn.classList.add('disabled');
   var tok=document.createElement('button');
   tok.className='wo-token placed'; tok.textContent=word;
-  tok.onclick=function(){
+  tok.onclick=function(e){
+    e.stopPropagation();
     if(state.done)return;
     var idx=state.placed.indexOf(word); if(idx!==-1)state.placed.splice(idx,1);
     btn.classList.remove('disabled'); tok.remove();
@@ -708,6 +709,7 @@ function woCheck(pg){
       },800);
     } else {
       fb.textContent='Veuillez réessayer :('; fb.className='feedback err';
+      document.getElementById('val'+pg).disabled=true;
       setTimeout(function(){woReset(pg); fb.textContent=''; fb.className='feedback';},1000);
     }
   }
