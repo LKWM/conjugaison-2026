@@ -722,11 +722,13 @@ function woReset(pg){
 }
 function woReveal(pg){
   var state=woState[pg];
-  document.getElementById('wo-ans-'+pg).innerHTML='';
-  var card=document.getElementById('ans-card-'+pg);
-  var hiddenRow=card.querySelector('.wo-hidden-row');
-  hiddenRow.style.visibility='visible';
-  Array.from(hiddenRow.children).forEach(function(t){t.className='wo-token correct';});
+  var ansArea=document.getElementById('wo-ans-'+pg);
+  ansArea.innerHTML='';
+  WO_ANS[pg].forEach(function(w){
+    var tok=document.createElement('span');
+    tok.className='wo-token correct'; tok.textContent=w;
+    ansArea.appendChild(tok);
+  });
   document.querySelectorAll('#wo-bank-'+pg+' .wo-token').forEach(function(t){t.classList.add('disabled');});
   document.getElementById('val'+pg).disabled=true;
   woActivateCard(pg); setTimeout(function(){playCardAudio(WO_AUDIO[pg]);},400);
