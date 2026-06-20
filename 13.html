@@ -115,6 +115,18 @@ html, body {
 }
 
 /* MIC BUTTON */
+/* AUDIO BUTTON – invisible until answer revealed */
+.audio-btn {
+  background: #3b82f6; color: #fff; border: none; border-radius: 99px;
+  cursor: pointer; font-family: inherit;
+  width: calc(8vh * var(--fit,1)); height: calc(8vh * var(--fit,1));
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(59,130,246,0.35);
+  transition: background 0.18s, transform 0.1s; flex-shrink: 0;
+}
+.audio-btn:hover { background: #2563eb; transform: scale(1.06); }
+.audio-btn svg { width: 45%; height: 45%; fill: #fff; }
+
 .mic-btn {
   background: #ef4444; color: #fff; border: none; border-radius: 99px;
   cursor: pointer; font-family: inherit;
@@ -322,7 +334,7 @@ html, body {
     <div class="page" id="page-7">
       <p class="consigne">Répétez après moi.</p>
       <div class="card-repeat" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781894229/13-S5_nwd3ys.wav')">
-        <div class="card-body"><span class="c-cod">코트</span><span class="c-cod">를</span> <span class="c-pred">벗어요</span>.</div>
+        <div class="card-body"><span class="c-cod">코트</span><span class="c-yg">를</span> <span class="c-pred">벗어요</span>.</div>
         <div class="card-sub1"><span class="c-cod">manteau</span> <span class="c-pred">enlever</span></div>
         <div class="card-sub2">J'enlève le manteau.</div>
       </div>
@@ -456,11 +468,13 @@ html, body {
 
     <!-- PAGE 14: MCQ translation – Il fait trop froid -->
     <div class="page" id="page-14">
-      <p class="consigne">옳은 해석을 고르세요.</p>
-      <div class="card-text"><div class="card-body">Il fait trop froid !</div></div>
-      <div class="card-text-audio" id="ans-card-14" style="visibility:hidden;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781894223/13-S12_alaann.wav')">
-        <div class="card-body">너무 추워!</div>
+      <p class="consigne">Choisissez la bonne traduction.</p>
+      <div class="card-text">
+        <div class="card-body">Il fait trop froid !</div>
       </div>
+      <button class="audio-btn" id="ans-audio-14" style="visibility:hidden;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781894223/13-S12_alaann.wav')">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1-3.29-2.5-4.03v8.05c1.5-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
       <div class="mcq-opts" id="p14-opts">
         <button class="mcq-opt" onclick="checkMCQSingle(14,this,'너무 더워!')">너무 더워!</button>
         <button class="mcq-opt" onclick="checkMCQSingle(14,this,'너무 추워!')">너무 추워!</button>
@@ -470,11 +484,13 @@ html, body {
 
     <!-- PAGE 15: MCQ translation – Appelle-moi -->
     <div class="page" id="page-15">
-      <p class="consigne">옳은 해석을 고르세요.</p>
-      <div class="card-text"><div class="card-body">Appelle-moi !</div></div>
-      <div class="card-text-audio" id="ans-card-15" style="visibility:hidden;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781894225/13-S13_xx80c3.wav')">
-        <div class="card-body">나를 불러!</div>
+      <p class="consigne">Choisissez la bonne traduction.</p>
+      <div class="card-text">
+        <div class="card-body">Appelle-moi !</div>
       </div>
+      <button class="audio-btn" id="ans-audio-15" style="visibility:hidden;" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781894225/13-S13_xx80c3.wav')">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1-3.29-2.5-4.03v8.05c1.5-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+      </button>
       <div class="mcq-opts" id="p15-opts">
         <button class="mcq-opt" onclick="checkMCQSingle(15,this,'나를 불러!')">나를 불러!</button>
         <button class="mcq-opt" onclick="checkMCQSingle(15,this,'나는 불러!')">나는 불러!</button>
@@ -639,12 +655,14 @@ function checkMCQSingle(pg,btn,val){
     btn.classList.add('correct');
     fb.textContent='Correcte :)'; fb.className='feedback ok';
     opts.forEach(function(o){if(!o.classList.contains('correct'))o.classList.add('disabled');});
-    var ansCard=document.getElementById('ans-card-'+pg);
-    ansCard.style.visibility='visible';
-    setTimeout(function(){
-      var url=ansCard.getAttribute('onclick').match(/playCardAudio\('([^']+)'\)/)[1];
-      playCardAudio(url);
-    },400);
+    var ansAudio=document.getElementById('ans-audio-'+pg);
+    if(ansAudio){
+      ansAudio.style.visibility='visible';
+      setTimeout(function(){
+        var url=ansAudio.getAttribute('onclick').match(/playCardAudio\('([^']+)'\)/)[1];
+        playCardAudio(url);
+      },400);
+    }
     unlock(pg);
   } else {
     sfx('sfx-err');
