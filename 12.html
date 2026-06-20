@@ -646,13 +646,13 @@ html, body {
 
 /* ── CONFIG ── */
 var TOTAL = 18;
-var LOCKED = new Set([4,6,10,12,15,17]);
+var LOCKED = new Set([4,6,8,10,12,15,17]);
 var AUTOPLAY = {2:'a2',3:'a3',4:'a4',6:'a6',7:'a7',8:'a8',10:'a10',11:'a11',12:'a12',13:'a13',15:'a15',17:'a17',18:'a18'};
 
 /* ── STATE ── */
 var cur=1, unlocked=new Set(), curAudio=null;
 var micState={};
-[4,6,10,12,15,17].forEach(function(p){ micState[p]={attempts:0,done:false}; });
+[4,6,8,10,12,15,17].forEach(function(p){ micState[p]={attempts:0,done:false}; });
 var activeRecorder=null, recordingTimeout=null;
 
 /* ── AUDIO ── */
