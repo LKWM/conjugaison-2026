@@ -366,7 +366,7 @@ html, body {
       <audio id="a8" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781439235/%E1%84%83%E1%85%B3%E1%86%AEi_wmpfvz.mp3"></audio>
     </div>
 
-    <!-- PAGE 9: 걷다 card + card with repeat -->
+    <!-- PAGE 9: 걷다 card -->
     <div class="page" id="page-9">
       <div class="card-text-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781439229/%E1%84%80%E1%85%A5%E1%86%AE%E1%84%83%E1%85%A1_eqvqhk.mp3')">
         <div style="display:flex; align-items:flex-end; justify-content:center; gap:1vw; flex-wrap:wrap; width:100%;">
@@ -401,19 +401,24 @@ html, body {
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- PAGE 10: Card with repeat – 걸어요 -->
+    <div class="page" id="page-10">
+      <p class="consigne">Répétez après moi.</p>
       <div class="card-repeat" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781439232/%E1%84%80%E1%85%A5%E1%86%AEp_yzvgzf.mp3')">
         <div class="card-body">걸어요.</div>
         <div class="card-sub2">(quelqu'un) marche.</div>
       </div>
-      <button class="mic-btn" id="mic9" onclick="toggleRecord(9,'걸어요','pass2')">
+      <button class="mic-btn" id="mic10" onclick="toggleRecord(10,'걸어요','pass2')">
         <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
       </button>
-      <p class="mic-status" id="st9"></p>
-      <audio id="a9" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781439232/%E1%84%80%E1%85%A5%E1%86%AEp_yzvgzf.mp3"></audio>
+      <p class="mic-status" id="st10"></p>
+      <audio id="a10" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781439232/%E1%84%80%E1%85%A5%E1%86%AEp_yzvgzf.mp3"></audio>
     </div>
 
-    <!-- PAGE 10: 믿다 card + text + card with repeat -->
-    <div class="page" id="page-10">
+    <!-- PAGE 11: 믿다 card + text -->
+    <div class="page" id="page-11">
       <div class="card-text-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781439240/%E1%84%86%E1%85%B5%E1%86%AE%E1%84%83%E1%85%A1_wdzxxf.mp3')">
         <div style="display:flex; align-items:flex-end; justify-content:center; gap:1vw; flex-wrap:wrap; width:100%;">
           <div style="display:flex;flex-direction:column;align-items:center;gap:0.3vh;flex-shrink:0;">
@@ -443,19 +448,25 @@ html, body {
         </div>
       </div>
       <p class="text-block">Certains prédicats suivent une conjugaison régulière et se conjuguent selon les règles habituelles, sans remplacement de consonne.</p>
+      <audio id="a11" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781463093/12-4_dvy41x.mp3"></audio>
+    </div>
+
+    <!-- PAGE 12: Card with repeat – 믿어요 -->
+    <div class="page" id="page-12">
+      <p class="consigne">Répétez après moi.</p>
       <div class="card-repeat" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781439238/%E1%84%86%E1%85%B5%E1%86%AEp_hl6xjo.mp3')">
         <div class="card-body">믿어요.</div>
         <div class="card-sub2">(quelqu'un) croit (quelque chose).</div>
       </div>
-      <button class="mic-btn" id="mic10" onclick="toggleRecord(10,'믿어요','pass2')">
+      <button class="mic-btn" id="mic12" onclick="toggleRecord(12,'믿어요','pass2')">
         <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
       </button>
-      <p class="mic-status" id="st10"></p>
-      <audio id="a10" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781463093/12-4_dvy41x.mp3"></audio>
+      <p class="mic-status" id="st12"></p>
+      <audio id="a12" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781439238/%E1%84%86%E1%85%B5%E1%86%AEp_hl6xjo.mp3"></audio>
     </div>
 
-    <!-- PAGE 11 -->
-    <div class="page" id="page-11">
+    <!-- PAGE 13 -->
+    <div class="page" id="page-13">
       <div class="card-text">
         <div style="display:flex; align-items:flex-end; justify-content:center; gap:1.5vw; flex-wrap:wrap; width:100%;">
           <div style="display:flex;flex-direction:column;align-items:center;gap:0.3vh;flex-shrink:0;">
@@ -485,11 +496,11 @@ html, body {
         </div>
       </div>
       <p class="text-block">Lorsqu'un prédicat se termine par « 르다 », la syllabe « 르 » est remplacée par « ㄹㄹ ». L'un devient la consonne finale de la syllabe précédente, et l'autre devient la consonne initiale de l'infixe. Dans ce cas, un point très important est que l'infixe n'est pas déterminé à partir de la voyelle finale « ㅡ », mais à partir de la voyelle de la syllabe précédente.</p>
-      <audio id="a11" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781463095/12-5_rlqp9z.mp3"></audio>
+      <audio id="a13" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781463095/12-5_rlqp9z.mp3"></audio>
     </div>
 
-    <!-- PAGE 12 -->
-    <div class="page" id="page-12">
+    <!-- PAGE 14 -->
+    <div class="page" id="page-14">
       <div class="card-text-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781439231/%E1%84%80%E1%85%A9%E1%84%85%E1%85%B3%E1%84%83%E1%85%A1_wtoimi.mp3')">
         <div style="display:flex; align-items:flex-end; justify-content:center; gap:1vw; flex-wrap:wrap; width:100%;">
           <div style="display:flex;flex-direction:column;align-items:center;gap:0.3vh;flex-shrink:0;">
@@ -526,22 +537,22 @@ html, body {
       <p class="text-block">Attention ! L'infixe est déterminé à partir de la voyelle de « 고 », et non de « 르 ». Comme la voyelle de « 고 » est « ㅗ », on ajoute l'infixe du groupe 1, « ㅏ ».</p>
     </div>
 
-    <!-- PAGE 13: Card with repeat – 골라요 -->
-    <div class="page" id="page-13">
+    <!-- PAGE 15: Card with repeat – 골라요 -->
+    <div class="page" id="page-15">
       <p class="consigne">Répétez après moi.</p>
       <div class="card-repeat" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781439230/%E1%84%80%E1%85%A9%E1%84%85%E1%85%B3p_pppwgy.mp3')">
         <div class="card-body">골라요.</div>
         <div class="card-sub2">(quelqu'un) choisit (quelque chose).</div>
       </div>
-      <button class="mic-btn" id="mic13" onclick="toggleRecord(13,'골라요','pass2')">
+      <button class="mic-btn" id="mic15" onclick="toggleRecord(15,'골라요','pass2')">
         <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
       </button>
-      <p class="mic-status" id="st13"></p>
-      <audio id="a13" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781439230/%E1%84%80%E1%85%A9%E1%84%85%E1%85%B3p_pppwgy.mp3"></audio>
+      <p class="mic-status" id="st15"></p>
+      <audio id="a15" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781439230/%E1%84%80%E1%85%A9%E1%84%85%E1%85%B3p_pppwgy.mp3"></audio>
     </div>
 
-    <!-- PAGE 14 -->
-    <div class="page" id="page-14">
+    <!-- PAGE 16 -->
+    <div class="page" id="page-16">
       <div class="card-text-audio" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781439243/%E1%84%87%E1%85%AE%E1%84%85%E1%85%B3%E1%84%83%E1%85%A1_euj0a4.mp3')">
         <div style="display:flex; align-items:flex-end; justify-content:center; gap:1vw; flex-wrap:wrap; width:100%;">
           <div style="display:flex;flex-direction:column;align-items:center;gap:0.3vh;flex-shrink:0;">
@@ -578,24 +589,24 @@ html, body {
       <p class="text-block">Attention ! L'infixe est déterminé à partir de la voyelle de « 부 », et non de « 르 ». Comme la voyelle de « 부 » est « ㅜ », on ajoute l'infixe du groupe 2, « ㅓ ».</p>
     </div>
 
-    <!-- PAGE 15: Card with repeat – 불러요 -->
-    <div class="page" id="page-15">
+    <!-- PAGE 17: Card with repeat – 불러요 -->
+    <div class="page" id="page-17">
       <p class="consigne">Répétez après moi.</p>
       <div class="card-repeat" onclick="playCardAudio('https://res.cloudinary.com/de76i94ia/video/upload/v1781439242/%E1%84%87%E1%85%AE%E1%84%85%E1%85%B3p_avlbg7.mp3')">
         <div class="card-body">불러요.</div>
         <div class="card-sub2">(quelqu'un) appelle (quelqu'un d'autre).</div>
       </div>
-      <button class="mic-btn" id="mic15" onclick="toggleRecord(15,'불러요','pass2')">
+      <button class="mic-btn" id="mic17" onclick="toggleRecord(17,'불러요','pass2')">
         <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3zm-1 17.93V21h2v-2.07A7 7 0 0 0 19 12h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z"/></svg>
       </button>
-      <p class="mic-status" id="st15"></p>
-      <audio id="a15" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781439242/%E1%84%87%E1%85%AE%E1%84%85%E1%85%B3p_avlbg7.mp3"></audio>
+      <p class="mic-status" id="st17"></p>
+      <audio id="a17" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781439242/%E1%84%87%E1%85%AE%E1%84%85%E1%85%B3p_avlbg7.mp3"></audio>
     </div>
 
-    <!-- PAGE 16: OUTRO -->
-    <div class="page" id="page-16">
+    <!-- PAGE 18: OUTRO -->
+    <div class="page" id="page-18">
       <p class="text-block">Bon travail ! Nous avons maintenant vu la conjugaison formelle, la conjugaison polie, la conjugaison informelle, ainsi que les changements irréguliers. Vous connaissez donc désormais l'ensemble des principales transformations des prédicats coréens. Quand vous révisez, il est important de retenir les règles, mais il est tout aussi utile de mémoriser les mots correspondant à chaque cas ainsi que leurs formes conjuguées. Cela vous aidera à assimiler les règles plus naturellement. Il ne reste plus qu'une leçon d'entraînement. On se retrouve dans la leçon 13 !</p>
-      <audio id="a16" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781463097/12-8_xg23lw.mp3"></audio>
+      <audio id="a18" src="https://res.cloudinary.com/de76i94ia/video/upload/v1781463097/12-8_xg23lw.mp3"></audio>
     </div>
 
   </div><!-- /pages -->
@@ -634,14 +645,14 @@ html, body {
 })();
 
 /* ── CONFIG ── */
-var TOTAL = 16;
-var LOCKED = new Set([4,6,8,9,10,13,15]);
-var AUTOPLAY = {2:'a2',3:'a3',4:'a4',6:'a6',7:'a7',8:'a8',9:'a9',10:'a10',11:'a11',13:'a13',15:'a15',16:'a16'};
+var TOTAL = 18;
+var LOCKED = new Set([4,6,10,12,15,17]);
+var AUTOPLAY = {2:'a2',3:'a3',4:'a4',6:'a6',7:'a7',8:'a8',10:'a10',11:'a11',12:'a12',13:'a13',15:'a15',17:'a17',18:'a18'};
 
 /* ── STATE ── */
 var cur=1, unlocked=new Set(), curAudio=null;
 var micState={};
-[4,6,8,9,10,13,15].forEach(function(p){ micState[p]={attempts:0,done:false}; });
+[4,6,10,12,15,17].forEach(function(p){ micState[p]={attempts:0,done:false}; });
 var activeRecorder=null, recordingTimeout=null;
 
 /* ── AUDIO ── */
