@@ -616,8 +616,14 @@ function render(){
 }
 function unlock(pg){unlocked.add(pg);if(cur===pg)document.getElementById('btn-next').disabled=false;}
 
-/* ── CLOVA SPEECH ── */
-var CLOVA_URL='https://coreeno.base44.app/api/functions/naverClovaSpeech';
+/* ── GEMINI SPEECH ── */
+var GEMINI_URL='https://coreeno.base44.app/functions/GeminiChatSecure';
+
+var lessonPermit=null, lessonId=null;
+window.addEventListener('message',function(e){
+  if(!e.data||e.data.type!=='coreeno:permit')return;
+  lessonPermit=e.data.permit; lessonId=e.data.lesson_id;
+});
 function similarity(a,b){
   var s1=a.replace(/[\s.,?!。]/g,'').toLowerCase(), s2=b.replace(/[\s.,?!。]/g,'').toLowerCase();
   if(s1===s2)return 100; if(!s1.length||!s2.length)return 0;
@@ -656,7 +662,11 @@ async function toggleRecord(pg,reference,mode){
       reader.onloadend=async function(){
         var b64=reader.result.split(',')[1], score=0, recognized='';
         try{
-          var res=await fetch(CLOVA_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({audioBase64:b64,languageCode:'Kor',assessment:false})});
+          var res=await fetch(GEMINI_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{inline_data:{mime_type:'audio/webm',data:b64}}]}],systemInstruction:`유저의 한국어 발화를 전사한다.
+1. 한글 외에 다른 문자는 사용할 수 없음.
+2. 발화를 하지 않는 구간이나 외국어로 발화하는 구간은 전사하지 않는다.
+3. 의미 없는 filler word나 말더듬기, 공백 등은 삭제하고 실제 단어나 문장만 전사한다.
+4. 문법, 발음 오류는 교정 없이 들리는 대로 전사한다.`,model:'gemini-3.8-flash',permit:lessonPermit,lesson_id:lessonId})});
           if(!res.ok)throw new Error('API');
           var data=await res.json(); recognized=data.recognized||data.text||'';
           score=similarity(recognized,reference);
